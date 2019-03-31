@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math';
 import 'package:vector_math/vector_math_64.dart' as vector;
-import 'package:star_menu/src/StarItem.dart';
+import 'package:star_menu/src/star_item.dart';
 
 enum MenuState {
   closed,
@@ -286,9 +286,9 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     // duration of the whole animation including each items' delay
     int totalDuration = widget.durationMs + widget.itemDelayMs*(_nItems-1);
     // percentage of delay
-    double D = widget.itemDelayMs/totalDuration;
+    double d = widget.itemDelayMs/totalDuration;
     // percentage of duration
-    double D1 = widget.durationMs/totalDuration;
+    double d1 = widget.durationMs/totalDuration;
 
     _controller = AnimationController(
       duration: Duration(milliseconds: totalDuration),
@@ -330,8 +330,8 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     });
 
     for (int i=0; i<_nItems; i++) {
-      double start = D*i;
-      double end   = D*i + D1;
+      double start = d*i;
+      double end   = d*i + d1;
       if (end>1.0) end = 1.0;
       _animation.add(Tween(begin: 0.0, end: 1.0)
           .animate(CurvedAnimation(

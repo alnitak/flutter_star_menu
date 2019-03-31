@@ -1,6 +1,6 @@
 name: star_menu
-description: StarMenu contexctual pop up menu.
-version: 1.0.0
+description: Contextual popup menu with different shapes and multiple ways to fine-tune animation and position. The menu entries can be almost any kind of widgets.
+version: 1.0.1
 author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
 homepage: https://www.marcobavagnoli.com/
 

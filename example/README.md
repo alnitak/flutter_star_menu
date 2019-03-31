@@ -1,5 +1,5 @@
 # The StarMenu widget.
-## Contextual popup menu with different shapes and multiple ways to fine-tune animationand position. The menu entries can be almost any kind of widgets.
+## Contextual popup menu with different shapes and multiple ways to fine-tune animation and position. The menu entries can be almost any kind of widgets.
 
 ![Alt text](https://bitbucket.org/lildeimos/flutterstarmenu/raw/master/images/StarMenuDemo.gif "StarMenu Demo")
 
