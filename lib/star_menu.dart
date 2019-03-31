@@ -45,7 +45,6 @@ class StarMenuController {
 
   // Build the StarMenu on an overlay
   static displayStarMenu(StarMenu starMenu, GlobalKey parentKey) {
-
     // Retrieve the parent Overlay
     OverlayState _overlayState = Overlay.of(starMenu.parentKey.currentContext);
 
@@ -231,26 +230,24 @@ class StarMenu extends StatefulWidget {
     this.rotateItemsAnimationAngle = 180.0,
     this.startItemScaleAnimation = 0.52,
     this.backgroundColor = const Color.fromARGB(180, 0, 0, 0),
-    this.centerOffset = const Offset(0,0),
+    this.centerOffset = const Offset(0, 0),
     this.useScreenCenter = false,
     this.checkScreenBoundaries = false,
     this.animationCurve = Curves.fastOutSlowIn,
     this.onItemPressed,
-  }) :
-        assert(parentKey != null),
+  })  : assert(parentKey != null),
         assert(items != null),
         assert(columns >= 1),
         assert(durationMs > 0),
         assert(itemDelayMs > 0),
         super(key: key);
 
-
   @override
   StarMenuState createState() => StarMenuState();
-
 }
 
-class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin {
+class StarMenuState extends State<StarMenu>
+    with SingleTickerProviderStateMixin {
   double startAngleRAD;
   double endAngleRAD;
   double rotateItemsAnimationAngleRAD;
@@ -271,24 +268,24 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
   Animation<double> _animationPercent;
   Animation<Color> animationColor;
 
-
   @override
   void initState() {
     super.initState();
     startAngleRAD = vector.radians(widget.startAngle);
     endAngleRAD = vector.radians(widget.endAngle);
-    rotateItemsAnimationAngleRAD = vector.radians(widget.rotateItemsAnimationAngle);
+    rotateItemsAnimationAngleRAD =
+        vector.radians(widget.rotateItemsAnimationAngle);
     _parentParams = WidgetParams.fromContext(widget.parentKey.currentContext);
     _nItems = widget.items.length;
     _itemMatrix = Matrix4.identity();
     _starItemsParams = new List(widget.items.length);
 
     // duration of the whole animation including each items' delay
-    int totalDuration = widget.durationMs + widget.itemDelayMs*(_nItems-1);
+    int totalDuration = widget.durationMs + widget.itemDelayMs * (_nItems - 1);
     // percentage of delay
-    double d = widget.itemDelayMs/totalDuration;
+    double d = widget.itemDelayMs / totalDuration;
     // percentage of duration
-    double d1 = widget.durationMs/totalDuration;
+    double d1 = widget.durationMs / totalDuration;
 
     _controller = AnimationController(
       duration: Duration(milliseconds: totalDuration),
@@ -300,50 +297,44 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
       end: widget.backgroundColor,
     ).animate(_controller);
 
-    _animationPercent = Tween(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.fastOutSlowIn
-    ))
-    ..addListener(() {
-      if (widget.shape == MenuShape.grid) {
-        _calcGrid();
-      }
-    })
-    ..addStatusListener((AnimationStatus status) {
-      switch (status) {
-        case AnimationStatus.completed:
-          state = MenuState.open;
-          break;
-        case AnimationStatus.dismissed:
-          if (state == MenuState.closing)
-            StarMenuController.removeLast();
-          state = MenuState.closing;
-          break;
-        case AnimationStatus.reverse:
-          state = MenuState.closing;
-          break;
-        case AnimationStatus.forward:
-          state = MenuState.opening;
-          break;
-      }
-    });
+    _animationPercent = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn))
+      ..addListener(() {
+        if (widget.shape == MenuShape.grid) {
+          _calcGrid();
+        }
+      })
+      ..addStatusListener((AnimationStatus status) {
+        switch (status) {
+          case AnimationStatus.completed:
+            state = MenuState.open;
+            break;
+          case AnimationStatus.dismissed:
+            if (state == MenuState.closing) StarMenuController.removeLast();
+            state = MenuState.closing;
+            break;
+          case AnimationStatus.reverse:
+            state = MenuState.closing;
+            break;
+          case AnimationStatus.forward:
+            state = MenuState.opening;
+            break;
+        }
+      });
 
-    for (int i=0; i<_nItems; i++) {
-      double start = d*i;
-      double end   = d*i + d1;
-      if (end>1.0) end = 1.0;
-      _animation.add(Tween(begin: 0.0, end: 1.0)
-          .animate(CurvedAnimation(
+    for (int i = 0; i < _nItems; i++) {
+      double start = d * i;
+      double end = d * i + d1;
+      if (end > 1.0) end = 1.0;
+      _animation.add(Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
           parent: _controller,
-          curve: Interval(start, end, curve: widget.animationCurve)
-      ))
+          curve: Interval(start, end, curve: widget.animationCurve)))
         ..addListener(() {
           setState(() {
-            _starItemsParams[i] = WidgetParams.fromContext(_starItemsKeys[i].currentContext);
+            _starItemsParams[i] =
+                WidgetParams.fromContext(_starItemsKeys[i].currentContext);
           });
-        })
-      );
+        }));
     }
 
     _controller.forward();
@@ -359,8 +350,6 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     _controller?.reverse();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     // with grid shape and with a durationMs less then ~50 ms, happens that itemPos
@@ -368,48 +357,41 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     if (itemPos.isEmpty && _animationPercent.value == 1.0) {
       _calcGrid();
     }
-    return
-      GestureDetector(
-        onTap: () {_controller.reverse();},
-        child: Container(
-          color: animationColor.value,
-          alignment: Alignment.center,
-          child: Stack(
-            children: _setItemPosition(),
-          ),
+    return GestureDetector(
+      onTap: () {
+        _controller.reverse();
+      },
+      child: Container(
+        color: animationColor.value,
+        alignment: Alignment.center,
+        child: Stack(
+          children: _setItemPosition(),
         ),
-      );
+      ),
+    );
   }
-
-
 
   List<Widget> _setItemPosition() {
-    _starItemsKeys = List<GlobalKey>.generate(
-        widget.items.length,
-        (i) => ( GlobalKey() )
-    );
+    _starItemsKeys =
+        List<GlobalKey>.generate(widget.items.length, (i) => (GlobalKey()));
     _starItems = List<Widget>.generate(
         widget.items.length,
-            (i) => (
-              StarItem(
-                key: _starItemsKeys[i],
-                animationValue: _animation[i].value,
-                item: widget.items.elementAt(i),
-                anchor: (widget.useScreenCenter || _parentParams==null
-                    ? Offset(StarMenuController.screenWidth / 2, StarMenuController.screenHeight / 2)
-                    : _parentParams.rect.center),
-                itemMatrix: _calcPosition(i),
-                onItemPressed: () {
-                  if (widget.onItemPressed != null)
-                    widget.onItemPressed(i);
-                  close();
-                },
-              )
-            )
-    );
+        (i) => (StarItem(
+              key: _starItemsKeys[i],
+              animationValue: _animation[i].value,
+              item: widget.items.elementAt(i),
+              anchor: (widget.useScreenCenter || _parentParams == null
+                  ? Offset(StarMenuController.screenWidth / 2,
+                      StarMenuController.screenHeight / 2)
+                  : _parentParams.rect.center),
+              itemMatrix: _calcPosition(i),
+              onItemPressed: () {
+                if (widget.onItemPressed != null) widget.onItemPressed(i);
+                close();
+              },
+            )));
     return _starItems;
   }
-
 
   Matrix4 _calcPosition(int index) {
     double A = _animation[index].value;
@@ -418,8 +400,14 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     switch (widget.shape) {
       // CIRCLE SHAPE
       case MenuShape.circle:
-        T.x = cos( endAngleRAD/widget.items.length*index + startAngleRAD) * widget.radiusX  * A + widget.centerOffset.dx;
-        T.y = -sin( endAngleRAD/widget.items.length*index + startAngleRAD) * widget.radiusY  * A + widget.centerOffset.dy;
+        T.x = cos(endAngleRAD / widget.items.length * index + startAngleRAD) *
+                widget.radiusX *
+                A +
+            widget.centerOffset.dx;
+        T.y = -sin(endAngleRAD / widget.items.length * index + startAngleRAD) *
+                widget.radiusY *
+                A +
+            widget.centerOffset.dy;
         break;
 
       // LINEAR SHAPE
@@ -434,32 +422,35 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
         double secH;
         double secV;
 
-        halfWidth  = _starItemsParams[index].rect.width / 2;
+        halfWidth = _starItemsParams[index].rect.width / 2;
         halfHeight = _starItemsParams[index].rect.height / 2;
 
         // itemDiameter is calculated by the segment length that intersect the item bounding box
         // passing through the center of the item and intersect the opposite edges by m_startingAngle angle
         secH = (halfHeight / sin(rotate)).abs();
-        secV = (halfWidth  / sin(pi / 2 - rotate)).abs();
+        secV = (halfWidth / sin(pi / 2 - rotate)).abs();
         // checks if the line intersect horizontal or vertical edges
         if (secH < secV)
-            itemDiameter = secH*2.0;
+          itemDiameter = secH * 2.0;
         else
-            itemDiameter = secV*2.0;
+          itemDiameter = secV * 2.0;
 
         // These checks if the line is perfectly vertical or horizontal
-        if ( (rotate+pi/2)/pi == ((rotate + pi/2) / pi).ceil() )
-            itemDiameter = halfHeight*2;
-        if ( rotate/pi == (rotate / pi).ceil() )
-            itemDiameter = halfWidth*2;
+        if ((rotate + pi / 2) / pi == ((rotate + pi / 2) / pi).ceil())
+          itemDiameter = halfHeight * 2;
+        if (rotate / pi == (rotate / pi).ceil()) itemDiameter = halfWidth * 2;
 
         if (index == 0) {
-          radius = -itemDiameter/2;
+          radius = -itemDiameter / 2;
         }
 
-        T.x = cos(startAngleRAD)  * (radius + halfWidth  - firstItemHalfWidth)  * A + widget.centerOffset.dx;
-        T.y = -sin(startAngleRAD) * (radius + halfHeight - firstItemHalfHeight) * A + widget.centerOffset.dy;
-
+        T.x =
+            cos(startAngleRAD) * (radius + halfWidth - firstItemHalfWidth) * A +
+                widget.centerOffset.dx;
+        T.y = -sin(startAngleRAD) *
+                (radius + halfHeight - firstItemHalfHeight) *
+                A +
+            widget.centerOffset.dy;
 
         if (index == 0) {
           firstItemHalfWidth = halfWidth;
@@ -476,24 +467,27 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
         T.x = itemPos[index].x * A;
         T.y = itemPos[index].y * A;
         break;
-
     }
 
     // Check boundaries
     if (widget.checkScreenBoundaries && _starItemsParams[index] != null) {
-      if (_starItemsParams[index].rect.right + T.x > StarMenuController.screenWidth)
-        T.x = (StarMenuController.screenWidth - (_starItemsParams[index].rect.width / 2)) - _parentParams.rect.center.dx;
-      if (_starItemsParams[index].rect.bottom + T.y > StarMenuController.screenHeight)
-        T.y = (StarMenuController.screenHeight - (_starItemsParams[index].rect.height / 2)) - _parentParams.rect.bottom;
+      if (_starItemsParams[index].rect.right + T.x >
+          StarMenuController.screenWidth)
+        T.x = (StarMenuController.screenWidth -
+                (_starItemsParams[index].rect.width / 2)) -
+            _parentParams.rect.center.dx;
+      if (_starItemsParams[index].rect.bottom + T.y >
+          StarMenuController.screenHeight)
+        T.y = (StarMenuController.screenHeight -
+                (_starItemsParams[index].rect.height / 2)) -
+            _parentParams.rect.bottom;
     }
 
     return Matrix4.identity()
       ..setTranslation(T)
-      ..setRotationZ( (1.0-A)*rotateItemsAnimationAngleRAD )
-      ..scale( A + (widget.startItemScaleAnimation*(1.0-A)) )
-    ;
+      ..setRotationZ((1.0 - A) * rotateItemsAnimationAngleRAD)
+      ..scale(A + (widget.startItemScaleAnimation * (1.0 - A)));
   }
-
 
   // Calculate items position in grid shape. It's called only once when animation starts
   _calcGrid() {
@@ -501,7 +495,7 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     if (itemPos.isNotEmpty) return;
 
     // Check if all items params are been taken
-    for (int i=0; i<widget.items.length; i++) {
+    for (int i = 0; i < widget.items.length; i++) {
       if (_starItemsParams[i] == null) return;
     }
 
@@ -518,33 +512,32 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     List<double> rowsWidth = new List();
 
     // Calculating the grid
-    while ( j*widget.columns+k < widget.items.length )
-    {
+    while (j * widget.columns + k < widget.items.length) {
       count = 0;
       hMax = 0;
       x = 0;
       // Calculate x position and rows height
-      while ( k < widget.columns && j*widget.columns+k < widget.items.length )
-      {
-        itemWidth  = _starItemsParams[j*widget.columns+k].rect.width;
-        itemHeight = _starItemsParams[j*widget.columns+k].rect.height;
-        itemPos.add( Point(x+itemWidth/2,y) );
+      while (
+          k < widget.columns && j * widget.columns + k < widget.items.length) {
+        itemWidth = _starItemsParams[j * widget.columns + k].rect.width;
+        itemHeight = _starItemsParams[j * widget.columns + k].rect.height;
+        itemPos.add(Point(x + itemWidth / 2, y));
         // hMax = max item height in this row
-        hMax = max( hMax , itemHeight );
+        hMax = max(hMax, itemHeight);
         x += itemWidth + widget.columnsSpaceH;
         count++;
         k++;
       }
       // wMax = max width of all rows
-      wMax = max(wMax , x);
-      rowsWidth.add(x-widget.columnsSpaceH);
+      wMax = max(wMax, x);
+      rowsWidth.add(x - widget.columnsSpaceH);
       // Calculate y position for items in current row
-      for (int i=0; i<count; i++)
-      {
-        itemHeight = _starItemsParams[j*widget.columns+k-i-1].rect.height;
-        double x1 = itemPos[itemPos.length-i-1].x;
-        double y1 = y+hMax/2;
-        itemPos[itemPos.length-i-1] = Point(x1,y1);
+      for (int i = 0; i < count; i++) {
+        itemHeight =
+            _starItemsParams[j * widget.columns + k - i - 1].rect.height;
+        double x1 = itemPos[itemPos.length - i - 1].x;
+        double y1 = y + hMax / 2;
+        itemPos[itemPos.length - i - 1] = Point(x1, y1);
       }
       y += hMax + widget.columnsSpaceV;
       k = 0;
@@ -556,23 +549,14 @@ class StarMenuState extends State<StarMenu> with SingleTickerProviderStateMixin 
     //    wMax = grid width
     //    rowsWidth = list containing all the rows width
     //    so it's possible to center rows and center the grid in parent item
-    n=0;
+    n = 0;
     int dx;
-    while ( n < widget.items.length )
-    {
-      dx = ( ( wMax - rowsWidth[ (n/widget.columns).floor() ] ) / 2).floor();
+    while (n < widget.items.length) {
+      dx = ((wMax - rowsWidth[(n / widget.columns).floor()]) / 2).floor();
       itemPos[n] = Point(
-          (itemPos[n].x+dx - wMax/2) + widget.centerOffset.dx,
-          (itemPos[n].y - y/2) + widget.centerOffset.dy );
+          (itemPos[n].x + dx - wMax / 2) + widget.centerOffset.dx,
+          (itemPos[n].y - y / 2) + widget.centerOffset.dy);
       n++;
     }
   }
-
-
 }
-
-
-
-
-
-

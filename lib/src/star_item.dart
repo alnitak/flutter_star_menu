@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-
 class StarItem extends StatelessWidget {
-
   final double animationValue;
   final Matrix4 itemMatrix;
   final Offset anchor;
   final Widget item;
   final VoidCallback onItemPressed;
 
-  StarItem({
-    Key key,
-    @required this.animationValue,
-    @required this.itemMatrix,
-    @required this.anchor,
-    @required this.item,
-    this.onItemPressed
-  })
+  StarItem(
+      {Key key,
+      @required this.animationValue,
+      @required this.itemMatrix,
+      @required this.anchor,
+      @required this.item,
+      this.onItemPressed})
       : super(key: key);
 
   @override
@@ -28,20 +25,20 @@ class StarItem extends StatelessWidget {
         alignment: FractionalOffset.center,
         transform: itemMatrix,
         child: Opacity(
-          opacity: animationValue<=1.0 ? (animationValue>=0.0 ? animationValue : 0.0) : 1.0,
+          opacity: animationValue <= 1.0
+              ? (animationValue >= 0.0 ? animationValue : 0.0)
+              : 1.0,
           child: GestureDetector(
             child: item,
-            onTap: () {onItemPressed();},
+            onTap: () {
+              onItemPressed();
+            },
           ),
         ),
       ),
     );
   }
 }
-
-
-
-
 
 /// Helper class to determine the size and position of a widget
 class WidgetParams {
@@ -55,7 +52,7 @@ class WidgetParams {
     this.rect,
   });
 
-  WidgetParams.fromContext(BuildContext context){
+  WidgetParams.fromContext(BuildContext context) {
     // Get the widget RenderObject
     final RenderObject object = context.findRenderObject();
     // Get the dimensions and position of the widget
@@ -68,15 +65,13 @@ class WidgetParams {
   }
 
   @override
-  String toString(){
+  String toString() {
     return 'X,Y,rect: $xPosition,$yPosition  $rect';
   }
 }
 
-
 /// Center child widget using [center] position
 class CenteredWidget extends StatelessWidget {
-
   final Offset center;
   final Widget child;
 
