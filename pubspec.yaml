@@ -1,8 +1,8 @@
 name: star_menu
 description: StarMenu contexctual pop up menu.
-version: 0.0.1
+version: 1.0.0
 author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
-homepage: www.marcobavagnoli.com
+homepage: https://www.marcobavagnoli.com/
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

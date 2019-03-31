@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:star_menu/StarMenu.dart';
+import 'package:star_menu/star_menu.dart';
 
 
 void main() => runApp(MyApp());
