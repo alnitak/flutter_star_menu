@@ -1,0 +1,35 @@
+name: StarMenuDemo
+description: StarMenu contexctual pop up menu.
+version: 1.0.0+1
+author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
+homepage: www.marcobavagnoli.com
+
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  star_menu:
+    path: ../
+
+  cupertino_icons: ^0.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/images/background.png
+    - assets/images/flutter.png
+    - assets/images/emoticon_008.png
+    - assets/images/emoticon_017.png
+    - assets/images/emoticon_050.png
+    - assets/images/emoticon_100.png
+    - assets/images/emoticon_114.png
