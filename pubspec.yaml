@@ -1,8 +1,8 @@
 name: star_menu
 description: Contextual popup menu with different shapes and multiple ways to fine-tune animation and position. The menu entries can be almost any kind of widgets.
-version: 1.0.2
+version: 1.0.3
 author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
-homepage: https://bitbucket.org/lildeimos/flutterstarmenu/src/master/
+homepage: https://pub.dev/packages/star_menu
 
 
 environment:

@@ -49,7 +49,7 @@ class MyHomePageState extends State<MyHomePage> {
       endAngle: 180.0 / 3.0 * 4.0, // to let the last item to be exactly at 180 degree: [angle / (items-1) * items]
       durationMs: 600,
       itemDelayMs: 200,
-      backgroundColor: Color.fromARGB(160, 100, 0, 0),
+      backgroundColor: Color.fromARGB(0, 100, 0, 0),
       onItemPressed: (i) => {print("PRESSED $i")},
       items: <Widget>[
         Container(
@@ -104,7 +104,7 @@ class MyHomePageState extends State<MyHomePage> {
       columns: 3,
       columnsSpaceH: 20,
       columnsSpaceV: 10,
-      backgroundColor: Color.fromARGB(200, 0, 0, 50),
+      backgroundColor: Color.fromARGB(0, 0, 0, 50),
       checkScreenBoundaries: true,
       useScreenCenter: false,
       centerOffset: Offset(0,0),
@@ -186,7 +186,7 @@ class MyHomePageState extends State<MyHomePage> {
           Container(
             decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/background.png'),
+              image: AssetImage('assets/images/background2.jpg'),
               fit: BoxFit.cover,
               ),
             ),

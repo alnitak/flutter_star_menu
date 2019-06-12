@@ -1,8 +1,13 @@
 library star_menu;
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:star_menu/src/star_item.dart';
 
@@ -37,14 +42,17 @@ enum MenuShape {
 ///        )
 /// '''
 ///
+GlobalKey _overlayKey;
 class StarMenuController {
   static List<OverlayEntry> _overlayEntry = List();
 
   static double screenWidth;
   static double screenHeight;
 
+
+
   // Build the StarMenu on an overlay
-  static displayStarMenu(StarMenu starMenu, GlobalKey parentKey) {
+  static displayStarMenu(StarMenu starMenu, GlobalKey parentKey) async{
     // Retrieve the parent Overlay
     OverlayState _overlayState = Overlay.of(starMenu.parentKey.currentContext);
 
@@ -54,10 +62,15 @@ class StarMenuController {
         screenWidth = MediaQuery.of(context).size.width;
         screenHeight = MediaQuery.of(context).size.height;
 
-        return Stack(
-          children: <Widget>[
-            starMenu,
-          ],
+        _overlayKey = new GlobalKey();
+
+        return RepaintBoundary(
+          key: _overlayKey,
+          child: Stack(
+            children: <Widget>[
+              starMenu,
+            ],
+          ),
         );
       },
     ));
@@ -255,6 +268,7 @@ class StarMenuState extends State<StarMenu>
   List<Widget> _starItems;
   List<GlobalKey> _starItemsKeys;
   List<WidgetParams> _starItemsParams;
+  Uint8List _backgroundImage = null;
   MenuState state;
   int _nItems;
   Matrix4 _itemMatrix;
@@ -268,6 +282,44 @@ class StarMenuState extends State<StarMenu>
   Animation<double> _animationPercent;
   Animation<Color> animationColor;
 
+  Future<Uint8List> takeScreenShot(GlobalKey widgetKey) async{
+    print("TAKESCREENSHOT  ${widgetKey.currentContext}");
+    RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData.buffer.asUint8List();
+    print(pngBytes);
+    return pngBytes;
+  }
+  Future<Uint8List> _capturePng(GlobalKey widgetKey) async {
+    try {
+      print('CAPTURE1    $widgetKey');
+      RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
+      print('CAPTURE2    $boundary');
+      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
+      print('CAPTURE3    ${image.width} x ${image.height}');
+      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      print('CAPTURE4');
+      var pngBytes = byteData.buffer.asUint8List();
+      print('CAPTURE5');
+      var bs64 = base64Encode(pngBytes);
+      print('CAPTURE6');
+//      print(bs64);
+      print('CAPTURE7 $pngBytes');
+//      widgetKey.currentState.setState(() {});
+      setState(() {
+        _backgroundImage = pngBytes;
+        print("********BACKGROUNDIMAGE:  $_backgroundImage");
+      });
+      print('CAPTURE8');
+      return pngBytes;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -280,7 +332,7 @@ class StarMenuState extends State<StarMenu>
     _itemMatrix = Matrix4.identity();
     _starItemsParams = new List(widget.items.length);
 
-    // duration of the whole animation including each items' delay
+        // duration of the whole animation including each items' delay
     int totalDuration = widget.durationMs + widget.itemDelayMs * (_nItems - 1);
     // percentage of delay
     double d = widget.itemDelayMs / totalDuration;
@@ -357,15 +409,36 @@ class StarMenuState extends State<StarMenu>
     if (itemPos.isEmpty && _animationPercent.value == 1.0) {
       _calcGrid();
     }
+//    if (_backgroundImage == null) {
+//      final result = _capturePng(_overlayKey);
+////      Future.wait([_capturePng(_overlayKey)]);
+//      result.then((result) {});
+//    }
+
+//    final _background =
+//    Container(
+//      color: Colors.green.withAlpha(100),
+//      child: Image(image: MemoryImage(
+//          _backgroundImage == null ? Uint8List(1): _backgroundImage,
+//          scale: 0.5),)
+//    );
+
+    List<Widget> _items = [];//[_background];
+    _items.addAll(_setItemPosition());
+
     return GestureDetector(
       onTap: () {
         _controller.reverse();
       },
-      child: Container(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaY: _animationPercent.value*3, sigmaX: _animationPercent.value*3),
+        child: Container(
         color: animationColor.value,
-        alignment: Alignment.center,
-        child: Stack(
-          children: _setItemPosition(),
+//        color: Colors.transparent,
+          alignment: Alignment.center,
+          child: Stack(
+            children: _items,
+          ),
         ),
       ),
     );

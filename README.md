@@ -1,7 +1,7 @@
 # The StarMenu widget.
 ## Contextual popup menu with different shapes and multiple ways to fine-tune animation and position. The menu entries can be almost any kind of widgets.
 
-![Alt text](https://bitbucket.org/lildeimos/flutterstarmenu/raw/master/images/StarMenuDemo.gif "StarMenu Demo")
+![](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif "StarMenu Demo")
 
 * [**parentKey**] GlobalKey of the parent widget. Needed to retrieve its position.
 * [**items**] List of menu widget items.

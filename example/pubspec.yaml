@@ -27,6 +27,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/background.png
+    - assets/images/background2.jpg
     - assets/images/flutter.png
     - assets/images/emoticon_008.png
     - assets/images/emoticon_017.png
