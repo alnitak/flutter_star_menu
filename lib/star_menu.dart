@@ -222,6 +222,7 @@ class StarMenu extends StatefulWidget {
   final Offset centerOffset;
   final bool useScreenCenter;
   final bool checkScreenBoundaries;
+  final bool useBlur;
   final Curve animationCurve;
   final void Function(int) onItemPressed;
 
@@ -246,6 +247,7 @@ class StarMenu extends StatefulWidget {
     this.centerOffset = const Offset(0, 0),
     this.useScreenCenter = false,
     this.checkScreenBoundaries = false,
+    this.useBlur = true,
     this.animationCurve = Curves.fastOutSlowIn,
     this.onItemPressed,
   })  : assert(parentKey != null),
@@ -332,7 +334,7 @@ class StarMenuState extends State<StarMenu>
     _itemMatrix = Matrix4.identity();
     _starItemsParams = new List(widget.items.length);
 
-        // duration of the whole animation including each items' delay
+    // duration of the whole animation including each items' delay
     int totalDuration = widget.durationMs + widget.itemDelayMs * (_nItems - 1);
     // percentage of delay
     double d = widget.itemDelayMs / totalDuration;
@@ -430,16 +432,23 @@ class StarMenuState extends State<StarMenu>
       onTap: () {
         _controller.reverse();
       },
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaY: _animationPercent.value*3, sigmaX: _animationPercent.value*3),
-        child: Container(
-        color: animationColor.value,
-//        color: Colors.transparent,
-          alignment: Alignment.center,
-          child: Stack(
-            children: _items,
-          ),
-        ),
+      child: (widget.useBlur)
+          ? BackdropFilter(
+              filter: ui.ImageFilter.blur(
+                  sigmaY: _animationPercent.value * 3,
+                  sigmaX: _animationPercent.value * 3),
+              child: _buildBody(_items),
+            )
+          : _buildBody(_items),
+    );
+  }
+
+  Widget _buildBody(List<Widget> items) {
+    return Container(
+      color: animationColor.value,
+      alignment: Alignment.center,
+      child: Stack(
+        children: items,
       ),
     );
   }
