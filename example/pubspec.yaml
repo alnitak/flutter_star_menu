@@ -1,12 +1,12 @@
 name: StarMenuDemo
 description: StarMenu contextual pop up menu demo.
-version: 1.0.0+1
+version: 1.0.0+2
 author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
 homepage: www.marcobavagnoli.com
 
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -27,7 +27,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/background.png
-    - assets/images/background2.jpg
     - assets/images/flutter.png
     - assets/images/emoticon_008.png
     - assets/images/emoticon_017.png

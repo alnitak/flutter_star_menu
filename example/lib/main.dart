@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
 
-  final String title;
+  final String? title;
 
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
   @override
   MyHomePageState createState() => MyHomePageState();
@@ -31,13 +31,13 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  GlobalKey iconKey;
-  GlobalKey fabKey1;
-  GlobalKey fabKey2;
-  GlobalKey fabKey3;
-  GlobalKey menuBluFabKey;
-  GlobalKey starMenuKey;
-  var _value = ValueNotifier<bool>(false);
+  GlobalKey? iconKey;
+  GlobalKey? fabKey1;
+  GlobalKey? fabKey2;
+  GlobalKey? fabKey3;
+  GlobalKey? menuBluFabKey;
+  GlobalKey? starMenuKey;
+  var _value = ValueNotifier<bool?>(false);
 
 
   Widget _buildSubMenu(GlobalKey parent) {
@@ -118,10 +118,10 @@ class MyHomePageState extends State<MyHomePage> {
           color: Colors.yellow,
           child: ValueListenableBuilder(
             valueListenable: _value,
-            builder: (context, value, child) {
+            builder: (context, dynamic value, child) {
               return Checkbox(
                 value: _value.value,
-                onChanged: (bool b) {
+                onChanged: (bool? b) {
                   setState( () => _value.value = b );
                 },
               );
@@ -136,7 +136,7 @@ class MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.lightBlueAccent,
           child: Icon(Icons.menu),
           onPressed: () {
-            StarMenuController.displayStarMenu(_buildSubMenu(menuBluFabKey), menuBluFabKey);
+            StarMenuController.displayStarMenu(_buildSubMenu(menuBluFabKey!) as StarMenu, menuBluFabKey!);
           },
         ),
         Container(
@@ -150,7 +150,7 @@ class MyHomePageState extends State<MyHomePage> {
             // This FAB has the onPressed event and StarMenu doesn't grab the item pressed.
             // If you want to manually close this menu, assign to this menu a
             // GlobalKey and do the following code
-            StarMenuState sms = starMenuKey.currentState;
+            StarMenuState sms = starMenuKey!.currentState as StarMenuState;
             sms.close();
           },
         ),
@@ -178,7 +178,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
       body: Stack(
         children: <Widget>[
@@ -186,7 +186,7 @@ class MyHomePageState extends State<MyHomePage> {
           Container(
             decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/background2.jpg'),
+              image: AssetImage('assets/images/background.png'),
               fit: BoxFit.cover,
               ),
             ),
@@ -204,7 +204,7 @@ class MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Colors.black,
                 child: Icon(Icons.adjust),
                 onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey1, MenuShape.circle, 0.0), fabKey1);
+                  StarMenuController.displayStarMenu(_buildMenu(fabKey1!, MenuShape.circle, 0.0) as StarMenu, fabKey1!);
                 },
             ),
 
@@ -216,7 +216,7 @@ class MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Colors.white,
                 child: Icon(Icons.apps),
                 onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey2, MenuShape.grid, 0.0), fabKey2);
+                  StarMenuController.displayStarMenu(_buildMenu(fabKey2!, MenuShape.grid, 0.0) as StarMenu, fabKey2!);
                 },
             ),
 
@@ -228,7 +228,7 @@ class MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Colors.white,
                 child: Icon(Icons.more_vert),
                 onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey3, MenuShape.linear, 90.0), fabKey3);
+                  StarMenuController.displayStarMenu(_buildMenu(fabKey3!, MenuShape.linear, 90.0) as StarMenu, fabKey3!);
                 },
             ),
 
