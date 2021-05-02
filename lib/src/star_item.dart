@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 
+import 'package:vector_math/vector_math_64.dart' as VectorMath;
+
 class StarItem extends StatelessWidget {
   final double animationValue;
   final Matrix4 itemMatrix;
   final Offset anchor;
   final Widget item;
-  final VoidCallback onItemPressed;
+  final VoidCallback? onItemPressed;
 
   StarItem(
-      {Key key,
-      @required this.animationValue,
-      @required this.itemMatrix,
-      @required this.anchor,
-      @required this.item,
+      {Key? key,
+      required this.animationValue,
+      required this.itemMatrix,
+      required this.anchor,
+      required this.item,
       this.onItemPressed})
       : super(key: key);
 
@@ -32,7 +34,7 @@ class StarItem extends StatelessWidget {
           child: GestureDetector(
             child: item,
             onTap: () {
-              onItemPressed();
+              onItemPressed!();
             },
           ),
         ),
@@ -43,9 +45,9 @@ class StarItem extends StatelessWidget {
 
 /// Helper class to determine the size and position of a widget
 class WidgetParams {
-  double xPosition;
-  double yPosition;
-  Rect rect;
+  double? xPosition;
+  double? yPosition;
+  Rect? rect;
 
   WidgetParams({
     this.xPosition,
@@ -55,10 +57,16 @@ class WidgetParams {
 
   WidgetParams.fromContext(BuildContext context) {
     // Get the widget RenderObject
-    final RenderObject object = context.findRenderObject();
+    final RenderObject? object = context.findRenderObject();
+
+    if (object == null) {
+      return;
+    }
+
     // Get the dimensions and position of the widget
-    final translation = object?.getTransformTo(null)?.getTranslation();
-    final Size size = object?.semanticBounds?.size;
+    final VectorMath.Vector3 translation =
+        object.getTransformTo(null).getTranslation();
+    final Size size = object.semanticBounds.size;
 
     xPosition = translation.x;
     yPosition = translation.y;
@@ -73,8 +81,8 @@ class WidgetParams {
 
 /// Center child widget using [center] position
 class CenteredWidget extends StatelessWidget {
-  final Offset center;
-  final Widget child;
+  final Offset? center;
+  final Widget? child;
 
   CenteredWidget({
     key,
@@ -85,8 +93,8 @@ class CenteredWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Positioned(
-      left: center.dx,
-      top: center.dy,
+      left: center!.dx,
+      top: center!.dy,
       child: FractionalTranslation(
         translation: const Offset(-0.5, -0.5),
         child: child,
@@ -94,5 +102,3 @@ class CenteredWidget extends StatelessWidget {
     );
   }
 }
-
-

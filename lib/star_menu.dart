@@ -42,19 +42,19 @@ enum MenuShape {
 ///        )
 /// '''
 ///
-GlobalKey _overlayKey;
+GlobalKey? _overlayKey;
 class StarMenuController {
-  static List<OverlayEntry> _overlayEntry = List();
+  static List<OverlayEntry> _overlayEntry = [];
 
-  static double screenWidth;
-  static double screenHeight;
+  static late double screenWidth;
+  static late double screenHeight;
 
 
 
   // Build the StarMenu on an overlay
   static displayStarMenu(StarMenu starMenu, GlobalKey parentKey) async{
     // Retrieve the parent Overlay
-    OverlayState _overlayState = Overlay.of(starMenu.parentKey.currentContext);
+    OverlayState _overlayState = Overlay.of(starMenu.parentKey.currentContext!)!;
 
     // Generate the Stack containing all StarItems that will be displayed onto the Overlay
     _overlayEntry.add(OverlayEntry(
@@ -81,8 +81,8 @@ class StarMenuController {
 
   // Used internally to close the last visible StarMenu
   static removeLast() {
-    _overlayEntry?.last?.remove();
-    _overlayEntry?.removeLast();
+    _overlayEntry.last.remove();
+    _overlayEntry.removeLast();
   }
 }
 
@@ -224,12 +224,12 @@ class StarMenu extends StatefulWidget {
   final bool checkScreenBoundaries;
   final bool useBlur;
   final Curve animationCurve;
-  final void Function(int) onItemPressed;
+  final void Function(int)? onItemPressed;
 
   StarMenu({
     key,
-    @required this.parentKey,
-    @required this.items,
+    required this.parentKey,
+    required this.items,
     this.radiusX = 100,
     this.radiusY = 100,
     this.radiusIncrement = 0,
@@ -263,44 +263,44 @@ class StarMenu extends StatefulWidget {
 
 class StarMenuState extends State<StarMenu>
     with SingleTickerProviderStateMixin {
-  double startAngleRAD;
-  double endAngleRAD;
-  double rotateItemsAnimationAngleRAD;
-  WidgetParams _parentParams;
-  List<Widget> _starItems;
-  List<GlobalKey> _starItemsKeys;
-  List<WidgetParams> _starItemsParams;
-  Uint8List _backgroundImage = null;
-  MenuState state;
-  int _nItems;
-  Matrix4 _itemMatrix;
+  late double startAngleRAD;
+  late double endAngleRAD;
+  late double rotateItemsAnimationAngleRAD;
+  WidgetParams? _parentParams;
+  List<Widget>? _starItems;
+  late List<GlobalKey> _starItemsKeys;
+  late List<WidgetParams?> _starItemsParams;
+  Uint8List? _backgroundImage = null;
+  MenuState? state;
+  late int _nItems;
+  late Matrix4 _itemMatrix;
   // used to take track of the current radius and size when calculating linear shape
   double radius = 0.0;
   // used to store items position for grid shape
-  List<Point> itemPos = new List();
+  List<Point> itemPos = [];
 
-  AnimationController _controller;
-  List<Animation<double>> _animation = new List();
-  Animation<double> _animationPercent;
-  Animation<Color> animationColor;
+  AnimationController? _controller;
+  List<Animation<double>> _animation = [];
+  late Animation<double> _animationPercent;
+  late Animation<Color?> animationColor;
 
   Future<Uint8List> takeScreenShot(GlobalKey widgetKey) async{
     print("TAKESCREENSHOT  ${widgetKey.currentContext}");
-    RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
+    RenderRepaintBoundary boundary = widgetKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
     Uint8List pngBytes = byteData.buffer.asUint8List();
     print(pngBytes);
     return pngBytes;
   }
-  Future<Uint8List> _capturePng(GlobalKey widgetKey) async {
+  Future<Uint8List?> _capturePng(GlobalKey widgetKey) async {
     try {
       print('CAPTURE1    $widgetKey');
-      RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = widgetKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       print('CAPTURE2    $boundary');
       ui.Image image = await boundary.toImage(pixelRatio: 1.0);
       print('CAPTURE3    ${image.width} x ${image.height}');
-      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
       print('CAPTURE4');
       var pngBytes = byteData.buffer.asUint8List();
       print('CAPTURE5');
@@ -329,10 +329,10 @@ class StarMenuState extends State<StarMenu>
     endAngleRAD = vector.radians(widget.endAngle);
     rotateItemsAnimationAngleRAD =
         vector.radians(widget.rotateItemsAnimationAngle);
-    _parentParams = WidgetParams.fromContext(widget.parentKey.currentContext);
+    _parentParams = WidgetParams.fromContext(widget.parentKey.currentContext!);
     _nItems = widget.items.length;
     _itemMatrix = Matrix4.identity();
-    _starItemsParams = new List(widget.items.length);
+    _starItemsParams = []..length = widget.items.length;
 
     // duration of the whole animation including each items' delay
     int totalDuration = widget.durationMs + widget.itemDelayMs * (_nItems - 1);
@@ -349,10 +349,10 @@ class StarMenuState extends State<StarMenu>
     animationColor = ColorTween(
       begin: Colors.transparent,
       end: widget.backgroundColor,
-    ).animate(_controller);
+    ).animate(_controller!);
 
     _animationPercent = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn))
+        CurvedAnimation(parent: _controller!, curve: Curves.fastOutSlowIn))
       ..addListener(() {
         if (widget.shape == MenuShape.grid) {
           _calcGrid();
@@ -381,17 +381,17 @@ class StarMenuState extends State<StarMenu>
       double end = d * i + d1;
       if (end > 1.0) end = 1.0;
       _animation.add(Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-          parent: _controller,
+          parent: _controller!,
           curve: Interval(start, end, curve: widget.animationCurve)))
         ..addListener(() {
           setState(() {
             _starItemsParams[i] =
-                WidgetParams.fromContext(_starItemsKeys[i].currentContext);
+                WidgetParams.fromContext(_starItemsKeys[i].currentContext!);
           });
         }));
     }
 
-    _controller.forward();
+    _controller!.forward();
   }
 
   @override
@@ -426,11 +426,11 @@ class StarMenuState extends State<StarMenu>
 //    );
 
     List<Widget> _items = [];//[_background];
-    _items.addAll(_setItemPosition());
+    _items.addAll(_setItemPosition()!);
 
     return GestureDetector(
       onTap: () {
-        _controller.reverse();
+        _controller!.reverse();
       },
       child: (widget.useBlur)
           ? BackdropFilter(
@@ -453,7 +453,7 @@ class StarMenuState extends State<StarMenu>
     );
   }
 
-  List<Widget> _setItemPosition() {
+  List<Widget>? _setItemPosition() {
     _starItemsKeys =
         List<GlobalKey>.generate(widget.items.length, (i) => (GlobalKey()));
     _starItems = List<Widget>.generate(
@@ -465,10 +465,10 @@ class StarMenuState extends State<StarMenu>
               anchor: (widget.useScreenCenter || _parentParams == null
                   ? Offset(StarMenuController.screenWidth / 2,
                       StarMenuController.screenHeight / 2)
-                  : _parentParams.rect.center),
+                  : _parentParams!.rect!.center),
               itemMatrix: _calcPosition(i),
               onItemPressed: () {
-                if (widget.onItemPressed != null) widget.onItemPressed(i);
+                if (widget.onItemPressed != null) widget.onItemPressed!(i);
                 close();
               },
             )));
@@ -504,8 +504,8 @@ class StarMenuState extends State<StarMenu>
         double secH;
         double secV;
 
-        halfWidth = _starItemsParams[index].rect.width / 2;
-        halfHeight = _starItemsParams[index].rect.height / 2;
+        halfWidth = _starItemsParams[index]!.rect!.width / 2;
+        halfHeight = _starItemsParams[index]!.rect!.height / 2;
 
         // itemDiameter is calculated by the segment length that intersect the item bounding box
         // passing through the center of the item and intersect the opposite edges by m_startingAngle angle
@@ -553,16 +553,16 @@ class StarMenuState extends State<StarMenu>
 
     // Check boundaries
     if (widget.checkScreenBoundaries && _starItemsParams[index] != null) {
-      if (_starItemsParams[index].rect.right + T.x >
+      if (_starItemsParams[index]!.rect!.right + T.x >
           StarMenuController.screenWidth)
         T.x = (StarMenuController.screenWidth -
-                (_starItemsParams[index].rect.width / 2)) -
-            _parentParams.rect.center.dx;
-      if (_starItemsParams[index].rect.bottom + T.y >
+                (_starItemsParams[index]!.rect!.width / 2)) -
+            _parentParams!.rect!.center.dx;
+      if (_starItemsParams[index]!.rect!.bottom + T.y >
           StarMenuController.screenHeight)
         T.y = (StarMenuController.screenHeight -
-                (_starItemsParams[index].rect.height / 2)) -
-            _parentParams.rect.bottom;
+                (_starItemsParams[index]!.rect!.height / 2)) -
+            _parentParams!.rect!.bottom;
     }
 
     return Matrix4.identity()
@@ -591,7 +591,7 @@ class StarMenuState extends State<StarMenu>
     double wMax = 0;
     double itemWidth;
     double itemHeight;
-    List<double> rowsWidth = new List();
+    List<double> rowsWidth = [];
 
     // Calculating the grid
     while (j * widget.columns + k < widget.items.length) {
@@ -601,8 +601,8 @@ class StarMenuState extends State<StarMenu>
       // Calculate x position and rows height
       while (
           k < widget.columns && j * widget.columns + k < widget.items.length) {
-        itemWidth = _starItemsParams[j * widget.columns + k].rect.width;
-        itemHeight = _starItemsParams[j * widget.columns + k].rect.height;
+        itemWidth = _starItemsParams[j * widget.columns + k]!.rect!.width;
+        itemHeight = _starItemsParams[j * widget.columns + k]!.rect!.height;
         itemPos.add(Point(x + itemWidth / 2, y));
         // hMax = max item height in this row
         hMax = max(hMax, itemHeight);
@@ -616,8 +616,8 @@ class StarMenuState extends State<StarMenu>
       // Calculate y position for items in current row
       for (int i = 0; i < count; i++) {
         itemHeight =
-            _starItemsParams[j * widget.columns + k - i - 1].rect.height;
-        double x1 = itemPos[itemPos.length - i - 1].x;
+            _starItemsParams[j * widget.columns + k - i - 1]!.rect!.height;
+        double x1 = itemPos[itemPos.length - i - 1].x as double;
         double y1 = y + hMax / 2;
         itemPos[itemPos.length - i - 1] = Point(x1, y1);
       }
