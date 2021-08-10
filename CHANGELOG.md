@@ -1,3 +1,7 @@
+## [2.0.0+3] - 10 Aug 2021
+* removed dart:io dependency for web compatibility
+* bug fix in web version when animating the blur
+
 ## [2.0.0+2] - 10 Aug 2021
 * added some documentation
 

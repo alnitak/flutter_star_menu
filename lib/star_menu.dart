@@ -1,6 +1,5 @@
 library star_menu;
 
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
@@ -245,7 +244,7 @@ class StarMenuState extends State<StarMenu>
     rotateItemsAnimationAngleRAD =
         vector.radians(widget.params.rotateItemsAnimationAngle);
 
-    animationProgress = ValueNotifier(0.0);
+    animationProgress = ValueNotifier<double>(0.0);
     offsetToFitMenuIntoScreen = Offset.zero;
     paramsAlreadyGot = false;
     itemsParams = List.generate(widget.items.length,
@@ -270,8 +269,8 @@ class StarMenuState extends State<StarMenu>
 
   @override
   void didChangeMetrics() {
-    if (!paramsAlreadyGot &&
-        !(Platform.isLinux || Platform.isMacOS || Platform.isWindows)) return;
+    if (!paramsAlreadyGot && MediaQuery.of(context).size != screenSize)
+    return;
 
     _addPostFrameCallback();
 
@@ -317,7 +316,7 @@ class StarMenuState extends State<StarMenu>
         animationProgress.value = _animationPercent.value;
 
         /// Time to get items parameters?
-        if (animationProgress.value > 0 && !paramsAlreadyGot) {
+        if (_animationPercent.value > 0 && !paramsAlreadyGot) {
           itemsParams = List.generate(
               widget.items.length,
               (index) => WidgetParams.fromContext(
@@ -444,8 +443,9 @@ class StarMenuState extends State<StarMenu>
                             )))),
               );
 
-              if (widget.params.backgroundParams.sigmaX > 0 ||
-                  widget.params.backgroundParams.sigmaY > 0) {
+              if ((widget.params.backgroundParams.sigmaX > 0 ||
+                  widget.params.backgroundParams.sigmaY > 0) &&
+                  animValue > 0) {
                 late double db;
                 if (widget.params.backgroundParams.animatedBlur)
                   db = animValue;
@@ -642,7 +642,6 @@ class StarMenuState extends State<StarMenu>
 
     return ret;
   }
-
 
   // check if the items rect exceeds the screen. Move the item positions
   // to fit into the screen
