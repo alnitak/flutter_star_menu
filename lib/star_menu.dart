@@ -26,6 +26,7 @@ enum MenuShape {
   grid,
 }
 
+/// Extension on Widget to add a StarMenu easily
 extension AddStarMenu on Widget {
   addStarMenu(
       BuildContext context, List<Widget> items, StarMenuParameters params) {
@@ -34,9 +35,16 @@ extension AddStarMenu on Widget {
 }
 
 class CircleShapeParams {
+  /// Horizontal radius
   final double radiusX;
+
+  /// Vertical radius
   final double radiusY;
+
+  /// Starting angle for the 1st item. Anticlockwise with 0° on the right
   final double startAngle;
+
+  /// Ending angle for the 1st item. Anticlockwise with 0° on the right
   final double endAngle;
 
   const CircleShapeParams(
@@ -47,8 +55,13 @@ class CircleShapeParams {
 }
 
 class GridShapeParams {
+  /// Number of columns
   final int columns;
+
+  /// Horizontal space between items
   final int columnsSpaceH;
+
+  /// Vertical space between items
   final int columnsSpaceV;
 
   const GridShapeParams(
@@ -58,8 +71,14 @@ class GridShapeParams {
 enum LinearAlignment { left, center, right, top, bottom }
 
 class LinearShapeParams {
+  /// Degree angle. Anticlockwise with 0° on 3 o'clock
   final double angle;
+
+  /// Space between items
   final double space;
+
+  /// left, center, right, top, bottom. Useful when the linear shape
+  /// is vertical or horizontal
   final LinearAlignment alignment;
 
   const LinearShapeParams(
@@ -67,10 +86,19 @@ class LinearShapeParams {
 }
 
 class BackgroundParams {
+  /// Animate background blur from 0.0 to sigma if true
   final bool animatedBlur;
+
+  /// Horizontal blur
   final double sigmaX;
+
+  /// Vertical blur
   final double sigmaY;
+
+  /// Animate [backgroundColor] from transparent if true
   final bool animatedBackgroundColor;
+
+  /// Background color
   final Color backgroundColor;
 
   const BackgroundParams(
@@ -82,20 +110,51 @@ class BackgroundParams {
 }
 
 class StarMenuParameters {
+  /// Menu shape kind. Could be [MenuShape.circle], [MenuShape.linear], [MenuShape.grid]
   final MenuShape shape;
+
+  /// parameters for the linear shape
   final linearShapeParams;
+
+  /// parameters for the circle shape
   final circleShapeParams;
+
+  /// parameters for the grid shape
   final gridShapeParams;
+
+  /// parameters for the background
   final backgroundParams;
+
+  /// Open animation duration
   final int openDurationMs;
+
+  /// Close animation duration
   final int closeDurationMs;
+
+  /// Starting rotation angle of the items that will reach 0 DEG when animation ends
   final double rotateItemsAnimationAngle;
+
+  /// Starting scale of the items that will reach 1 when animation ends
   final double startItemScaleAnimation;
+
+  /// Shift offset of menu center from the center of parent widget
   final Offset centerOffset;
+
+  /// Use the screen center instead of parent widget center
   final bool useScreenCenter;
+
+  /// Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible
   final bool checkItemsScreenBoundaries;
+
+  /// Checks if items exceed screen edges, if so set them in place to be visible
   final bool checkMenuScreenBoundaries;
+
+  /// Animation curve kind to use
   final Curve animationCurve;
+
+  /// The callback that is called when a menu item is tapped.
+  /// It gives the `ID` of the item and a `controller` to
+  /// eventually close the menu
   final Function(int index, StarMenuController controller)? onItemTapped;
 
   StarMenuParameters({
@@ -117,6 +176,8 @@ class StarMenuParameters {
   });
 }
 
+/// Controller sent back with [StarMenuParameters.onItemTapped] to
+/// let you choose to close the menu
 class StarMenuController {
   final VoidCallback closeMenu;
 
@@ -137,7 +198,8 @@ class StarMenu extends StatefulWidget {
     required this.params,
     required this.items,
     required this.child,
-  }) : super(key: key);
+  }) : assert(items.length > 0),
+       super(key: key);
 
   @override
   StarMenuState createState() => StarMenuState();
@@ -183,7 +245,7 @@ class StarMenuState extends State<StarMenu>
     rotateItemsAnimationAngleRAD =
         vector.radians(widget.params.rotateItemsAnimationAngle);
 
-    animationProgress = ValueNotifier(0);
+    animationProgress = ValueNotifier(0.0);
     offsetToFitMenuIntoScreen = Offset.zero;
     paramsAlreadyGot = false;
     itemsParams = List.generate(widget.items.length,
@@ -297,7 +359,7 @@ class StarMenuState extends State<StarMenu>
         duration: Duration(milliseconds: widget.params.closeDurationMs));
   }
 
-  // Open the menu
+  /// Open the menu
   showMenu() {
     overlayEntry = _overlayEntryBuilder();
     _controller?.reset();
@@ -318,6 +380,7 @@ class StarMenuState extends State<StarMenu>
     }
   }
 
+  // Create the overlay object
   OverlayEntry _overlayEntryBuilder() {
     // keys used to get items rect
     itemKeys = List.generate(widget.items.length, (index) => GlobalKey());
@@ -580,9 +643,10 @@ class StarMenuState extends State<StarMenu>
     return ret;
   }
 
+
+  // check if the items rect exceeds the screen. Move the item positions
+  // to fit into the screen
   _checkBoundaries() {
-    // check if the items rect exceeds the screen. Move the item positions
-    // to fit into the screen
     if (widget.params.checkItemsScreenBoundaries && itemsParams.isNotEmpty) {
       for (int i = 0; i < itemsParams.length; i++) {
         Rect shifted = itemsParams[i].rect.translate(
@@ -631,9 +695,6 @@ class StarMenuState extends State<StarMenu>
       if (boundaries.right > screenSize.width)
         offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
             screenSize.width - boundaries.right, 0);
-
-      bool b;
-      b = true;
     }
   }
 }

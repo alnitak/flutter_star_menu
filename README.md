@@ -53,14 +53,14 @@ where **`entries`** is a **`List<Widget>`** for the menu entries and **`StarMenu
 |useScreenCenter|bool|Use the screen center instead of parent widget center.
 |checkItemsScreenBoundaries|bool|Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible.
 |checkMenuScreenBoundaries|bool|Checks if items exceed screen edges, if so set them in place to be visible.
-|animationCurve|Curve|Animation curve to use.
+|animationCurve|Curve|Animation curve kind to use.
 |onItemTapped|Function|The callback that is called when a menu item is tapped. It gives the `ID` of the item and a `controller` to eventually close the menu.
 
 ***LinearShapeParams***
 
 |Name|Type|Description|
 |:-------|:----------|:-----------|
-|*angle*|double|Degree angle. Anticlockwise with 0° on the right.|
+|*angle*|double|Degree angle. Anticlockwise with 0° on 3 o'clock.|
 |*space*|double|Space between items.|
 |*alignment*|LinearAlignment| *left*, *center*, *right*, *top*, *bottom*. Useful when the linear shape is vertical or horizontal.|
 

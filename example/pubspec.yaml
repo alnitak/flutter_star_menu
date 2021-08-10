@@ -1,7 +1,6 @@
 name: star_menu_example
 description: StarMenu contextual pop up menu demo.
 publish_to: 'none'
-author: Marco Bavagnoli <marcobavagnolidev@gmail.com>
 homepage: www.marcobavagnoli.com
 
 version: 1.0.0+1
