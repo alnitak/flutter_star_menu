@@ -1,15 +1,18 @@
 library star_menu;
 
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'dart:math';
-import 'dart:ui' as ui;
+import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
-import 'package:star_menu/src/star_item.dart';
+
+import 'utils/star_item.dart';
+import 'utils/widget_params.dart';
 
 enum MenuState {
   closed,
@@ -23,613 +26,614 @@ enum MenuShape {
   grid,
 }
 
-/// Controller for StarMenu class.
-///
-/// Create the overlay based on the [parentKey] context.
-/// Call [StarMenuController.displayStarMenu] with the [starMenu] widget and
-/// its [parentKey] widget object which is used also to calculate the menu center position.
-///
-///
-/// '''
-/// GlobalKey menuFabKey = GlobalKey();
-/// FloatingActionButton(
-///          key: menuFabKey,
-///          backgroundColor: Colors.lightBlueAccent,
-///          child: Icon(Icons.menu),
-///          onPressed: () {
-///            StarMenuController.displayStarMenu(_buildStarMenu(menuFabKey), menuFabKey);
-///          },
-///        )
-/// '''
-///
-GlobalKey _overlayKey;
-class StarMenuController {
-  static List<OverlayEntry> _overlayEntry = List();
-
-  static double screenWidth;
-  static double screenHeight;
-
-
-
-  // Build the StarMenu on an overlay
-  static displayStarMenu(StarMenu starMenu, GlobalKey parentKey) async{
-    // Retrieve the parent Overlay
-    OverlayState _overlayState = Overlay.of(starMenu.parentKey.currentContext);
-
-    // Generate the Stack containing all StarItems that will be displayed onto the Overlay
-    _overlayEntry.add(OverlayEntry(
-      builder: (BuildContext context) {
-        screenWidth = MediaQuery.of(context).size.width;
-        screenHeight = MediaQuery.of(context).size.height;
-
-        _overlayKey = new GlobalKey();
-
-        return RepaintBoundary(
-          key: _overlayKey,
-          child: Stack(
-            children: <Widget>[
-              starMenu,
-            ],
-          ),
-        );
-      },
-    ));
-
-    // Add it to the Overlay
-    _overlayState.insert(_overlayEntry.last);
-  }
-
-  // Used internally to close the last visible StarMenu
-  static removeLast() {
-    _overlayEntry?.last?.remove();
-    _overlayEntry?.removeLast();
+extension AddStarMenu on Widget {
+  addStarMenu(
+      BuildContext context, List<Widget> items, StarMenuParameters params) {
+    return StarMenu(params: params, items: items, child: this);
   }
 }
 
-/// # The StarMenu widget.
-///
-/// ## Contextual popup menu with different shapes and multiple ways to fine-tune animation
-/// and position. The menu entries can be almost any kind of widgets.
-///
-/// * [parentKey] GlobalKey of the parent widget. Needed to retrieve its position.
-/// * [items] List of menu widget items.
-/// * [radiusX] Horizontal radius of circle shape.
-/// * [radiusY] Vertical radius of circle shape.
-/// * [radiusIncrement] Menu items spacing of linear shape.
-/// * [startAngle] Starting degree angle in circle shape and angle of the linear shape.
-/// * [endAngle] Ending degree angle in circle shape.
-/// * [columns] Number of columns in grid shape.
-/// * [columnsSpaceH] Horizontal space between columns in grid shape.
-/// * [columnsSpaceV] Vertical space between rows in grid shape.
-/// * [shape] Menu shape kind. Could be [MenuShape.circle], [MenuShape.linear], [MenuShape.grid].
-/// * [durationMs] Duration of the items animation.
-/// * [itemDelayMs] Items animation delay. The first item starts at 0, the second starts after
-///                 [itemDelayMs]*1, the third after [itemDelayMs]*2 and so on. Every items animation
-///                 take [durationMs] ms, but the whole animation will take durationMs+(N items -1)*itemDelayMs ms
-/// * [rotateItemsAnimationAngle] Start rotation angle of the animation to reach 0 DEG when animation ends.
-/// * [startItemScaleAnimation] Start scale of the animation to reach 1.0 when animation ends.
-/// * [backgroundColor] Color of screen background.
-/// * [centerOffset] Shift offset of menu center.
-/// * [useScreenCenter] Use the screen center instead of [parentKey] center.
-/// * [checkScreenBoundaries] Checks if items exceed screen edges, if so set them in place to be visible.
-/// * [animationCurve] Animation curve to use.
-/// * [onItemPressed] The callback that is called when the widget item is tapped.
-///                   If the widget has its own tap event, this callback is not delivered.
-///                   See the below code example to see how to manually close the menu.
-///
-///
-/// ```dart
-/// // Optional for an use case like the FloatingActionButton widget below
-/// GlobalKey starMenuKey = GlobalKey();
-///
-/// // Optional for an use case like the Checkbox widget below
-/// var _value = ValueNotifier<bool>(false);
-///
-/// Widget _buildStarMenu(GlobalKey parent) {
-/// return StarMenu(
-///      key: starMenuKey,  // used to close the menu in the case a button has the onTap event
-///      parentKey: parent,
-///      shape: MenuShape.circle,
-///      radiusX: 100,
-///      radiusY: 150,
-///      durationMs: 400,
-///      itemDelayMs: 80,
-///      backgroundColor: Color.fromARGB(180, 0, 0, 0),
-///      animationCurve: Curves.easeIn,
-///      onItemPressed: (i) => {print("Item pressed: $i")},
-///      items: <Widget>[
-///        FloatingActionButton(
-///          backgroundColor: Colors.red,
-///          child: Icon(Icons.beach_access),
-///          onPressed: () {
-///            // This widget has the onPressed event and StarMenu doesn't grab its [onItemPressed].
-///            // If you want to manually close this menu, assign a
-///            // GlobalKey to it and do the following:
-///            StarMenuState sms = starMenuKey.currentState;
-///            sms.close();
-///          },
-///        ),
-///        Material(
-///          color: Colors.yellow,
-///          child: ValueListenableBuilder(
-///            // Since StarMenu is built on an overlay, it has a different context and
-///            // its [value] property should be binded to a Listenable to be updated.
-///            // The same happens for example to the [Switch] widget and others widgets
-///            // that need to be updated.
-///            valueListenable: _value,
-///            builder: (context, value, child) {
-///              return Checkbox(
-///                value: _value.value,
-///                onChanged: (bool b) {
-///                  setState( () => _value.value = b );
-///                },
-///              );
-///            }
-///          ),
-///        ),
-///        [...] // other Widgets menu entries
-///      ],
-///    );
-/// }
-/// ```
-///
-/// Then call _buildStarMenu() for example when the user tap on a widget:
-///
-/// ```dart
-///  @override
-///  Widget build(BuildContext context) {
-///    fabKey = GlobalKey();
-///
-///    return Scaffold(
-///      appBar: AppBar(
-///        title: Text(widget.title),
-///      ),
-///      body: Stack(
-///        children: <Widget>[
-///          FloatingActionButton(
-///              key: fabKey,
-///              backgroundColor: Colors.amberAccent,
-///              foregroundColor: Colors.black,
-///              child: Icon(Icons.ac_unit),
-///              onPressed: () {
-///                StarMenuController.displayStarMenu(_buildMenu(fabKey), fabKey);
-///              },
-///          ),
-///        ],
-///      ),
-///    );
-///  }
-/// ```
-///
-class StarMenu extends StatefulWidget {
-  final List<Widget> items;
-  // GlobalKey of the parent. Needed to retrieve its parameters (size and position)
-  final GlobalKey parentKey;
+class CircleShapeParams {
   final double radiusX;
   final double radiusY;
-  final double radiusIncrement;
   final double startAngle;
   final double endAngle;
+
+  const CircleShapeParams(
+      {this.radiusX: 100,
+      this.radiusY: 100,
+      this.startAngle: 0,
+      this.endAngle: 360});
+}
+
+class GridShapeParams {
   final int columns;
   final int columnsSpaceH;
   final int columnsSpaceV;
+
+  const GridShapeParams(
+      {this.columns: 3, this.columnsSpaceH: 0, this.columnsSpaceV: 0});
+}
+
+enum LinearAlignment { left, center, right, top, bottom }
+
+class LinearShapeParams {
+  final double angle;
+  final double space;
+  final LinearAlignment alignment;
+
+  const LinearShapeParams(
+      {this.angle: 90, this.space: 0, this.alignment: LinearAlignment.center});
+}
+
+class BackgroundParams {
+  final bool animatedBlur;
+  final double sigmaX;
+  final double sigmaY;
+  final bool animatedBackgroundColor;
+  final Color backgroundColor;
+
+  const BackgroundParams(
+      {this.animatedBlur: false,
+      this.sigmaX: 0.0,
+      this.sigmaY: 0.0,
+      this.animatedBackgroundColor: false,
+      this.backgroundColor: const Color.fromARGB(128, 0, 0, 0)});
+}
+
+class StarMenuParameters {
   final MenuShape shape;
-  final int durationMs;
-  final int itemDelayMs;
+  final linearShapeParams;
+  final circleShapeParams;
+  final gridShapeParams;
+  final backgroundParams;
+  final int openDurationMs;
+  final int closeDurationMs;
   final double rotateItemsAnimationAngle;
   final double startItemScaleAnimation;
-  final Color backgroundColor;
   final Offset centerOffset;
   final bool useScreenCenter;
-  final bool checkScreenBoundaries;
+  final bool checkItemsScreenBoundaries;
+  final bool checkMenuScreenBoundaries;
   final Curve animationCurve;
-  final void Function(int) onItemPressed;
+  final Function(int index, StarMenuController controller)? onItemTapped;
 
-  StarMenu({
-    key,
-    @required this.parentKey,
-    @required this.items,
-    this.radiusX = 100,
-    this.radiusY = 100,
-    this.radiusIncrement = 0,
-    this.startAngle = 0,
-    this.endAngle = 360,
-    this.columns = 3,
-    this.columnsSpaceH = 0,
-    this.columnsSpaceV = 0,
-    this.shape = MenuShape.circle,
-    this.durationMs = 400,
-    this.itemDelayMs = 50,
-    this.rotateItemsAnimationAngle = 180.0,
-    this.startItemScaleAnimation = 0.52,
-    this.backgroundColor = const Color.fromARGB(180, 0, 0, 0),
-    this.centerOffset = const Offset(0, 0),
-    this.useScreenCenter = false,
-    this.checkScreenBoundaries = false,
-    this.animationCurve = Curves.fastOutSlowIn,
-    this.onItemPressed,
-  })  : assert(parentKey != null),
-        assert(items != null),
-        assert(columns >= 1),
-        assert(durationMs > 0),
-        assert(itemDelayMs > 0),
-        super(key: key);
+  StarMenuParameters({
+    this.linearShapeParams: const LinearShapeParams(),
+    this.circleShapeParams: const CircleShapeParams(),
+    this.gridShapeParams: const GridShapeParams(),
+    this.backgroundParams: const BackgroundParams(),
+    this.shape: MenuShape.circle,
+    this.openDurationMs: 400,
+    this.closeDurationMs: 150,
+    this.rotateItemsAnimationAngle: 0.0,
+    this.startItemScaleAnimation: 0.3,
+    this.centerOffset: Offset.zero,
+    this.useScreenCenter: false,
+    this.checkItemsScreenBoundaries: false,
+    this.checkMenuScreenBoundaries: true,
+    this.animationCurve: Curves.fastOutSlowIn,
+    this.onItemTapped,
+  });
+}
+
+class StarMenuController {
+  final VoidCallback closeMenu;
+
+  StarMenuController(
+    this.closeMenu,
+  );
+}
+
+class StarMenu extends StatefulWidget {
+  final StarMenuParameters params;
+  final List<Widget> items;
+  final Widget child;
+  final StarMenuController? controller;
+
+  const StarMenu({
+    Key? key,
+    this.controller,
+    required this.params,
+    required this.items,
+    required this.child,
+  }) : super(key: key);
 
   @override
   StarMenuState createState() => StarMenuState();
 }
 
 class StarMenuState extends State<StarMenu>
-    with SingleTickerProviderStateMixin {
-  double startAngleRAD;
-  double endAngleRAD;
-  double rotateItemsAnimationAngleRAD;
-  WidgetParams _parentParams;
-  List<Widget> _starItems;
-  List<GlobalKey> _starItemsKeys;
-  List<WidgetParams> _starItemsParams;
-  Uint8List _backgroundImage = null;
-  MenuState state;
-  int _nItems;
-  Matrix4 _itemMatrix;
-  // used to take track of the current radius and size when calculating linear shape
-  double radius = 0.0;
-  // used to store items position for grid shape
-  List<Point> itemPos = new List();
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  AnimationController? _controller;
+  late Animation<double> _animationPercent;
 
-  AnimationController _controller;
-  List<Animation<double>> _animation = new List();
-  Animation<double> _animationPercent;
-  Animation<Color> animationColor;
+  late double lineAngleRAD;
+  late double circleStartAngleRAD;
+  late double circleEndAngleRAD;
+  late double rotateItemsAnimationAngleRAD;
+  OverlayEntry? overlayEntry;
+  late Rect parentBounds;
+  late MenuState menuState;
+  late Size screenSize;
+  late double topPadding;
+  late List<WidgetParams> itemsParams;
+  late List<GlobalKey> itemKeys;
+  late List<Matrix4> itemsMatrix; // final position matrix of animation
+  late ValueNotifier<double> animationProgress;
+  late bool paramsAlreadyGot;
+  late Offset offsetToFitMenuIntoScreen;
 
-  Future<Uint8List> takeScreenShot(GlobalKey widgetKey) async{
-    print("TAKESCREENSHOT  ${widgetKey.currentContext}");
-    RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    print(pngBytes);
-    return pngBytes;
-  }
-  Future<Uint8List> _capturePng(GlobalKey widgetKey) async {
-    try {
-      print('CAPTURE1    $widgetKey');
-      RenderRepaintBoundary boundary = widgetKey.currentContext.findRenderObject();
-      print('CAPTURE2    $boundary');
-      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
-      print('CAPTURE3    ${image.width} x ${image.height}');
-      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      print('CAPTURE4');
-      var pngBytes = byteData.buffer.asUint8List();
-      print('CAPTURE5');
-      var bs64 = base64Encode(pngBytes);
-      print('CAPTURE6');
-//      print(bs64);
-      print('CAPTURE7 $pngBytes');
-//      widgetKey.currentState.setState(() {});
-      setState(() {
-        _backgroundImage = pngBytes;
-        print("********BACKGROUNDIMAGE:  $_backgroundImage");
-      });
-      print('CAPTURE8');
-      return pngBytes;
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
+  StarMenuController? _starMenuController;
 
   @override
   void initState() {
-    super.initState();
-    startAngleRAD = vector.radians(widget.startAngle);
-    endAngleRAD = vector.radians(widget.endAngle);
-    rotateItemsAnimationAngleRAD =
-        vector.radians(widget.rotateItemsAnimationAngle);
-    _parentParams = WidgetParams.fromContext(widget.parentKey.currentContext);
-    _nItems = widget.items.length;
-    _itemMatrix = Matrix4.identity();
-    _starItemsParams = new List(widget.items.length);
-
-        // duration of the whole animation including each items' delay
-    int totalDuration = widget.durationMs + widget.itemDelayMs * (_nItems - 1);
-    // percentage of delay
-    double d = widget.itemDelayMs / totalDuration;
-    // percentage of duration
-    double d1 = widget.durationMs / totalDuration;
-
-    _controller = AnimationController(
-      duration: Duration(milliseconds: totalDuration),
-      vsync: this,
-    );
-
-    animationColor = ColorTween(
-      begin: Colors.transparent,
-      end: widget.backgroundColor,
-    ).animate(_controller);
-
-    _animationPercent = Tween(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn))
-      ..addListener(() {
-        if (widget.shape == MenuShape.grid) {
-          _calcGrid();
-        }
-      })
-      ..addStatusListener((AnimationStatus status) {
-        switch (status) {
-          case AnimationStatus.completed:
-            state = MenuState.open;
-            break;
-          case AnimationStatus.dismissed:
-            if (state == MenuState.closing) StarMenuController.removeLast();
-            state = MenuState.closing;
-            break;
-          case AnimationStatus.reverse:
-            state = MenuState.closing;
-            break;
-          case AnimationStatus.forward:
-            state = MenuState.opening;
-            break;
-        }
-      });
-
-    for (int i = 0; i < _nItems; i++) {
-      double start = d * i;
-      double end = d * i + d1;
-      if (end > 1.0) end = 1.0;
-      _animation.add(Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-          parent: _controller,
-          curve: Interval(start, end, curve: widget.animationCurve)))
-        ..addListener(() {
-          setState(() {
-            _starItemsParams[i] =
-                WidgetParams.fromContext(_starItemsKeys[i].currentContext);
-          });
-        }));
+    _starMenuController = widget.controller;
+    if (_starMenuController == null) {
+      _starMenuController = StarMenuController(closeMenu);
     }
 
-    _controller.forward();
+    menuState = MenuState.closed;
+    overlayEntry = null;
+    lineAngleRAD = vector.radians(widget.params.linearShapeParams.angle);
+    circleStartAngleRAD =
+        vector.radians(widget.params.circleShapeParams.startAngle);
+    circleEndAngleRAD =
+        vector.radians(widget.params.circleShapeParams.endAngle);
+    rotateItemsAnimationAngleRAD =
+        vector.radians(widget.params.rotateItemsAnimationAngle);
+
+    animationProgress = ValueNotifier(0);
+    offsetToFitMenuIntoScreen = Offset.zero;
+    paramsAlreadyGot = false;
+    itemsParams = List.generate(widget.items.length,
+        (index) => WidgetParams(xPosition: 0, yPosition: 0, rect: Rect.zero));
+    itemsMatrix =
+        List.generate(widget.items.length, (index) => Matrix4.identity());
+
+    _addPostFrameCallback();
+
+    _setupAnimationController();
+    WidgetsBinding.instance?.addObserver(this);
+
+    super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
     _controller?.dispose();
   }
 
-  close() {
-    _controller?.reverse();
+  @override
+  void didChangeMetrics() {
+    if (!paramsAlreadyGot &&
+        !(Platform.isLinux || Platform.isMacOS || Platform.isWindows)) return;
+
+    _addPostFrameCallback();
+
+    overlayEntry?.remove();
+    overlayEntry = null;
+    paramsAlreadyGot = false;
+    _controller?.dispose();
+    _setupAnimationController();
+    if (menuState == MenuState.open) {
+      menuState = MenuState.closed;
+      showMenu();
+    } else
+      menuState = MenuState.closed;
   }
 
   @override
   Widget build(BuildContext context) {
-    // with grid shape and with a durationMs less then ~50 ms, happens that itemPos
-    // are not already calculated when animation ends
-    if (itemPos.isEmpty && _animationPercent.value == 1.0) {
-      _calcGrid();
+    return Listener(onPointerUp: (event) => showMenu(), child: widget.child);
+  }
+
+  _addPostFrameCallback() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (context.size is Size) {
+        // padding, viewInsets and viewPadding return 0 here! Force to be 24
+        // topPadding = MediaQuery.of(context).viewPadding.top;
+        topPadding = 24;
+        screenSize = Size(MediaQuery.of(context).size.width,
+            MediaQuery.of(context).size.height);
+      }
+    });
+  }
+
+  // setup animation controller
+  _setupAnimationController() {
+    _controller = AnimationController(
+      duration: Duration(milliseconds: widget.params.openDurationMs),
+      vsync: this,
+    );
+
+    _animationPercent = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: _controller!, curve: widget.params.animationCurve))
+      ..addListener(() {
+        animationProgress.value = _animationPercent.value;
+
+        /// Time to get items parameters?
+        if (animationProgress.value > 0 && !paramsAlreadyGot) {
+          itemsParams = List.generate(
+              widget.items.length,
+              (index) => WidgetParams.fromContext(
+                  itemKeys.elementAt(index).currentContext));
+          paramsAlreadyGot = true;
+          itemsMatrix = _calcPosition();
+          _checkBoundaries();
+        }
+      })
+      ..addStatusListener((AnimationStatus status) {
+        switch (status) {
+          case AnimationStatus.completed:
+            if (_controller?.value == 1.0) {
+              menuState = MenuState.open;
+            } else
+              menuState = MenuState.closed;
+            break;
+          case AnimationStatus.dismissed:
+            if (_animationPercent.value == 0) {
+              overlayEntry?.remove();
+              overlayEntry = null;
+              _controller?.value = 0;
+              menuState = MenuState.closed;
+            }
+            break;
+          case AnimationStatus.reverse:
+            menuState = MenuState.closing;
+            break;
+          case AnimationStatus.forward:
+            menuState = MenuState.opening;
+            break;
+        }
+      });
+  }
+
+  /// Close the menu
+  closeMenu() {
+    _controller?.animateBack(0,
+        duration: Duration(milliseconds: widget.params.closeDurationMs));
+  }
+
+  // Open the menu
+  showMenu() {
+    overlayEntry = _overlayEntryBuilder();
+    _controller?.reset();
+
+    if (overlayEntry != null) {
+      // find parent widget bounds
+      RenderBox? renderBox = context.findRenderObject() as RenderBox;
+      Rect widgetRect = renderBox.paintBounds;
+      Offset parentPosition = renderBox.localToGlobal(Offset.zero);
+      parentBounds = widgetRect.translate(parentPosition.dx, parentPosition.dy);
+
+      Overlay.of(context)?.insert(overlayEntry!);
+      overlayEntry?.addListener(() {
+        if (overlayEntry != null &&
+            overlayEntry!.mounted &&
+            menuState == MenuState.closed) _controller?.forward();
+      });
     }
-//    if (_backgroundImage == null) {
-//      final result = _capturePng(_overlayKey);
-////      Future.wait([_capturePng(_overlayKey)]);
-//      result.then((result) {});
-//    }
+  }
 
-//    final _background =
-//    Container(
-//      color: Colors.green.withAlpha(100),
-//      child: Image(image: MemoryImage(
-//          _backgroundImage == null ? Uint8List(1): _backgroundImage,
-//          scale: 0.5),)
-//    );
+  OverlayEntry _overlayEntryBuilder() {
+    // keys used to get items rect
+    itemKeys = List.generate(widget.items.length, (index) => GlobalKey());
 
-    List<Widget> _items = [];//[_background];
-    _items.addAll(_setItemPosition());
+    return OverlayEntry(
+      // maintainState: true,
+      builder: (context) {
+        return ValueListenableBuilder(
+            valueListenable: animationProgress,
+            builder: (_, double animValue, __) {
+              Color background = widget.params.backgroundParams.backgroundColor;
+              if (widget.params.backgroundParams.animatedBackgroundColor)
+                background =
+                    Color.lerp(Colors.transparent, background, animValue) ??
+                        background;
 
-    return GestureDetector(
-      onTap: () {
-        _controller.reverse();
+              Widget child = Material(
+                color: background,
+                child: Stack(
+                    children: [
+                  GestureDetector(
+                    onTap: () {
+                      // this optional check is to just not call closeMenu() if an
+                      // item without an onTap event is tapped. Else the
+                      // tap is on background and the menu must be closed
+                      if (!(menuState == MenuState.closing ||
+                          menuState == MenuState.closed)) closeMenu();
+                    },
+                  )
+                ]..addAll(List.generate(
+                        widget.items.length,
+                        (index) => StarItem(
+                              key: itemKeys.elementAt(index),
+                              child: widget.items[index],
+                              totItems: widget.items.length,
+                              index: index,
+                              center: parentBounds.center,
+                              itemMatrix: itemsMatrix[index],
+                              rotateRAD: rotateItemsAnimationAngleRAD,
+                              scale: widget.params.startItemScaleAnimation,
+                              shift: Offset(
+                                  itemsMatrix
+                                          .elementAt(index)
+                                          .getTranslation()
+                                          .x +
+                                      offsetToFitMenuIntoScreen.dx,
+                                  itemsMatrix
+                                          .elementAt(index)
+                                          .getTranslation()
+                                          .y +
+                                      offsetToFitMenuIntoScreen.dy),
+                              animValue: animValue,
+                              onItemTapped: (id) {
+                                print(
+                                  'StarMenu: tapped item index $id',
+                                );
+                                if (widget.params.onItemTapped != null)
+                                  widget.params.onItemTapped!(
+                                      id, _starMenuController!);
+                              },
+                            )))),
+              );
+
+              if (widget.params.backgroundParams.sigmaX > 0 ||
+                  widget.params.backgroundParams.sigmaY > 0) {
+                late double db;
+                if (widget.params.backgroundParams.animatedBlur)
+                  db = animValue;
+                else
+                  db = 1.0;
+                child = BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 3.0 * db, sigmaY: 3.0 * db),
+                  child: child,
+                );
+              }
+
+              return child;
+            });
       },
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaY: _animationPercent.value*3, sigmaX: _animationPercent.value*3),
-        child: Container(
-        color: animationColor.value,
-//        color: Colors.transparent,
-          alignment: Alignment.center,
-          child: Stack(
-            children: _items,
-          ),
-        ),
-      ),
     );
   }
 
-  List<Widget> _setItemPosition() {
-    _starItemsKeys =
-        List<GlobalKey>.generate(widget.items.length, (i) => (GlobalKey()));
-    _starItems = List<Widget>.generate(
-        widget.items.length,
-        (i) => (StarItem(
-              key: _starItemsKeys[i],
-              animationValue: _animation[i].value,
-              item: widget.items.elementAt(i),
-              anchor: (widget.useScreenCenter || _parentParams == null
-                  ? Offset(StarMenuController.screenWidth / 2,
-                      StarMenuController.screenHeight / 2)
-                  : _parentParams.rect.center),
-              itemMatrix: _calcPosition(i),
-              onItemPressed: () {
-                if (widget.onItemPressed != null) widget.onItemPressed(i);
-                close();
-              },
-            )));
-    return _starItems;
-  }
+  // Calculate item center position relative to the animation value
+  List<Matrix4> _calcPosition() {
+    List<Matrix4> ret =
+        List.generate(widget.items.length, (index) => Matrix4.identity());
+    Offset newCenter = widget.params.useScreenCenter
+        ? Offset(screenSize.width / 2 + widget.params.centerOffset.dx,
+            screenSize.height / 2 + widget.params.centerOffset.dy)
+        : parentBounds.center + widget.params.centerOffset;
 
-  Matrix4 _calcPosition(int index) {
-    double A = _animation[index].value;
-
-    vector.Vector3 T = _itemMatrix.getTranslation();
-    switch (widget.shape) {
-      // CIRCLE SHAPE
+    switch (widget.params.shape) {
       case MenuShape.circle:
-        T.x = cos(endAngleRAD / widget.items.length * index + startAngleRAD) *
-                widget.radiusX *
-                A +
-            widget.centerOffset.dx;
-        T.y = -sin(endAngleRAD / widget.items.length * index + startAngleRAD) *
-                widget.radiusY *
-                A +
-            widget.centerOffset.dy;
+        ret.asMap().forEach((index, mat) {
+          mat.translate(
+              newCenter.dx +
+                  cos((circleEndAngleRAD - circleStartAngleRAD) /
+                              widget.items.length *
+                              index +
+                          circleStartAngleRAD) *
+                      widget.params.circleShapeParams.radiusX,
+              newCenter.dy -
+                  sin((circleEndAngleRAD - circleStartAngleRAD) /
+                              widget.items.length *
+                              index +
+                          circleStartAngleRAD) *
+                      widget.params.circleShapeParams.radiusY);
+        });
         break;
 
-      // LINEAR SHAPE
       case MenuShape.linear:
-        if (_starItemsParams[index] == null) break;
-        double rotate = startAngleRAD;
+        double radius = 0.0;
+        double rotate = lineAngleRAD;
         double itemDiameter = 0.0;
         double firstItemHalfWidth = 0.0;
         double firstItemHalfHeight = 0.0;
-        double halfWidth;
-        double halfHeight;
+        late double halfWidth;
+        late double halfHeight;
         double secH;
         double secV;
 
-        halfWidth = _starItemsParams[index].rect.width / 2;
-        halfHeight = _starItemsParams[index].rect.height / 2;
+        ret.asMap().forEach((index, mat) {
+          halfWidth = itemsParams[index].rect.width / 2;
+          halfHeight = itemsParams[index].rect.height / 2;
 
-        // itemDiameter is calculated by the segment length that intersect the item bounding box
-        // passing through the center of the item and intersect the opposite edges by m_startingAngle angle
-        secH = (halfHeight / sin(rotate)).abs();
-        secV = (halfWidth / sin(pi / 2 - rotate)).abs();
-        // checks if the line intersect horizontal or vertical edges
-        if (secH < secV)
-          itemDiameter = secH * 2.0;
-        else
-          itemDiameter = secV * 2.0;
+          // itemDiameter is calculated by the segment length that intersect
+          // the item bounding box passing through the center of the item
+          // and intersect the opposite edges by m_startingAngle angle
+          secH = (halfHeight / sin(rotate)).abs();
+          secV = (halfWidth / sin(pi / 2 - rotate)).abs();
 
-        // These checks if the line is perfectly vertical or horizontal
-        if ((rotate + pi / 2) / pi == ((rotate + pi / 2) / pi).ceil())
-          itemDiameter = halfHeight * 2;
-        if (rotate / pi == (rotate / pi).ceil()) itemDiameter = halfWidth * 2;
+          // checks if the line intersect horizontal or vertical edges
+          if (secH < secV)
+            itemDiameter = secH * 2.0;
+          else
+            itemDiameter = secV * 2.0;
 
-        if (index == 0) {
-          radius = -itemDiameter / 2;
-        }
+          // These checks if the line is perfectly vertical or horizontal
+          if ((rotate + pi / 2) / pi == ((rotate + pi / 2) / pi).ceil())
+            itemDiameter = halfHeight * 2;
+          if (rotate / pi == (rotate / pi).ceil()) itemDiameter = halfWidth * 2;
 
-        T.x =
-            cos(startAngleRAD) * (radius + halfWidth - firstItemHalfWidth) * A +
-                widget.centerOffset.dx;
-        T.y = -sin(startAngleRAD) *
-                (radius + halfHeight - firstItemHalfHeight) *
-                A +
-            widget.centerOffset.dy;
+          if (index == 0) {
+            firstItemHalfWidth = halfWidth;
+            firstItemHalfHeight = halfHeight;
+            mat.translate(newCenter.dx, newCenter.dy);
+          } else {
+            double alignmentShiftX = 0;
+            double alignmentShiftY = 0;
+            if (widget.params.linearShapeParams.alignment ==
+                LinearAlignment.left) {
+              alignmentShiftX = halfWidth - firstItemHalfWidth;
+            }
+            if (widget.params.linearShapeParams.alignment ==
+                LinearAlignment.right) {
+              alignmentShiftX = -halfWidth + firstItemHalfWidth;
+            }
+            if (widget.params.linearShapeParams.alignment ==
+                LinearAlignment.top) {
+              alignmentShiftY = halfHeight - firstItemHalfHeight;
+            }
+            if (widget.params.linearShapeParams.alignment ==
+                LinearAlignment.bottom) {
+              alignmentShiftY = -halfHeight + firstItemHalfHeight;
+            }
+            mat.translate(
+                cos(lineAngleRAD) * (radius + halfWidth - firstItemHalfWidth) +
+                    newCenter.dx +
+                    alignmentShiftX,
+                -sin(lineAngleRAD) *
+                        (radius + halfHeight - firstItemHalfHeight) +
+                    newCenter.dy +
+                    alignmentShiftY);
+          }
 
-        if (index == 0) {
-          firstItemHalfWidth = halfWidth;
-          firstItemHalfHeight = halfHeight;
-        }
-
-        radius += itemDiameter + widget.radiusIncrement;
+          radius += itemDiameter + widget.params.linearShapeParams.space;
+        });
 
         break;
 
-      // GRID SHAPE
       case MenuShape.grid:
-        if (itemPos.isEmpty) break;
-        T.x = itemPos[index].x * A;
-        T.y = itemPos[index].y * A;
+        int j = 0;
+        int k = 0;
+        int n = 0;
+        double x = 0;
+        double y = 0;
+        int count = 0;
+        double hMax = 0;
+        double wMax = 0;
+        double itemWidth;
+        double itemHeight;
+        List<double> rowsWidth = [];
+        List<Point> itemPos = [];
+
+        // Calculating the grid
+        while (j * widget.params.gridShapeParams.columns + k <
+            widget.items.length) {
+          count = 0;
+          hMax = 0;
+          x = 0;
+          // Calculate x position and rows height
+          while (k < widget.params.gridShapeParams.columns &&
+              j * widget.params.gridShapeParams.columns + k <
+                  widget.items.length) {
+            itemWidth =
+                itemsParams[widget.params.gridShapeParams.columns * j + k]
+                    .rect
+                    .width;
+            itemHeight =
+                itemsParams[widget.params.gridShapeParams.columns * j + k]
+                    .rect
+                    .height;
+            itemPos.add(Point(x + itemWidth / 2, y));
+            // hMax = max item height in this row
+            hMax = max(hMax, itemHeight);
+            x += itemWidth + widget.params.gridShapeParams.columnsSpaceH;
+            count++;
+            k++;
+          }
+          // wMax = max width of all rows
+          wMax = max(wMax, x);
+          rowsWidth.add(x - widget.params.gridShapeParams.columnsSpaceH);
+          // Calculate y position for items in current row
+          for (int i = 0; i < count; i++) {
+            itemHeight = itemsParams[
+                    widget.params.gridShapeParams.columns * j + k - i - 1]
+                .rect
+                .height;
+            double x1 = itemPos[itemPos.length - i - 1].x.toDouble();
+            double y1 = y + hMax / 2;
+            itemPos[itemPos.length - i - 1] = Point(x1, y1);
+          }
+          y += hMax + widget.params.gridShapeParams.columnsSpaceV;
+          k = 0;
+          j++;
+        }
+
+        y -= widget.params.gridShapeParams.columnsSpaceV;
+        // At this point:
+        //    y = grid height
+        //    wMax = grid width
+        //    rowsWidth = list containing all the rows width
+        //    it is now possible to center rows and center the grid in parent item
+        n = 0;
+        int dx;
+        while (n < widget.items.length) {
+          dx = ((wMax -
+                      rowsWidth[(n / widget.params.gridShapeParams.columns)
+                          .floor()]) /
+                  2)
+              .floor();
+          ret[n] = Matrix4.identity()
+            ..translate((itemPos[n].x + dx - wMax / 2) + newCenter.dx,
+                (itemPos[n].y - y / 2) + newCenter.dy);
+          n++;
+        }
         break;
     }
 
-    // Check boundaries
-    if (widget.checkScreenBoundaries && _starItemsParams[index] != null) {
-      if (_starItemsParams[index].rect.right + T.x >
-          StarMenuController.screenWidth)
-        T.x = (StarMenuController.screenWidth -
-                (_starItemsParams[index].rect.width / 2)) -
-            _parentParams.rect.center.dx;
-      if (_starItemsParams[index].rect.bottom + T.y >
-          StarMenuController.screenHeight)
-        T.y = (StarMenuController.screenHeight -
-                (_starItemsParams[index].rect.height / 2)) -
-            _parentParams.rect.bottom;
-    }
-
-    return Matrix4.identity()
-      ..setTranslation(T)
-      ..setRotationZ((1.0 - A) * rotateItemsAnimationAngleRAD)
-      ..scale(A + (widget.startItemScaleAnimation * (1.0 - A)));
+    return ret;
   }
 
-  // Calculate items position in grid shape. It's called only once when animation starts
-  _calcGrid() {
-    // return if positions are already computed
-    if (itemPos.isNotEmpty) return;
+  _checkBoundaries() {
+    // check if the items rect exceeds the screen. Move the item positions
+    // to fit into the screen
+    if (widget.params.checkItemsScreenBoundaries && itemsParams.isNotEmpty) {
+      for (int i = 0; i < itemsParams.length; i++) {
+        Rect shifted = itemsParams[i].rect.translate(
+            itemsMatrix.elementAt(i).getTranslation().x -
+                itemsParams[i].rect.width / 2,
+            itemsMatrix.elementAt(i).getTranslation().y -
+                itemsParams[i].rect.height / 2);
 
-    // Check if all items params are been taken
-    for (int i = 0; i < widget.items.length; i++) {
-      if (_starItemsParams[i] == null) return;
+        if (shifted.left < 0) itemsMatrix.elementAt(i).translate(-shifted.left);
+        if (shifted.right > screenSize.width)
+          itemsMatrix.elementAt(i).translate(screenSize.width - shifted.right);
+        if (shifted.top < topPadding)
+          itemsMatrix.elementAt(i).translate(0.0, topPadding - shifted.top);
+        if (shifted.bottom > screenSize.height)
+          itemsMatrix
+              .elementAt(i)
+              .translate(0.0, screenSize.height - shifted.bottom);
+      }
     }
 
-    int j = 0;
-    int k = 0;
-    int n = 0;
-    double x = 0;
-    double y = 0;
-    int count = 0;
-    double hMax = 0;
-    double wMax = 0;
-    double itemWidth;
-    double itemHeight;
-    List<double> rowsWidth = new List();
+    // check if the rect that include all the items on final position
+    // exceeds the screen. Move all items position accordingly
+    if (widget.params.checkMenuScreenBoundaries && itemsParams.isNotEmpty) {
+      Rect boundaries = itemsParams[0].rect.translate(
+          itemsMatrix.elementAt(0).getTranslation().x -
+              itemsParams[0].rect.width / 2,
+          itemsMatrix.elementAt(0).getTranslation().y -
+              itemsParams[0].rect.height / 2);
+      for (int i = 1; i < itemsParams.length; i++) {
+        boundaries = boundaries.expandToInclude(itemsParams[i].rect.translate(
+            itemsMatrix.elementAt(i).getTranslation().x -
+                itemsParams[i].rect.width / 2,
+            itemsMatrix.elementAt(i).getTranslation().y -
+                itemsParams[i].rect.height / 2));
+      }
 
-    // Calculating the grid
-    while (j * widget.columns + k < widget.items.length) {
-      count = 0;
-      hMax = 0;
-      x = 0;
-      // Calculate x position and rows height
-      while (
-          k < widget.columns && j * widget.columns + k < widget.items.length) {
-        itemWidth = _starItemsParams[j * widget.columns + k].rect.width;
-        itemHeight = _starItemsParams[j * widget.columns + k].rect.height;
-        itemPos.add(Point(x + itemWidth / 2, y));
-        // hMax = max item height in this row
-        hMax = max(hMax, itemHeight);
-        x += itemWidth + widget.columnsSpaceH;
-        count++;
-        k++;
-      }
-      // wMax = max width of all rows
-      wMax = max(wMax, x);
-      rowsWidth.add(x - widget.columnsSpaceH);
-      // Calculate y position for items in current row
-      for (int i = 0; i < count; i++) {
-        itemHeight =
-            _starItemsParams[j * widget.columns + k - i - 1].rect.height;
-        double x1 = itemPos[itemPos.length - i - 1].x;
-        double y1 = y + hMax / 2;
-        itemPos[itemPos.length - i - 1] = Point(x1, y1);
-      }
-      y += hMax + widget.columnsSpaceV;
-      k = 0;
-      j++;
-    }
-    y -= widget.columnsSpaceV;
-    // At this point:
-    //    y = grid height
-    //    wMax = grid width
-    //    rowsWidth = list containing all the rows width
-    //    so it's possible to center rows and center the grid in parent item
-    n = 0;
-    int dx;
-    while (n < widget.items.length) {
-      dx = ((wMax - rowsWidth[(n / widget.columns).floor()]) / 2).floor();
-      itemPos[n] = Point(
-          (itemPos[n].x + dx - wMax / 2) + widget.centerOffset.dx,
-          (itemPos[n].y - y / 2) + widget.centerOffset.dy);
-      n++;
+      if (boundaries.top < topPadding)
+        offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
+            0, -boundaries.top + topPadding);
+      if (boundaries.bottom > screenSize.height)
+        offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
+            0, screenSize.height - boundaries.bottom);
+      if (boundaries.left < 0)
+        offsetToFitMenuIntoScreen =
+            offsetToFitMenuIntoScreen.translate(-boundaries.left, 0);
+      if (boundaries.right > screenSize.width)
+        offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
+            screenSize.width - boundaries.right, 0);
+
+      bool b;
+      b = true;
     }
   }
 }

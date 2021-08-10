@@ -1,4 +1,7 @@
-## [1.0.3] - 12 Jun 2019
+## [2.0.0+1] - 10 Aug 2021
+* breaking change: code rewritten to remove the 'keys boilerplate' (see the doc) and performances issue
+
+## [1.0.4] - 12 Jun 2019
 * blurring background while opening
 
 ## [1.0.2] - 31 Mar 2019

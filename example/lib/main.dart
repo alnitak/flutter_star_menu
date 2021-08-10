@@ -1,248 +1,275 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:star_menu/star_menu.dart';
+import 'package:star_menu_example/submenu_card.dart';
 
-
-void main() => runApp(MyApp());
-
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'StarMenu demo'),
+      title: 'StarMenu Demo',
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
-  final String title;
-
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
-  MyHomePageState createState() => MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> {
+  late List<Widget> entries;
+  late List<Widget> subEntries;
 
-  GlobalKey iconKey;
-  GlobalKey fabKey1;
-  GlobalKey fabKey2;
-  GlobalKey fabKey3;
-  GlobalKey menuBluFabKey;
-  GlobalKey starMenuKey;
-  var _value = ValueNotifier<bool>(false);
-
-
-  Widget _buildSubMenu(GlobalKey parent) {
-    return StarMenu(
-      parentKey: parent,
-      radiusX: 80,
-      radiusY: 80,
-      startAngle: 0,
-      endAngle: 180.0 / 3.0 * 4.0, // to let the last item to be exactly at 180 degree: [angle / (items-1) * items]
-      durationMs: 600,
-      itemDelayMs: 200,
-      backgroundColor: Color.fromARGB(0, 100, 0, 0),
-      onItemPressed: (i) => {print("PRESSED $i")},
-      items: <Widget>[
-        Container(
-          decoration: ShapeDecoration(
-              color: Colors.purple,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))
-          ),
-          width: 40,
-          height: 40,
-        ),
-        Container(
-          decoration: ShapeDecoration(
-              color: Colors.blue,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))
-          ),
-          width: 40,
-          height: 40,
-        ),
-        Container(
-          decoration: ShapeDecoration(
-              color: Colors.green,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))
-          ),
-          width: 40,
-          height: 40,
-        ),
-        Container(
-          decoration: ShapeDecoration(
-              color: Colors.limeAccent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))
-          ),
-          width: 40,
-          height: 40,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenu(GlobalKey parent, MenuShape shape, double startAngle) {
-    return StarMenu(
-      key: starMenuKey,
-      parentKey: parent,
-      shape: shape,
-      radiusX: 100,
-      radiusY: 150,
-      radiusIncrement: 5,
-      startAngle: startAngle,
-      endAngle: 360,
-      durationMs: 500,
-      rotateItemsAnimationAngle: 180.0,
-      startItemScaleAnimation: 0.5,
-      columns: 3,
-      columnsSpaceH: 20,
-      columnsSpaceV: 10,
-      backgroundColor: Color.fromARGB(0, 0, 0, 50),
-      checkScreenBoundaries: true,
-      useScreenCenter: false,
-      centerOffset: Offset(0,0),
-      animationCurve: Curves.easeIn,
-      onItemPressed: (i) => {print("PRESSED $i")},
-      items: <Widget>[
-        Container(
-          child: Image.asset('assets/images/emoticon_017.png', width: 50, height: 50,),
-        ),
-        Material(
-          color: Colors.yellow,
-          child: ValueListenableBuilder(
-            valueListenable: _value,
-            builder: (context, value, child) {
-              return Checkbox(
-                value: _value.value,
-                onChanged: (bool b) {
-                  setState( () => _value.value = b );
-                },
-              );
-            }
-          ),
-        ),
-        Container(
-          child: Image.asset('assets/images/emoticon_008.png', width: 50, height: 50,),
-        ),
-        FloatingActionButton(
-          key: menuBluFabKey,
-          backgroundColor: Colors.lightBlueAccent,
-          child: Icon(Icons.menu),
-          onPressed: () {
-            StarMenuController.displayStarMenu(_buildSubMenu(menuBluFabKey), menuBluFabKey);
-          },
-        ),
-        Container(
-          child: Image.asset('assets/images/flutter.png', width: 80, height: 80,),
-          color: Colors.white,
-        ),
-        FloatingActionButton(
-          backgroundColor: Colors.red,
-          child: Icon(Icons.close),
-          onPressed: () {
-            // This FAB has the onPressed event and StarMenu doesn't grab the item pressed.
-            // If you want to manually close this menu, assign to this menu a
-            // GlobalKey and do the following code
-            StarMenuState sms = starMenuKey.currentState;
-            sms.close();
-          },
-        ),
-        Container(
-          child: Image.asset('assets/images/emoticon_050.png', width: 50, height: 50,),
-        ),
-        Container(
-          child: Image.asset('assets/images/emoticon_114.png', width: 80, height: 80,),
-        ),
-        Container(
-          child: Image.asset('assets/images/emoticon_100.png', width: 50, height: 50,),
-        ),
-      ],
-    );
+  @override
+  void initState() {
+    super.initState();
+    subEntries = subMenuEntries();
+    entries = menuEntries();
   }
 
   @override
   Widget build(BuildContext context) {
-    fabKey1 = GlobalKey();
-    fabKey2 = GlobalKey();
-    fabKey3 = GlobalKey();
-    iconKey = GlobalKey();
-    menuBluFabKey = GlobalKey();
-    starMenuKey = GlobalKey();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('StarMenu demo'),
       ),
       body: Stack(
-        children: <Widget>[
-          PerformanceOverlay(),
-          Container(
-            decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background2.jpg'),
-              fit: BoxFit.cover,
-              ),
+        children: [
+          Center(
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20),
+                Text('Colored and blurred background'),
+
+                // LINEAR MENU
+                StarMenu(
+                  params: StarMenuParameters(
+                      shape: MenuShape.linear,
+                      linearShapeParams: LinearShapeParams(
+                          angle: 270,
+                          space: 10,
+                          alignment: LinearAlignment.center),
+                      backgroundParams: BackgroundParams(
+                        backgroundColor: Colors.blue.withOpacity(0.2),
+                        animatedBackgroundColor: false,
+                        animatedBlur: false,
+                        sigmaX: 10,
+                        sigmaY: 10,
+                      ),
+                      onItemTapped: (index, controller) {
+                        if (index == 7) controller.closeMenu();
+                      }),
+                  items: entries,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      print('FloatingActionButton Menu1 tapped');
+                    },
+                    child: Icon(Icons.looks_one),
+                  ),
+                ),
+
+                SizedBox(height: 80),
+                Text('Animated blur background'),
+
+                // CIRCLE MENU
+                // it's possible to use the extension addStarMenu()
+                // with all Widgets
+                FloatingActionButton(
+                  onPressed: () {
+                    print('FloatingActionButton Menu2 tapped');
+                  },
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.looks_two),
+                ).addStarMenu(
+                    context,
+                    entries,
+                    StarMenuParameters(
+                        backgroundParams: BackgroundParams(
+                            animatedBlur: true,
+                            sigmaX: 4.0,
+                            sigmaY: 4.0,
+                            backgroundColor: Colors.transparent),
+                        circleShapeParams: CircleShapeParams(radiusY: 280),
+                        openDurationMs: 1000,
+                        rotateItemsAnimationAngle: 360,
+                        onItemTapped: (index, controller) {
+                          if (index == 7) controller.closeMenu();
+                        })),
+
+                SizedBox(height: 80),
+                Text('Animated color background'),
+
+                // GRID MENU
+                StarMenu(
+                  params: StarMenuParameters(
+                    shape: MenuShape.grid,
+                    openDurationMs: 1200,
+                    gridShapeParams: GridShapeParams(
+                        columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
+                    backgroundParams: BackgroundParams(
+                        sigmaX: 0,
+                        sigmaY: 0,
+                        animatedBackgroundColor: true,
+                        backgroundColor: Colors.black.withOpacity(0.4)),
+                    onItemTapped: (index, controller) {
+                      if (index == 7) controller.closeMenu();
+                    },
+                  ),
+                  items: entries,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      print('FloatingActionButton Menu3 tapped');
+                    },
+                    backgroundColor: Colors.black,
+                    child: Icon(Icons.looks_3),
+                  ),
+                ),
+              ],
             ),
           ),
-
-
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-
-            FloatingActionButton(
-                key: fabKey1,
-                backgroundColor: Colors.amberAccent,
-                foregroundColor: Colors.black,
-                child: Icon(Icons.adjust),
-                onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey1, MenuShape.circle, 0.0), fabKey1);
-                },
-            ),
-
-            Divider(height: 120,),
-
-            FloatingActionButton(
-                key: fabKey2,
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                child: Icon(Icons.apps),
-                onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey2, MenuShape.grid, 0.0), fabKey2);
-                },
-            ),
-
-            Divider(height: 120,),
-
-            FloatingActionButton(
-                key: fabKey3,
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-                child: Icon(Icons.more_vert),
-                onPressed: () {
-                  StarMenuController.displayStarMenu(_buildMenu(fabKey3, MenuShape.linear, 90.0), fabKey3);
-                },
-            ),
-
-
-
-
-            ],
-          ),
-
-
         ],
-
-
       ),
     );
+  }
+
+  // Build the list of menu entries
+  List<Widget> menuEntries() {
+    ValueNotifier<double> sliderValue = ValueNotifier(0.5);
+    return [
+      SubMenuCard(
+        width: 100,
+        text: 'Linear, check whole menu boundaries',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+              shape: MenuShape.linear,
+              linearShapeParams: LinearShapeParams(
+                angle: 120,
+                space: 15,
+              ),
+              checkMenuScreenBoundaries: true)),
+      SubMenuCard(
+        width: 70,
+        text: 'Linear, centered items',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+            shape: MenuShape.linear,
+            linearShapeParams: LinearShapeParams(
+                angle: 90, space: 15, alignment: LinearAlignment.center),
+          )),
+      SubMenuCard(
+        width: 70,
+        text: 'Linear, check items boundaries',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+              shape: MenuShape.linear,
+              linearShapeParams: LinearShapeParams(
+                angle: 60,
+                space: 15,
+              ),
+              checkItemsScreenBoundaries: true,
+              checkMenuScreenBoundaries: false)),
+      SubMenuCard(
+        width: 70,
+        text: 'Linear, left aligned',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+            shape: MenuShape.linear,
+            linearShapeParams: LinearShapeParams(
+                angle: 90, space: 15, alignment: LinearAlignment.left),
+          )),
+      SubMenuCard(
+        width: 60,
+        text: 'Centered circle',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+            shape: MenuShape.circle,
+            useScreenCenter: true,
+          )),
+      SubMenuCard(
+        width: 70,
+        text: 'Linear, right aligned',
+      ).addStarMenu(
+          context,
+          subEntries,
+          StarMenuParameters(
+            shape: MenuShape.linear,
+            linearShapeParams: LinearShapeParams(
+                angle: 90, space: 0, alignment: LinearAlignment.right),
+          )),
+      SizedBox(
+        width: 180,
+        height: 20,
+        child: ValueListenableBuilder<double>(
+            valueListenable: sliderValue,
+            builder: (_, v, __) {
+              return Slider(
+                  value: v,
+                  onChanged: (value) {
+                    sliderValue.value = value;
+                  });
+            }),
+      ),
+      FloatingActionButton(child: Text('close'), onPressed: () {})
+    ];
+  }
+
+  // Build the list of sub-menu entries
+  List<Widget> subMenuEntries() {
+    return [
+      Chip(
+        avatar: CircleAvatar(
+          backgroundColor: Colors.grey.shade800,
+          child: const Text('SM'),
+        ),
+        label: const Text('of widgets'),
+      ),
+      Chip(
+        avatar: CircleAvatar(
+          child: const Text('SM'),
+        ),
+        label: const Text('any kind'),
+      ),
+      Chip(
+        avatar: CircleAvatar(
+          backgroundColor: Colors.grey.shade800,
+          child: const Text('SM'),
+        ),
+        label: const Text('almost'),
+      ),
+      Chip(
+        avatar: CircleAvatar(
+          backgroundColor: Colors.grey.shade800,
+          child: const Text('SM'),
+        ),
+        label: const Text('can be'),
+      ),
+      Chip(
+        avatar: CircleAvatar(
+          backgroundColor: Colors.grey.shade800,
+          child: const Text('SM'),
+        ),
+        label: const Text('The menu entries'),
+      ),
+    ];
   }
 }
