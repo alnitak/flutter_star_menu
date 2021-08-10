@@ -197,8 +197,8 @@ class StarMenu extends StatefulWidget {
     required this.params,
     required this.items,
     required this.child,
-  }) : assert(items.length > 0),
-       super(key: key);
+  })  : assert(items.length > 0),
+        super(key: key);
 
   @override
   StarMenuState createState() => StarMenuState();
@@ -269,8 +269,7 @@ class StarMenuState extends State<StarMenu>
 
   @override
   void didChangeMetrics() {
-    if (!paramsAlreadyGot && MediaQuery.of(context).size != screenSize)
-    return;
+    if (!paramsAlreadyGot && MediaQuery.of(context).size != screenSize) return;
 
     _addPostFrameCallback();
 
@@ -444,7 +443,7 @@ class StarMenuState extends State<StarMenu>
               );
 
               if ((widget.params.backgroundParams.sigmaX > 0 ||
-                  widget.params.backgroundParams.sigmaY > 0) &&
+                      widget.params.backgroundParams.sigmaY > 0) &&
                   animValue > 0) {
                 late double db;
                 if (widget.params.backgroundParams.animatedBlur)
