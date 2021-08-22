@@ -268,11 +268,20 @@ class StarMenuState extends State<StarMenu>
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+    resetForChanges();
+  }
+
+  @override
   void didChangeMetrics() {
     if (!paramsAlreadyGot && MediaQuery.of(context).size != screenSize) return;
+    resetForChanges();
+  }
 
+  resetForChanges() {
     _addPostFrameCallback();
-
+    offsetToFitMenuIntoScreen = Offset.zero;
     overlayEntry?.remove();
     overlayEntry = null;
     paramsAlreadyGot = false;
@@ -432,9 +441,6 @@ class StarMenuState extends State<StarMenu>
                                       offsetToFitMenuIntoScreen.dy),
                               animValue: animValue,
                               onItemTapped: (id) {
-                                print(
-                                  'StarMenu: tapped item index $id',
-                                );
                                 if (widget.params.onItemTapped != null)
                                   widget.params.onItemTapped!(
                                       id, _starMenuController!);

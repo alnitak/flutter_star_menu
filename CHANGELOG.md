@@ -1,3 +1,6 @@
+## [2.0.1] - XXX XXX 2021
+* support for hot reload
+
 ## [2.0.0+4] - 10 Aug 2021
 * dartfmt!
 
