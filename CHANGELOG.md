@@ -1,8 +1,12 @@
-## [2.0.1] - XXX XXX 2021
-* support for hot reload
+## [2.1.0] - 29 Oct 2021
+* added a movement threshold for touches: 
+if a movement of more the 10 px occurs after touching the 
+widget, it will not open
+* bug fix when changing device rotation
+* added `lazyItems` property which build menu items at runtime
 
-## [2.0.0+4] - 10 Aug 2021
-* dartfmt!
+## [2.0.1] - 22 Aug 2021
+* support for hot reload
 
 ## [2.0.0+3] - 10 Aug 2021
 * removed dart:io dependency for web compatibility

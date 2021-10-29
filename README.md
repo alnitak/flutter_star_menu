@@ -4,19 +4,21 @@ The menu entries can be almost any kind of widgets.
 
 ![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif)
 
-Every widgets can now popup a menu on tap!
+Every widgets can now popup a menu when pressed!
 There are currently 3 shapes to choose:
 * `linear`: items are lined by a given angle with a given space between them and with a 3-way alignment.
 * `circle`: items are lined up in a circle shape with a given radius and a star-end angle.
 * `grid`: items are aligned in a grid shape with N columns and a given horizontal and vertical shape.
 
 Using the package is pretty simple:
-* make your widget a child of StarMenu:
+* give to the `item` parameter the list of widgets:
 
 ```dart
 StarMenu(
   params: StarMenuParameters(),
     onItemTapped: (index, controller) {
+      // here you can close the menu or not if the 
+      // item has its own action like a Slider or CheckBox
       if (index == 7)
         controller.closeMenu();
     }
@@ -28,6 +30,26 @@ StarMenu(
   ),
 )
 ```
+* `items` parameter is used when entries are known. If you want to build items in runtime use `lazyItems`:
+
+```dart
+StarMenu(
+  ...
+  lazyItems: () async{
+      return [
+        Container(
+          color: Color.fromARGB(255, Random().nextInt(255),
+              Random().nextInt(255), Random().nextInt(255)),
+          width: 60,
+          height: 40,
+        ),
+      ];
+  }
+)
+```
+`lazyItems` is a callback which returns `Future<List<Widget>>` called before opening the menu.
+Only `lazyItems` or `items` can be used. 
+
 * add the provided **addStarMenu()** Widget extension to your widget:
 
 ```dart

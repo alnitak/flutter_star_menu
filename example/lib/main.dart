@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:star_menu/star_menu.dart';
@@ -44,97 +46,180 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: [
           Center(
-            child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 20),
-                Text('Colored and blurred background'),
+            // Scroll view to test the item centers are always
+            // computed even if its position changes
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: 1000,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    Text('Load items at runtime'),
 
-                // LINEAR MENU
-                StarMenu(
-                  params: StarMenuParameters(
-                      shape: MenuShape.linear,
-                      linearShapeParams: LinearShapeParams(
-                          angle: 270,
-                          space: 10,
-                          alignment: LinearAlignment.center),
-                      backgroundParams: BackgroundParams(
-                        backgroundColor: Colors.blue.withOpacity(0.2),
-                        animatedBackgroundColor: false,
-                        animatedBlur: false,
-                        sigmaX: 10,
-                        sigmaY: 10,
+                    // LAZY MENU
+                    StarMenu(
+                      params: StarMenuParameters(
+                          shape: MenuShape.linear,
+                          linearShapeParams: LinearShapeParams(
+                              angle: 270,
+                              space: 30,
+                              alignment: LinearAlignment.center),
+                          onItemTapped: (index, controller) {
+                            // don't close if the item tapped is not the ListView
+                            if (index != 1) controller.closeMenu();
+                          }),
+                      // lazyItemsLoad let you build menu entries at runtime
+                      lazyItems: () async {
+                        return [
+                          Container(
+                            color: Color.fromARGB(255, Random().nextInt(255),
+                                Random().nextInt(255), Random().nextInt(255)),
+                            width: 60,
+                            height: 40,
+                          ),
+                          Container(
+                            width: 150,
+                            height: 200,
+                            child: Card(
+                              elevation: 6,
+                              margin: EdgeInsets.all(6),
+                              child: ListView(
+                                children: [
+                                  Card(
+                                      child: Text('the'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('menu'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('entries'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('can'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('be'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('almost'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('any'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('kind'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('of'),
+                                      margin: EdgeInsets.all(10)),
+                                  Card(
+                                      child: Text('widgets'),
+                                      margin: EdgeInsets.all(10)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ];
+                      },
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          print('FloatingActionButton Menu1 tapped');
+                        },
+                        child: Icon(Icons.looks_one),
                       ),
-                      onItemTapped: (index, controller) {
-                        if (index == 7) controller.closeMenu();
-                      }),
-                  items: entries,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      print('FloatingActionButton Menu1 tapped');
-                    },
-                    child: Icon(Icons.looks_one),
-                  ),
-                ),
+                    ),
 
-                SizedBox(height: 80),
-                Text('Animated blur background'),
+                    SizedBox(height: 40),
+                    Text('Colored and blurred background'),
 
-                // CIRCLE MENU
-                // it's possible to use the extension addStarMenu()
-                // with all Widgets
-                FloatingActionButton(
-                  onPressed: () {
-                    print('FloatingActionButton Menu2 tapped');
-                  },
-                  backgroundColor: Colors.red,
-                  child: Icon(Icons.looks_two),
-                ).addStarMenu(
-                    context,
-                    entries,
-                    StarMenuParameters(
+                    // LINEAR MENU
+                    StarMenu(
+                      params: StarMenuParameters(
+                          shape: MenuShape.linear,
+                          linearShapeParams: LinearShapeParams(
+                              angle: 270,
+                              space: 10,
+                              alignment: LinearAlignment.center),
+                          backgroundParams: BackgroundParams(
+                            backgroundColor: Colors.blue.withOpacity(0.2),
+                            animatedBackgroundColor: false,
+                            animatedBlur: false,
+                            sigmaX: 10,
+                            sigmaY: 10,
+                          ),
+                          onItemTapped: (index, controller) {
+                            if (index == 7) controller.closeMenu();
+                          }),
+                      items: entries,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          print('FloatingActionButton Menu1 tapped');
+                        },
+                        child: Icon(Icons.looks_two),
+                      ),
+                    ),
+
+                    SizedBox(height: 40),
+                    Text('Animated blur background'),
+
+                    // CIRCLE MENU
+                    // it's possible to use the extension addStarMenu()
+                    // with all Widgets
+                    FloatingActionButton(
+                      onPressed: () {
+                        print('FloatingActionButton Menu2 tapped');
+                      },
+                      backgroundColor: Colors.red,
+                      child: Icon(Icons.looks_3),
+                    ).addStarMenu(
+                        context,
+                        entries,
+                        StarMenuParameters(
+                            backgroundParams: BackgroundParams(
+                                animatedBlur: true,
+                                sigmaX: 4.0,
+                                sigmaY: 4.0,
+                                backgroundColor: Colors.transparent),
+                            circleShapeParams: CircleShapeParams(radiusY: 280),
+                            openDurationMs: 1000,
+                            rotateItemsAnimationAngle: 360,
+                            onItemTapped: (index, controller) {
+                              if (index == 7) controller.closeMenu();
+                            })),
+
+                    SizedBox(height: 40),
+                    Text('Animated color background'),
+
+                    // GRID MENU
+                    StarMenu(
+                      params: StarMenuParameters(
+                        shape: MenuShape.grid,
+                        openDurationMs: 1200,
+                        gridShapeParams: GridShapeParams(
+                            columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
                         backgroundParams: BackgroundParams(
-                            animatedBlur: true,
-                            sigmaX: 4.0,
-                            sigmaY: 4.0,
-                            backgroundColor: Colors.transparent),
-                        circleShapeParams: CircleShapeParams(radiusY: 280),
-                        openDurationMs: 1000,
-                        rotateItemsAnimationAngle: 360,
+                            sigmaX: 0,
+                            sigmaY: 0,
+                            animatedBackgroundColor: true,
+                            backgroundColor: Colors.black.withOpacity(0.4)),
                         onItemTapped: (index, controller) {
                           if (index == 7) controller.closeMenu();
-                        })),
-
-                SizedBox(height: 80),
-                Text('Animated color background'),
-
-                // GRID MENU
-                StarMenu(
-                  params: StarMenuParameters(
-                    shape: MenuShape.grid,
-                    openDurationMs: 1200,
-                    gridShapeParams: GridShapeParams(
-                        columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
-                    backgroundParams: BackgroundParams(
-                        sigmaX: 0,
-                        sigmaY: 0,
-                        animatedBackgroundColor: true,
-                        backgroundColor: Colors.black.withOpacity(0.4)),
-                    onItemTapped: (index, controller) {
-                      if (index == 7) controller.closeMenu();
-                    },
-                  ),
-                  items: entries,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      print('FloatingActionButton Menu3 tapped');
-                    },
-                    backgroundColor: Colors.black,
-                    child: Icon(Icons.looks_3),
-                  ),
+                        },
+                      ),
+                      items: entries,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          print('FloatingActionButton Menu3 tapped');
+                        },
+                        backgroundColor: Colors.black,
+                        child: Icon(Icons.looks_4),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],

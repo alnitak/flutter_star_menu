@@ -1,3 +1,7 @@
+/*
+Copyright (c) 2019-2021, Marco Bavagnoli <marcobavagnolidev@gmail.com>
+All rights reserved.
+ */
 library star_menu;
 
 import 'dart:math';
@@ -109,7 +113,7 @@ class BackgroundParams {
 }
 
 class StarMenuParameters {
-  /// Menu shape kind. Could be [MenuShape.circle], [MenuShape.linear], [MenuShape.grid]
+  /// Menu shape kind: [MenuShape.circle], [MenuShape.linear], [MenuShape.grid]
   final MenuShape shape;
 
   /// parameters for the linear shape
@@ -156,7 +160,7 @@ class StarMenuParameters {
   /// eventually close the menu
   final Function(int index, StarMenuController controller)? onItemTapped;
 
-  StarMenuParameters({
+  const StarMenuParameters({
     this.linearShapeParams: const LinearShapeParams(),
     this.circleShapeParams: const CircleShapeParams(),
     this.gridShapeParams: const GridShapeParams(),
@@ -187,17 +191,22 @@ class StarMenuController {
 
 class StarMenu extends StatefulWidget {
   final StarMenuParameters params;
-  final List<Widget> items;
+  final List<Widget>? items;
+  final Future<List<Widget>> Function()? lazyItems;
   final Widget child;
   final StarMenuController? controller;
 
-  const StarMenu({
+  StarMenu({
     Key? key,
     this.controller,
-    required this.params,
-    required this.items,
+    this.params = const StarMenuParameters(),
+    this.items,
+    this.lazyItems,
     required this.child,
-  })  : assert(items.length > 0),
+  })  : assert(
+          items == null || lazyItems == null,
+          'You can only pass items or lazyItems, not both.',
+        ),
         super(key: key);
 
   @override
@@ -208,6 +217,7 @@ class StarMenuState extends State<StarMenu>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   AnimationController? _controller;
   late Animation<double> _animationPercent;
+  List<Widget> _items = [];
 
   late double lineAngleRAD;
   late double circleStartAngleRAD;
@@ -216,7 +226,7 @@ class StarMenuState extends State<StarMenu>
   OverlayEntry? overlayEntry;
   late Rect parentBounds;
   late MenuState menuState;
-  late Size screenSize;
+  Size? screenSize;
   late double topPadding;
   late List<WidgetParams> itemsParams;
   late List<GlobalKey> itemKeys;
@@ -229,6 +239,8 @@ class StarMenuState extends State<StarMenu>
 
   @override
   void initState() {
+    if (widget.items != null) _items = widget.items!;
+
     _starMenuController = widget.controller;
     if (_starMenuController == null) {
       _starMenuController = StarMenuController(closeMenu);
@@ -247,12 +259,9 @@ class StarMenuState extends State<StarMenu>
     animationProgress = ValueNotifier<double>(0.0);
     offsetToFitMenuIntoScreen = Offset.zero;
     paramsAlreadyGot = false;
-    itemsParams = List.generate(widget.items.length,
+    itemsParams = List.generate(_items.length,
         (index) => WidgetParams(xPosition: 0, yPosition: 0, rect: Rect.zero));
-    itemsMatrix =
-        List.generate(widget.items.length, (index) => Matrix4.identity());
-
-    _addPostFrameCallback();
+    itemsMatrix = List.generate(_items.length, (index) => Matrix4.identity());
 
     _setupAnimationController();
     WidgetsBinding.instance?.addObserver(this);
@@ -262,9 +271,16 @@ class StarMenuState extends State<StarMenu>
 
   @override
   void dispose() {
-    super.dispose();
     WidgetsBinding.instance?.removeObserver(this);
+    _animationPercent.removeListener(_animationListener);
+    _controller?.stop();
+    overlayEntry?.remove();
+    overlayEntry = null;
+    _controller?.value = 0;
+    menuState = MenuState.closed;
+
     _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -275,12 +291,16 @@ class StarMenuState extends State<StarMenu>
 
   @override
   void didChangeMetrics() {
-    if (!paramsAlreadyGot && MediaQuery.of(context).size != screenSize) return;
-    resetForChanges();
+    if (menuState == MenuState.closed) {
+      return;
+    }
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      resetForChanges();
+    });
   }
 
   resetForChanges() {
-    _addPostFrameCallback();
+    if (_items.isEmpty || menuState == MenuState.closed) return;
     offsetToFitMenuIntoScreen = Offset.zero;
     overlayEntry?.remove();
     overlayEntry = null;
@@ -294,21 +314,45 @@ class StarMenuState extends State<StarMenu>
       menuState = MenuState.closed;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Listener(onPointerUp: (event) => showMenu(), child: widget.child);
+  _animationListener() {
+    animationProgress.value = _animationPercent.value;
+
+    /// Time to get items parameters?
+    if (_animationPercent.value > 0 && !paramsAlreadyGot) {
+      itemsParams = List.generate(
+          _items.length,
+          (index) => WidgetParams.fromContext(
+              itemKeys.elementAt(index).currentContext));
+
+      itemsMatrix = _calcPosition();
+      _checkBoundaries();
+      paramsAlreadyGot = true;
+
+      // maybe lazyItems are not yet in the tree. Maybe there is a better way
+      if (widget.lazyItems != null) {
+        for (int i = 0; i < itemsParams.length; i++) {
+          if (itemsParams.elementAt(i).rect.isEmpty) {
+            paramsAlreadyGot = false;
+            return;
+          }
+        }
+      }
+    }
   }
 
-  _addPostFrameCallback() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (context.size is Size) {
-        // padding, viewInsets and viewPadding return 0 here! Force to be 24
-        // topPadding = MediaQuery.of(context).viewPadding.top;
-        topPadding = 24;
-        screenSize = Size(MediaQuery.of(context).size.width,
-            MediaQuery.of(context).size.height);
-      }
-    });
+  @override
+  Widget build(BuildContext context) {
+    Point startPoint = Point(0, 0);
+    return Listener(
+        onPointerDown: (event) {
+          startPoint = Point(event.position.dx, event.position.dy);
+        },
+        onPointerUp: (event) {
+          if (startPoint
+                  .distanceTo(Point(event.position.dx, event.position.dy)) <
+              10) showMenu();
+        },
+        child: widget.child);
   }
 
   // setup animation controller
@@ -320,20 +364,7 @@ class StarMenuState extends State<StarMenu>
 
     _animationPercent = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: _controller!, curve: widget.params.animationCurve))
-      ..addListener(() {
-        animationProgress.value = _animationPercent.value;
-
-        /// Time to get items parameters?
-        if (_animationPercent.value > 0 && !paramsAlreadyGot) {
-          itemsParams = List.generate(
-              widget.items.length,
-              (index) => WidgetParams.fromContext(
-                  itemKeys.elementAt(index).currentContext));
-          paramsAlreadyGot = true;
-          itemsMatrix = _calcPosition();
-          _checkBoundaries();
-        }
-      })
+      ..addListener(_animationListener)
       ..addStatusListener((AnimationStatus status) {
         switch (status) {
           case AnimationStatus.completed:
@@ -341,6 +372,8 @@ class StarMenuState extends State<StarMenu>
               menuState = MenuState.open;
             } else
               menuState = MenuState.closed;
+            // if (mounted)
+            //   setState(() {});
             break;
           case AnimationStatus.dismissed:
             if (_animationPercent.value == 0) {
@@ -349,6 +382,8 @@ class StarMenuState extends State<StarMenu>
               _controller?.value = 0;
               menuState = MenuState.closed;
             }
+            // if (mounted)
+            //   setState(() {});
             break;
           case AnimationStatus.reverse:
             menuState = MenuState.closing;
@@ -367,7 +402,26 @@ class StarMenuState extends State<StarMenu>
   }
 
   /// Open the menu
-  showMenu() {
+  showMenu() async {
+    // padding, viewInsets and viewPadding return 0 here! Force to be 24
+    // topPadding = MediaQuery.of(context).viewPadding.top;
+    topPadding = 24; // system toolBar height
+    screenSize = Size(
+        MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+
+    if (widget.lazyItems != null) {
+      widget.lazyItems!().then((value) {
+        _items = value;
+        paramsAlreadyGot = false;
+        _showMenu();
+      });
+    } else {
+      paramsAlreadyGot = false;
+      _showMenu();
+    }
+  }
+
+  _showMenu() {
     overlayEntry = _overlayEntryBuilder();
     _controller?.reset();
 
@@ -387,10 +441,10 @@ class StarMenuState extends State<StarMenu>
     }
   }
 
-  // Create the overlay object
+  /// Create the overlay object
   OverlayEntry _overlayEntryBuilder() {
     // keys used to get items rect
-    itemKeys = List.generate(widget.items.length, (index) => GlobalKey());
+    itemKeys = List.generate(_items.length, (index) => GlobalKey());
 
     return OverlayEntry(
       // maintainState: true,
@@ -417,35 +471,32 @@ class StarMenuState extends State<StarMenu>
                           menuState == MenuState.closed)) closeMenu();
                     },
                   )
-                ]..addAll(List.generate(
-                        widget.items.length,
-                        (index) => StarItem(
-                              key: itemKeys.elementAt(index),
-                              child: widget.items[index],
-                              totItems: widget.items.length,
-                              index: index,
-                              center: parentBounds.center,
-                              itemMatrix: itemsMatrix[index],
-                              rotateRAD: rotateItemsAnimationAngleRAD,
-                              scale: widget.params.startItemScaleAnimation,
-                              shift: Offset(
-                                  itemsMatrix
-                                          .elementAt(index)
-                                          .getTranslation()
-                                          .x +
-                                      offsetToFitMenuIntoScreen.dx,
-                                  itemsMatrix
-                                          .elementAt(index)
-                                          .getTranslation()
-                                          .y +
-                                      offsetToFitMenuIntoScreen.dy),
-                              animValue: animValue,
-                              onItemTapped: (id) {
-                                if (widget.params.onItemTapped != null)
-                                  widget.params.onItemTapped!(
-                                      id, _starMenuController!);
-                              },
-                            )))),
+                ]..addAll(List.generate(_items.length, (index) {
+                        if (index >= itemKeys.length) return Container();
+                        if (index >= itemsMatrix.length) return Container();
+                        if (index >= _items.length) return Container();
+                        return StarItem(
+                          key: itemKeys.elementAt(index),
+                          child: _items[index],
+                          totItems: _items.length,
+                          index: index,
+                          center: parentBounds.center,
+                          itemMatrix: itemsMatrix[index],
+                          rotateRAD: rotateItemsAnimationAngleRAD,
+                          scale: widget.params.startItemScaleAnimation,
+                          shift: Offset(
+                              itemsMatrix.elementAt(index).getTranslation().x +
+                                  offsetToFitMenuIntoScreen.dx,
+                              itemsMatrix.elementAt(index).getTranslation().y +
+                                  offsetToFitMenuIntoScreen.dy),
+                          animValue: animValue,
+                          onItemTapped: (id) {
+                            if (widget.params.onItemTapped != null)
+                              widget.params.onItemTapped!(
+                                  id, _starMenuController!);
+                          },
+                        );
+                      }))),
               );
 
               if ((widget.params.backgroundParams.sigmaX > 0 ||
@@ -471,11 +522,12 @@ class StarMenuState extends State<StarMenu>
   // Calculate item center position relative to the animation value
   List<Matrix4> _calcPosition() {
     List<Matrix4> ret =
-        List.generate(widget.items.length, (index) => Matrix4.identity());
+        List.generate(_items.length, (index) => Matrix4.identity());
     Offset newCenter = widget.params.useScreenCenter
-        ? Offset(screenSize.width / 2 + widget.params.centerOffset.dx,
-            screenSize.height / 2 + widget.params.centerOffset.dy)
+        ? Offset(screenSize!.width / 2 + widget.params.centerOffset.dx,
+            screenSize!.height / 2 + widget.params.centerOffset.dy)
         : parentBounds.center + widget.params.centerOffset;
+    offsetToFitMenuIntoScreen = Offset.zero;
 
     switch (widget.params.shape) {
       case MenuShape.circle:
@@ -483,13 +535,13 @@ class StarMenuState extends State<StarMenu>
           mat.translate(
               newCenter.dx +
                   cos((circleEndAngleRAD - circleStartAngleRAD) /
-                              widget.items.length *
+                              _items.length *
                               index +
                           circleStartAngleRAD) *
                       widget.params.circleShapeParams.radiusX,
               newCenter.dy -
                   sin((circleEndAngleRAD - circleStartAngleRAD) /
-                              widget.items.length *
+                              _items.length *
                               index +
                           circleStartAngleRAD) *
                       widget.params.circleShapeParams.radiusY);
@@ -581,15 +633,13 @@ class StarMenuState extends State<StarMenu>
         List<Point> itemPos = [];
 
         // Calculating the grid
-        while (j * widget.params.gridShapeParams.columns + k <
-            widget.items.length) {
+        while (j * widget.params.gridShapeParams.columns + k < _items.length) {
           count = 0;
           hMax = 0;
           x = 0;
           // Calculate x position and rows height
           while (k < widget.params.gridShapeParams.columns &&
-              j * widget.params.gridShapeParams.columns + k <
-                  widget.items.length) {
+              j * widget.params.gridShapeParams.columns + k < _items.length) {
             itemWidth =
                 itemsParams[widget.params.gridShapeParams.columns * j + k]
                     .rect
@@ -628,10 +678,11 @@ class StarMenuState extends State<StarMenu>
         //    y = grid height
         //    wMax = grid width
         //    rowsWidth = list containing all the rows width
-        //    it is now possible to center rows and center the grid in parent item
+        //    it is now possible to center rows and
+        //    center the grid in parent item
         n = 0;
         int dx;
-        while (n < widget.items.length) {
+        while (n < _items.length) {
           dx = ((wMax -
                       rowsWidth[(n / widget.params.gridShapeParams.columns)
                           .floor()]) /
@@ -660,14 +711,14 @@ class StarMenuState extends State<StarMenu>
                 itemsParams[i].rect.height / 2);
 
         if (shifted.left < 0) itemsMatrix.elementAt(i).translate(-shifted.left);
-        if (shifted.right > screenSize.width)
-          itemsMatrix.elementAt(i).translate(screenSize.width - shifted.right);
+        if (shifted.right > screenSize!.width)
+          itemsMatrix.elementAt(i).translate(screenSize!.width - shifted.right);
         if (shifted.top < topPadding)
           itemsMatrix.elementAt(i).translate(0.0, topPadding - shifted.top);
-        if (shifted.bottom > screenSize.height)
+        if (shifted.bottom > screenSize!.height)
           itemsMatrix
               .elementAt(i)
-              .translate(0.0, screenSize.height - shifted.bottom);
+              .translate(0.0, screenSize!.height - shifted.bottom);
       }
     }
 
@@ -690,15 +741,15 @@ class StarMenuState extends State<StarMenu>
       if (boundaries.top < topPadding)
         offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
             0, -boundaries.top + topPadding);
-      if (boundaries.bottom > screenSize.height)
+      if (boundaries.bottom > screenSize!.height)
         offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
-            0, screenSize.height - boundaries.bottom);
+            0, screenSize!.height - boundaries.bottom);
       if (boundaries.left < 0)
         offsetToFitMenuIntoScreen =
             offsetToFitMenuIntoScreen.translate(-boundaries.left, 0);
-      if (boundaries.right > screenSize.width)
+      if (boundaries.right > screenSize!.width)
         offsetToFitMenuIntoScreen = offsetToFitMenuIntoScreen.translate(
-            screenSize.width - boundaries.right, 0);
+            screenSize!.width - boundaries.right, 0);
     }
   }
 }
