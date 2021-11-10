@@ -60,16 +60,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     // LAZY MENU
                     StarMenu(
+                      onStateChanged: (state) {print('State changed: $state');},
                       params: StarMenuParameters(
-                          shape: MenuShape.linear,
-                          linearShapeParams: LinearShapeParams(
-                              angle: 270,
-                              space: 30,
-                              alignment: LinearAlignment.center),
-                          onItemTapped: (index, controller) {
-                            // don't close if the item tapped is not the ListView
-                            if (index != 1) controller.closeMenu();
-                          }),
+                        shape: MenuShape.linear,
+                        linearShapeParams: LinearShapeParams(
+                            angle: 270,
+                            space: 30,
+                            alignment: LinearAlignment.center),
+                        onItemTapped: (index, controller) {
+                          // don't close if the item tapped is not the ListView
+                          if (index != 1) controller.closeMenu();
+                        }),
                       // lazyItemsLoad let you build menu entries at runtime
                       lazyItems: () async {
                         return [
@@ -87,37 +88,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               margin: EdgeInsets.all(6),
                               child: ListView(
                                 children: [
-                                  Card(
-                                      child: Text('the'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('menu'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('entries'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('can'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('be'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('almost'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('any'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('kind'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('of'),
-                                      margin: EdgeInsets.all(10)),
-                                  Card(
-                                      child: Text('widgets'),
-                                      margin: EdgeInsets.all(10)),
-                                ],
+                                  'the', 'menu', 'entries', 'can',
+                                  'be', 'almost', 'any', 'kind',
+                                  'of', 'widgets',
+                                ].map((s) {
+                                  return Card(
+                                    child: Text(s),
+                                    margin: EdgeInsets.all(10),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ),

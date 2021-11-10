@@ -16,13 +16,13 @@ Using the package is pretty simple:
 ```dart
 StarMenu(
   params: StarMenuParameters(),
-    onItemTapped: (index, controller) {
-      // here you can close the menu or not if the 
-      // item has its own action like a Slider or CheckBox
-      if (index == 7)
-        controller.closeMenu();
-    }
-  ),
+  onStateChanged: (state) {print('State changed: $state');},
+  onItemTapped: (index, controller) {
+    // here you can close the menu or not if the 
+    // item has its own action like a Slider or CheckBox
+    if (index == 7)
+      controller.closeMenu();
+  }),
   items: entries,
   child: FloatingActionButton(
     onPressed: () {print('FloatingActionButton tapped');},
@@ -30,6 +30,17 @@ StarMenu(
   ),
 )
 ```
+* `onStateChanged` triggers menu state canges: 
+
+```
+enum MenuState {
+  closed,
+  closing,
+  opening,
+  open,
+}
+```
+
 * `items` parameter is used when entries are known. If you want to build items in runtime use `lazyItems`:
 
 ```dart

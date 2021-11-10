@@ -195,6 +195,7 @@ class StarMenu extends StatefulWidget {
   final Future<List<Widget>> Function()? lazyItems;
   final Widget child;
   final StarMenuController? controller;
+  final Function(MenuState state)? onStateChanged;
 
   StarMenu({
     Key? key,
@@ -202,6 +203,7 @@ class StarMenu extends StatefulWidget {
     this.params = const StarMenuParameters(),
     this.items,
     this.lazyItems,
+    this.onStateChanged,
     required this.child,
   })  : assert(
           items == null || lazyItems == null,
@@ -372,8 +374,6 @@ class StarMenuState extends State<StarMenu>
               menuState = MenuState.open;
             } else
               menuState = MenuState.closed;
-            // if (mounted)
-            //   setState(() {});
             break;
           case AnimationStatus.dismissed:
             if (_animationPercent.value == 0) {
@@ -382,8 +382,6 @@ class StarMenuState extends State<StarMenu>
               _controller?.value = 0;
               menuState = MenuState.closed;
             }
-            // if (mounted)
-            //   setState(() {});
             break;
           case AnimationStatus.reverse:
             menuState = MenuState.closing;
@@ -392,6 +390,8 @@ class StarMenuState extends State<StarMenu>
             menuState = MenuState.opening;
             break;
         }
+
+        if (widget.onStateChanged != null) widget.onStateChanged!(menuState);
       });
   }
 

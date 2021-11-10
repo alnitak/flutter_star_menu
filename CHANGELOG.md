@@ -1,3 +1,6 @@
+## [2.1.1] - 10 Nov 2021
+* added `onStateChanged` callback which triggers `closed`, `closing`, `opening`, `open` states
+
 ## [2.1.0] - 29 Oct 2021
 * added a movement threshold for touches: 
 if a movement of more the 10 px occurs after touching the 
