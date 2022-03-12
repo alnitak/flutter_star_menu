@@ -7,11 +7,7 @@ library star_menu;
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 import 'utils/star_item.dart';

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:star_menu/star_menu.dart';
 import 'package:star_menu_example/submenu_card.dart';
 
