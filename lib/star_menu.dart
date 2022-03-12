@@ -449,72 +449,83 @@ class StarMenuState extends State<StarMenu>
     return OverlayEntry(
       // maintainState: true,
       builder: (context) {
-        return ValueListenableBuilder(
-            valueListenable: animationProgress,
-            builder: (_, double animValue, __) {
-              Color background = widget.params.backgroundParams.backgroundColor;
-              if (widget.params.backgroundParams.animatedBackgroundColor)
-                background =
-                    Color.lerp(Colors.transparent, background, animValue) ??
-                        background;
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: ValueListenableBuilder(
+              valueListenable: animationProgress,
+              builder: (_, double animValue, __) {
+                Color background =
+                    widget.params.backgroundParams.backgroundColor;
+                if (widget.params.backgroundParams.animatedBackgroundColor)
+                  background =
+                      Color.lerp(Colors.transparent, background, animValue) ??
+                          background;
 
-              Widget child = Material(
-                color: background,
-                child: Stack(
-                    children: [
-                  GestureDetector(
-                    onTap: () {
-                      // this optional check is to just not call closeMenu() if an
-                      // item without an onTap event is tapped. Else the
-                      // tap is on background and the menu must be closed
-                      if (!(menuState == MenuState.closing ||
-                          menuState == MenuState.closed)) closeMenu();
-                    },
-                  )
-                ]..addAll(List.generate(_items.length, (index) {
-                        if (index >= itemKeys.length) return Container();
-                        if (index >= itemsMatrix.length) return Container();
-                        if (index >= _items.length) return Container();
-                        return StarItem(
-                          key: itemKeys.elementAt(index),
-                          child: _items[index],
-                          totItems: _items.length,
-                          index: index,
-                          center: parentBounds.center,
-                          itemMatrix: itemsMatrix[index],
-                          rotateRAD: rotateItemsAnimationAngleRAD,
-                          scale: widget.params.startItemScaleAnimation,
-                          shift: Offset(
-                              itemsMatrix.elementAt(index).getTranslation().x +
-                                  offsetToFitMenuIntoScreen.dx,
-                              itemsMatrix.elementAt(index).getTranslation().y +
-                                  offsetToFitMenuIntoScreen.dy),
-                          animValue: animValue,
-                          onItemTapped: (id) {
-                            if (widget.params.onItemTapped != null)
-                              widget.params.onItemTapped!(
-                                  id, _starMenuController!);
-                          },
-                        );
-                      }))),
-              );
-
-              if ((widget.params.backgroundParams.sigmaX > 0 ||
-                      widget.params.backgroundParams.sigmaY > 0) &&
-                  animValue > 0) {
-                late double db;
-                if (widget.params.backgroundParams.animatedBlur)
-                  db = animValue;
-                else
-                  db = 1.0;
-                child = BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 3.0 * db, sigmaY: 3.0 * db),
-                  child: child,
+                Widget child = Material(
+                  color: background,
+                  child: Stack(
+                      children: [
+                    GestureDetector(
+                      onTap: () {
+                        // this optional check is to just not call closeMenu() if an
+                        // item without an onTap event is tapped. Else the
+                        // tap is on background and the menu must be closed
+                        if (!(menuState == MenuState.closing ||
+                            menuState == MenuState.closed)) closeMenu();
+                      },
+                    )
+                  ]..addAll(List.generate(_items.length, (index) {
+                          if (index >= itemKeys.length) return Container();
+                          if (index >= itemsMatrix.length) return Container();
+                          if (index >= _items.length) return Container();
+                          return StarItem(
+                            key: itemKeys.elementAt(index),
+                            child: _items[index],
+                            totItems: _items.length,
+                            index: index,
+                            center: parentBounds.center,
+                            itemMatrix: itemsMatrix[index],
+                            rotateRAD: rotateItemsAnimationAngleRAD,
+                            scale: widget.params.startItemScaleAnimation,
+                            shift: Offset(
+                                itemsMatrix
+                                        .elementAt(index)
+                                        .getTranslation()
+                                        .x +
+                                    offsetToFitMenuIntoScreen.dx,
+                                itemsMatrix
+                                        .elementAt(index)
+                                        .getTranslation()
+                                        .y +
+                                    offsetToFitMenuIntoScreen.dy),
+                            animValue: animValue,
+                            onItemTapped: (id) {
+                              if (widget.params.onItemTapped != null)
+                                widget.params.onItemTapped!(
+                                    id, _starMenuController!);
+                            },
+                          );
+                        }))),
                 );
-              }
 
-              return child;
-            });
+                if ((widget.params.backgroundParams.sigmaX > 0 ||
+                        widget.params.backgroundParams.sigmaY > 0) &&
+                    animValue > 0) {
+                  late double db;
+                  if (widget.params.backgroundParams.animatedBlur)
+                    db = animValue;
+                  else
+                    db = 1.0;
+                  child = BackdropFilter(
+                    filter:
+                        ImageFilter.blur(sigmaX: 3.0 * db, sigmaY: 3.0 * db),
+                    child: child,
+                  );
+                }
+
+                return child;
+              }),
+        );
       },
     );
   }

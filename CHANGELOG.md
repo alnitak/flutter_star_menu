@@ -1,3 +1,6 @@
+## [2.1.2] - 12 Mar 2022
+* fixed wrong menu position when using RTL
+
 ## [2.1.1] - 10 Nov 2021
 * added `onStateChanged` callback which triggers `closed`, `closing`, `opening`, `open` states
 
