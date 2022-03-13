@@ -1,3 +1,6 @@
+## [2.1.3] - 13 Mar 2022
+* code formatted
+
 ## [2.1.2] - 12 Mar 2022
 * fixed wrong menu position when using RTL
 

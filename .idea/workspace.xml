@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="fixed wrong menu position when using RTL">
-      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/star_menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/star_menu.dart" afterDir="false" />
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="fixed code formatting">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utils/star_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/star_item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/widget_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/widget_params.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -268,7 +268,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647117898999</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="fixed wrong menu position when using RTL">
+      <created>1647118489817</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1647118489817</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -342,7 +349,8 @@
     <MESSAGE value="version 2.1.0" />
     <MESSAGE value="added `onStateChanged` callback which triggers `closed`, `closing`, `opening`, `open` states" />
     <MESSAGE value="fixed wrong menu position when using RTL" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed wrong menu position when using RTL" />
+    <MESSAGE value="fixed code formatting" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed code formatting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
