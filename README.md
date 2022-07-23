@@ -1,6 +1,7 @@
 # StarMenu
-Contextual popup menu with different shapes and multiple ways to fine-tune animation and position.
-The menu entries can be almost any kind of widgets.
+A simple way to attach a popup menu to any widget with any widget as menu entries. 
+Menu entry widgets can bind sub-menu and have different shapes like grid, linear, circle. 
+Multiple ways to fine-tune animation and position.
 
 ![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif)
 
