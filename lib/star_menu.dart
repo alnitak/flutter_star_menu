@@ -4,6 +4,7 @@ All rights reserved.
  */
 library star_menu;
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -19,6 +20,7 @@ enum MenuState {
   opening,
   open,
 }
+
 enum MenuShape {
   circle,
   linear,
@@ -124,6 +126,12 @@ class StarMenuParameters {
   /// parameters for the background
   final backgroundParams;
 
+  /// Use long press behavior instead of a tap to open the menu
+  final bool useLongPress;
+
+  /// long press duration
+  final Duration longPressDuration;
+
   /// Open animation duration
   final int openDurationMs;
 
@@ -162,6 +170,8 @@ class StarMenuParameters {
     this.gridShapeParams: const GridShapeParams(),
     this.backgroundParams: const BackgroundParams(),
     this.shape: MenuShape.circle,
+    this.useLongPress: false,
+    this.longPressDuration: const Duration(milliseconds: 500),
     this.openDurationMs: 400,
     this.closeDurationMs: 150,
     this.rotateItemsAnimationAngle: 0.0,
@@ -234,9 +244,11 @@ class StarMenuState extends State<StarMenu>
   late Offset offsetToFitMenuIntoScreen;
 
   StarMenuController? _starMenuController;
+  Timer? longPressTimer;
 
   @override
   void initState() {
+    super.initState();
     if (widget.items != null) _items = widget.items!;
 
     _starMenuController = widget.controller;
@@ -262,14 +274,12 @@ class StarMenuState extends State<StarMenu>
     itemsMatrix = List.generate(_items.length, (index) => Matrix4.identity());
 
     _setupAnimationController();
-    WidgetsBinding.instance?.addObserver(this);
-
-    super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _animationPercent.removeListener(_animationListener);
     _controller?.stop();
     overlayEntry?.remove();
@@ -292,7 +302,7 @@ class StarMenuState extends State<StarMenu>
     if (menuState == MenuState.closed) {
       return;
     }
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       resetForChanges();
     });
   }
@@ -344,8 +354,19 @@ class StarMenuState extends State<StarMenu>
     return Listener(
         onPointerDown: (event) {
           startPoint = Point(event.position.dx, event.position.dy);
+          if (widget.params.useLongPress) {
+            longPressTimer = Timer(widget.params.longPressDuration, () {
+              if (startPoint
+                      .distanceTo(Point(event.position.dx, event.position.dy)) <
+                  10) showMenu();
+            });
+          }
         },
         onPointerUp: (event) {
+          if (widget.params.useLongPress) {
+            longPressTimer?.cancel();
+            return;
+          }
           if (startPoint
                   .distanceTo(Point(event.position.dx, event.position.dy)) <
               10) showMenu();

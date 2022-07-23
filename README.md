@@ -87,6 +87,8 @@ where **`entries`** is a **`List<Widget>`** for the menu entries and **`StarMenu
 |checkItemsScreenBoundaries|bool|Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible.
 |checkMenuScreenBoundaries|bool|Checks if items exceed screen edges, if so set them in place to be visible.
 |animationCurve|Curve|Animation curve kind to use.
+|useLongPress|bool|Use long press instead of a tap to open the menu.
+|longPressDuration|Duration|The timing to trigger long press.
 |onItemTapped|Function|The callback that is called when a menu item is tapped. It gives the `ID` of the item and a `controller` to eventually close the menu.
 
 ***LinearShapeParams***

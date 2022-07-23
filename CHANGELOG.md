@@ -1,3 +1,6 @@
+## [2.2.0] - 23 Jul 2022
+* added [useLongpress] and [longPressDuration] to open the menu with a long press
+
 ## [2.1.3] - 13 Mar 2022
 * code formatted
 
