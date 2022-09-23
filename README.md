@@ -17,7 +17,8 @@ A simple way to attach a popup menu to any widget with any widget as menu entrie
 Menu entry widgets can bind a sub-menu with different shapes. 
 Multiple ways to fine-tune animation and position.
 
-<img src="https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo2.gif" height="350"> <img src="https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif" height="350">
+![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo2.gif)
+![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif)
 
 Every widgets can be tapped to display a popup menu!
 There are currently 3 shapes to choose:
