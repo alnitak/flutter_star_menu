@@ -30,6 +30,8 @@ There are currently 3 shapes to choose:
 |:--|:--|:--|
 |*linear*|*circle*|*panel*|
 
+Please take a look at [main.dart](https://github.com/alnitak/flutter_star_menu/blob/master/example/lib/main.dart)  and [main_more.dart](https://github.com/alnitak/flutter_star_menu/blob/master/example/lib/main_more.dart) in the example/lib dir for the examples.
+
 Using the package is pretty simple:
 
 - feed the `items` parameter with the menu entry widgets list
