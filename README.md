@@ -1,6 +1,6 @@
 <h1 align="center"> 
 StarMenu<br>
-Easy and Fast Way to build context menus
+Easy and Fast Way to build Context Menus
 </h1>
 
 
@@ -28,9 +28,9 @@ There are currently 3 shapes to choose:
 - `circle`: items are lined up in a circle shape with a given radius and a star-end angle.
 - `grid`: items are aligned in a grid shape with N columns and a given horizontal and vertical space.
 
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/linear.png)
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/circle.png)
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/panel.png)
+|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/linear.png)|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/circle.png)|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/panel.png)|
+|:--|:--|:--|
+|*linear*|*circle*|*panel*|
 
 Using the package is pretty simple:
 
