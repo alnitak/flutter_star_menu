@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="README fixed" />
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="license file">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/StarMenuDemo.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/StarMenuDemo.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/StarMenuDemo2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/StarMenuDemo2.gif" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -330,7 +334,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663925736314</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="license file">
+      <created>1663930691675</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1663930691675</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -411,7 +422,8 @@
     <MESSAGE value="gif resized" />
     <MESSAGE value="images resized" />
     <MESSAGE value="README fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="README fixed" />
+    <MESSAGE value="license file" />
+    <option name="LAST_COMMIT_MESSAGE" value="license file" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
