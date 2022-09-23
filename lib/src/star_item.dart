@@ -1,3 +1,7 @@
+/*
+Copyright (c) 2019-2021, Marco Bavagnoli <marcobavagnolidev@gmail.com>
+All rights reserved.
+ */
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -13,6 +17,7 @@ class StarItem extends StatelessWidget {
   final Matrix4 itemMatrix;
   final double rotateRAD;
   final double scale;
+  final double onHoverScale;
   final Function(int index) onItemTapped;
   final Widget child;
 
@@ -26,6 +31,7 @@ class StarItem extends StatelessWidget {
       required this.itemMatrix,
       this.rotateRAD: 0.0,
       this.scale: 1.0,
+      this.onHoverScale: 1.0,
       required this.onItemTapped,
       required this.child})
       : assert(totItems > 0),
@@ -44,12 +50,16 @@ class StarItem extends StatelessWidget {
     double stepDelta = 1.0 / (1 - step);
     double a = (animValue - step < 0.0 ? 0.0 : animValue - step) * stepDelta;
 
+    ValueNotifier<bool> onHover = ValueNotifier(false);
+
     // lerp from parentBounds position to items end position
     Matrix4 mat = Matrix4.identity()
       ..translate(lerpDouble(center.dx, shift.dx, a) ?? 0,
           lerpDouble(center.dy, shift.dy, a) ?? 0, 0);
     if (rotateRAD > 0) mat.setRotationZ((1.0 - a) * rotateRAD);
-    if (scale < 1) mat.scale(lerpDouble(scale, 1.0, a));
+    // if (scale < 1)
+    //   mat.scale(lerpDouble(scale, 1.0, a));
+    double newScale = lerpDouble(scale, 1.0, a)!;
 
     return Transform(
       // key: itemKeys.elementAt(index),
@@ -60,10 +70,21 @@ class StarItem extends StatelessWidget {
           opacity: a,
           child: Listener(
             behavior: HitTestBehavior.deferToChild,
-            onPointerUp: (_) {
-              onItemTapped(index);
-            },
-            child: child,
+            onPointerUp: (_) => onItemTapped(index),
+            child: MouseRegion(
+              onEnter: (event) => onHover.value = true,
+              onExit: (event) => onHover.value = false,
+              child: ValueListenableBuilder<bool>(
+                  valueListenable: onHover,
+                  builder: (_, isHover, __) {
+                    return AnimatedScale(
+                        scale: a < 1.0
+                            ? newScale
+                            : (isHover ? newScale * onHoverScale : newScale),
+                        duration: Duration(milliseconds: 200),
+                        child: child);
+                  }),
+            ),
           ),
         ),
       ),

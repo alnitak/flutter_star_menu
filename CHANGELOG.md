@@ -1,3 +1,11 @@
+## [3.0.0+1] - 23 Sep 2022
+* added a new main.dart example
+* added `onHoverScale` in `StarMenuParameters` to scale items when mouse hover (desktop only)
+* added `BoundaryBackground` to set a background behind all the menu items
+* the opening animation now starts from the first menu item
+* added `dropdown`, `arc` and `panel` menu presets 
+* breaking change: [StarMenuParameters.onItemTapped] moved into [StarMenu] widget
+
 ## [2.2.0] - 23 Jul 2022
 * added [useLongpress] and [longPressDuration] to open the menu with a long press
 
@@ -15,7 +23,7 @@
 if a movement of more the 10 px occurs after touching the 
 widget, it will not open
 * bug fix when changing device rotation
-* added `lazyItems` property which build menu items at runtime
+* added `lazyItems` property which builds menu items at runtime
 
 ## [2.0.1] - 22 Aug 2021
 * support for hot reload

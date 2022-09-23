@@ -4,9 +4,45 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="added [useLongpress] and [longPressDuration]">
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="version 3.0.0+1">
+      <change afterPath="$PROJECT_DIR$/example/lib/main_more.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/StarMenuDemo2.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/circle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/dropdown.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/linear.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/panel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/quarterBottomL.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/quarterBottomR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/quarterTopL.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/quarterTopR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/semiDown.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/semiL.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/semiR.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/semiUp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/background_params.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/boundary_background.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/circle_shape_params.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/grid_shape_params.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/linear_shape_params.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/params/star_menu_params.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/src/star_menu.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/example/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/star_menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/star_menu.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/center_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/center_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/star_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/star_item.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/widget_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/widget_params.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/star_menu_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/star_menu_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,19 +178,30 @@
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/example" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/src" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Flutter.main.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" singleton="false">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
       <method v="2" />
     </configuration>
+    <configuration name="main_more.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="filePath" value="$PROJECT_DIR$/example/lib/main_more.dart" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Flutter.main.dart" />
+      <item itemvalue="Flutter.main_more.dart" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -287,7 +334,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658580839060</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="description chanded">
+      <created>1658597778635</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1658597778635</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -363,18 +417,11 @@
     <MESSAGE value="fixed wrong menu position when using RTL" />
     <MESSAGE value="fixed code formatting" />
     <MESSAGE value="added [useLongpress] and [longPressDuration]" />
-    <option name="LAST_COMMIT_MESSAGE" value="added [useLongpress] and [longPressDuration]" />
+    <MESSAGE value="description chanded" />
+    <MESSAGE value="version 3.0.0+1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 3.0.0+1" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/utils/widget_params.dart</url>
-          <line>27</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="FlutterRunConfigurationType">
         <watch expression="_backgroundImage" />
