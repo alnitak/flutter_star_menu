@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="license file">
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="gif resized">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/StarMenuDemo.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/StarMenuDemo.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/StarMenuDemo2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/images/StarMenuDemo2.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/params/linear_shape_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/params/linear_shape_params.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,7 +343,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663930691675</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="gif resized">
+      <created>1663933180447</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1663933180447</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -419,11 +428,11 @@
     <MESSAGE value="added [useLongpress] and [longPressDuration]" />
     <MESSAGE value="description chanded" />
     <MESSAGE value="version 3.0.0+1" />
-    <MESSAGE value="gif resized" />
     <MESSAGE value="images resized" />
     <MESSAGE value="README fixed" />
     <MESSAGE value="license file" />
-    <option name="LAST_COMMIT_MESSAGE" value="license file" />
+    <MESSAGE value="gif resized" />
+    <option name="LAST_COMMIT_MESSAGE" value="gif resized" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

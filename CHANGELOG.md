@@ -1,4 +1,4 @@
-## [3.0.0+1] - 23 Sep 2022
+## [3.0.0+2] - 23 Sep 2022
 * added a new main.dart example
 * added `onHoverScale` in `StarMenuParameters` to scale items when mouse hover (desktop only)
 * added `BoundaryBackground` to set a background behind all the menu items

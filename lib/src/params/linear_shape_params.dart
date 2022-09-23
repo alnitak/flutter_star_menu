@@ -17,8 +17,8 @@ class LinearShapeParams {
 
   const LinearShapeParams(
       {this.angle = 90,
-        this.space = 0,
-        this.alignment = LinearAlignment.center});
+      this.space = 0,
+      this.alignment = LinearAlignment.center});
 
   LinearShapeParams copyWith({
     double? angle,
