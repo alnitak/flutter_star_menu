@@ -4,46 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="version 3.0.0+1">
-      <change afterPath="$PROJECT_DIR$/example/lib/main_more.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/StarMenuDemo2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/dropdown.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/linear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/panel.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/quarterBottomL.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/quarterBottomR.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/quarterTopL.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/quarterTopR.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/semiDown.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/semiL.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/semiR.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/semiUp.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/background_params.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/boundary_background.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/circle_shape_params.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/grid_shape_params.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/linear_shape_params.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/params/star_menu_params.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/star_menu.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/example/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/star_menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/star_menu.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/center_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/center_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/star_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/star_item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/widget_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/widget_params.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/star_menu_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/star_menu_test.dart" afterDir="false" />
-    </list>
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="README fixed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -341,7 +302,35 @@
       <option name="project" value="LOCAL" />
       <updated>1658597778635</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="version 3.0.0+1">
+      <created>1663924436397</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1663924436397</updated>
+    </task>
+    <task id="LOCAL-00020" summary="gif resized">
+      <created>1663924789733</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1663924789733</updated>
+    </task>
+    <task id="LOCAL-00021" summary="images resized">
+      <created>1663925412375</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1663925412375</updated>
+    </task>
+    <task id="LOCAL-00022" summary="README fixed">
+      <created>1663925736314</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1663925736314</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -419,7 +408,10 @@
     <MESSAGE value="added [useLongpress] and [longPressDuration]" />
     <MESSAGE value="description chanded" />
     <MESSAGE value="version 3.0.0+1" />
-    <option name="LAST_COMMIT_MESSAGE" value="version 3.0.0+1" />
+    <MESSAGE value="gif resized" />
+    <MESSAGE value="images resized" />
+    <MESSAGE value="README fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="README fixed" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
