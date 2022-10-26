@@ -187,15 +187,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     // GRID MENU
                     StarMenu(
                       params: StarMenuParameters(
-                          shape: MenuShape.grid,
-                          openDurationMs: 1200,
-                          gridShapeParams: GridShapeParams(
-                              columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
-                          backgroundParams: BackgroundParams(
-                              sigmaX: 0,
-                              sigmaY: 0,
-                              animatedBackgroundColor: true,
-                              backgroundColor: Colors.black.withOpacity(0.4)),
+                        shape: MenuShape.grid,
+                        openDurationMs: 1200,
+                        gridShapeParams: GridShapeParams(
+                            columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
+                        backgroundParams: BackgroundParams(
+                            sigmaX: 0,
+                            sigmaY: 0,
+                            animatedBackgroundColor: true,
+                            backgroundColor: Colors.black.withOpacity(0.4)),
                       ),
                       onItemTapped: (index, controller) {
                         if (index == 7) controller.closeMenu!();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'star_menu.dart';
 
+// Creates an overlay to display the StarMenu and open it
 class StarMenuOverlay {
   static StarMenu? _sm;
   static OverlayState? _overlayState;
@@ -38,7 +39,7 @@ class StarMenuOverlay {
   }
 
   static bool isMounted(State<StarMenu> state) {
-    // Is correct to use the hashCode??
-    return _overlayEntry != null &&  state.widget.hashCode == _sm.hashCode;
+    // Is it correct to use the hashCode??
+    return _overlayEntry != null && state.widget.hashCode == _sm.hashCode;
   }
 }
