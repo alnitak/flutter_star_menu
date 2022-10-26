@@ -7,6 +7,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:star_menu/src/dinamyc_star_menu.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 import 'params/linear_shape_params.dart';
@@ -40,11 +41,16 @@ enum ArcType {
 
 /// Extension on Widget to add a StarMenu easily
 extension AddStarMenu on Widget {
-  addStarMenu(List<Widget> items, StarMenuParameters params,
-      {Function(int index, StarMenuController controller)? onItemTapped}) {
+  addStarMenu(
+    List<Widget> items,
+    StarMenuParameters params, {
+    StarMenuController? controller,
+    Function(int index, StarMenuController controller)? onItemTapped,
+  }) {
     return StarMenu(
       params: params,
       items: items,
+      controller: controller,
       onItemTapped: onItemTapped,
       child: this,
     );
@@ -54,11 +60,17 @@ extension AddStarMenu on Widget {
 /// Controller sent back with [onItemTapped] to
 /// let you choose to close the menu
 class StarMenuController {
-  final VoidCallback closeMenu;
+  VoidCallback? openMenu;
+  VoidCallback? closeMenu;
 
-  StarMenuController(
-    this.closeMenu,
-  );
+  bool isInitialized() {
+    return openMenu != null && closeMenu != null;
+  }
+
+  void dispose() {
+    openMenu = null;
+    closeMenu = null;
+  }
 }
 
 class StarMenu extends StatefulWidget {
@@ -71,10 +83,15 @@ class StarMenu extends StatefulWidget {
   /// function to build dynamically items list whenever the menu open occurs
   final Future<List<Widget>> Function()? lazyItems;
 
-  /// widget which trigger open menu
-  final Widget child;
+  /// widget that triggers the opening of the menu
+  /// Only [child] or [parentContext] is allowed
+  final Widget? child;
 
-  /// control the menu state to close it at runtime
+  /// context of the Widget where the menu will be opened
+  /// Only [child] or [parentContext] is allowed
+  final BuildContext? parentContext;
+
+  /// controls to open/close the menu programmatically
   final StarMenuController? controller;
 
   /// return current menu state
@@ -87,17 +104,27 @@ class StarMenu extends StatefulWidget {
 
   StarMenu({
     Key? key,
-    this.controller,
+    controller,
     this.params = const StarMenuParameters(),
     this.items,
     this.lazyItems,
     this.onStateChanged,
     this.onItemTapped,
-    required this.child,
+    this.child,
+    this.parentContext,
   })  : assert(
-          items == null || lazyItems == null,
-          'You can only pass items or lazyItems, not both.',
+          !(items == null && lazyItems == null),
+          'StarMenu: You have to set items or lazyItems!',
         ),
+        assert(
+          !(items != null && lazyItems != null),
+          'StarMenu: You can only pass items or lazyItems, not both.',
+        ),
+        assert(!(child == null && parentContext == null),
+            'StarMenu: You have to set child or parentContext!'),
+        assert(!(child != null && parentContext != null),
+            'StarMenu: You can set child or parentContext, not both!'),
+        controller = controller ?? StarMenuController(),
         super(key: key);
 
   @override
@@ -126,8 +153,8 @@ class StarMenuState extends State<StarMenu>
   late ValueNotifier<double> animationProgress;
   late bool paramsAlreadyGot;
   late Offset offsetToFitMenuIntoScreen;
+  Offset touchLocalPoint = Offset.zero;
 
-  StarMenuController? _starMenuController;
   Timer? longPressTimer;
 
   @override
@@ -138,8 +165,6 @@ class StarMenuState extends State<StarMenu>
 
   _init() {
     if (widget.items != null) _items = widget.items!;
-
-    _starMenuController = widget.controller ?? StarMenuController(closeMenu);
 
     menuState = MenuState.closed;
     overlayEntry = null;
@@ -171,13 +196,14 @@ class StarMenuState extends State<StarMenu>
   _dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _animationPercent.removeListener(_animationListener);
-    _controller?.stop();
     overlayEntry?.remove();
     overlayEntry = null;
-    _controller?.value = 0;
     menuState = MenuState.closed;
-
-    _controller?.dispose();
+    if (!(_controller?.isDismissed ?? false)) {
+      _controller?.stop();
+      _controller?.value = 0;
+      _controller?.dispose();
+    }
   }
 
   @override
@@ -240,27 +266,41 @@ class StarMenuState extends State<StarMenu>
   @override
   Widget build(BuildContext context) {
     Point startPoint = Point(0, 0);
+
+    if (!widget.controller!.isInitialized()) {
+      widget.controller!.openMenu = showMenu;
+      widget.controller!.closeMenu = closeMenu;
+    }
+
+    if (StarMenuOverlay.isMounted(this)) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showMenu();
+      });
+    }
+
     return Listener(
-        onPointerDown: (event) {
-          startPoint = Point(event.position.dx, event.position.dy);
-          if (widget.params.useLongPress) {
-            longPressTimer = Timer(widget.params.longPressDuration, () {
-              if (startPoint
-                      .distanceTo(Point(event.position.dx, event.position.dy)) <
-                  10) showMenu();
-            });
-          }
-        },
-        onPointerUp: (event) {
-          if (widget.params.useLongPress) {
-            longPressTimer?.cancel();
-            return;
-          }
-          if (startPoint
-                  .distanceTo(Point(event.position.dx, event.position.dy)) <
-              10) showMenu();
-        },
-        child: widget.child);
+      onPointerDown: (event) {
+        startPoint = Point(event.position.dx, event.position.dy);
+        touchLocalPoint =
+            Offset(event.localPosition.dx, event.localPosition.dy);
+        if (widget.params.useLongPress) {
+          longPressTimer = Timer(widget.params.longPressDuration, () {
+            if (startPoint
+                    .distanceTo(Point(event.position.dx, event.position.dy)) <
+                10) showMenu();
+          });
+        }
+      },
+      onPointerUp: (event) {
+        if (widget.params.useLongPress) {
+          longPressTimer?.cancel();
+          return;
+        }
+        if (startPoint.distanceTo(Point(event.position.dx, event.position.dy)) <
+            10) showMenu();
+      },
+      child: widget.child ?? SizedBox.shrink(),
+    );
   }
 
   // setup animation controller
@@ -303,12 +343,21 @@ class StarMenuState extends State<StarMenu>
 
   /// Close the menu
   closeMenu() {
-    _controller?.animateBack(0,
-        duration: Duration(milliseconds: widget.params.closeDurationMs));
+    _controller
+        ?.animateBack(
+      0,
+      duration: Duration(milliseconds: widget.params.closeDurationMs),
+    )
+        .then((value) {
+      if (widget.parentContext != null) {
+        _dispose();
+        StarMenuOverlay.dispose();
+      }
+    });
   }
 
   /// Open the menu
-  showMenu() async {
+  showMenu() {
     // padding, viewInsets and viewPadding return 0 here! Force to be 24
     // topPadding = MediaQuery.of(context).viewPadding.top;
     topPadding = 24; // system toolBar height
@@ -333,7 +382,9 @@ class StarMenuState extends State<StarMenu>
 
     if (overlayEntry != null) {
       // find parent widget bounds
-      RenderBox? renderBox = context.findRenderObject() as RenderBox;
+      RenderBox? renderBox = widget.child != null
+          ? (context.findRenderObject() as RenderBox)
+          : (widget.parentContext!.findRenderObject() as RenderBox);
       Rect widgetRect = renderBox.paintBounds;
       Offset parentPosition = renderBox.localToGlobal(Offset.zero);
       parentBounds = widgetRect.translate(parentPosition.dx, parentPosition.dy);
@@ -373,9 +424,10 @@ class StarMenuState extends State<StarMenu>
                       children: [
                     GestureDetector(
                       onTap: () {
-                        // this optional check is to just not call closeMenu()
-                        // if an item without an onTap event is tapped. Else the
-                        // tap is on background and the menu must be closed
+                        // this optional check is to just not call
+                        // closeMenu() if an item without an onTap
+                        // event is tapped. Else the tap is on
+                        // background and the menu must be closed
                         if (!(menuState == MenuState.closing ||
                             menuState == MenuState.closed)) closeMenu();
                       },
@@ -439,7 +491,7 @@ class StarMenuState extends State<StarMenu>
                             animValue: animValue,
                             onItemTapped: (id) {
                               if (widget.onItemTapped != null)
-                                widget.onItemTapped!(id, _starMenuController!);
+                                widget.onItemTapped!(id, widget.controller!);
                             },
                           );
                         }))),
@@ -476,6 +528,12 @@ class StarMenuState extends State<StarMenu>
         ? Offset(screenSize!.width / 2 + widget.params.centerOffset.dx,
             screenSize!.height / 2 + widget.params.centerOffset.dy)
         : parentBounds.center + widget.params.centerOffset;
+    if (widget.params.useTouchAsCenter && touchLocalPoint != Offset.zero) {
+      newCenter = Offset(
+        parentBounds.left + touchLocalPoint.dx,
+        parentBounds.top + touchLocalPoint.dy,
+      );
+    }
     offsetToFitMenuIntoScreen = Offset.zero;
 
     switch (widget.params.shape) {

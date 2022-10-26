@@ -55,6 +55,9 @@ class StarMenuParameters {
   /// Use the screen center instead of parent widget center
   final bool useScreenCenter;
 
+  /// Use the touch coordinate as the menu center
+  final bool useTouchAsCenter;
+
   /// Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible
   final bool checkItemsScreenBoundaries;
 
@@ -80,6 +83,7 @@ class StarMenuParameters {
     this.startItemScaleAnimation = 1.0,
     this.centerOffset = Offset.zero,
     this.useScreenCenter = false,
+    this.useTouchAsCenter = false,
     this.checkItemsScreenBoundaries = false,
     this.checkMenuScreenBoundaries = true,
     this.animationCurve = Curves.fastOutSlowIn,
@@ -101,6 +105,7 @@ class StarMenuParameters {
     double? startItemScaleAnimation,
     Offset? centerOffset,
     bool? useScreenCenter,
+    bool? useTouchAsCenter,
     bool? checkItemsScreenBoundaries,
     bool? checkMenuScreenBoundaries,
     Curve? animationCurve,
@@ -123,6 +128,7 @@ class StarMenuParameters {
           startItemScaleAnimation ?? this.startItemScaleAnimation,
       centerOffset: centerOffset ?? this.centerOffset,
       useScreenCenter: useScreenCenter ?? this.useScreenCenter,
+      useTouchAsCenter: useTouchAsCenter ?? this.useTouchAsCenter,
       checkItemsScreenBoundaries:
           checkItemsScreenBoundaries ?? this.checkItemsScreenBoundaries,
       checkMenuScreenBoundaries:

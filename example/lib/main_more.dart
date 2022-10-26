@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       onItemTapped: (index, controller) {
                         // don't close if the item tapped is not the ListView
-                        if (index != 1) controller.closeMenu();
+                        if (index != 1) controller.closeMenu!();
                       },
                       // lazyItemsLoad let you build menu entries at runtime
                       lazyItems: () async {
@@ -143,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onItemTapped: (index, controller) {
-                        if (index == 7) controller.closeMenu();
+                        if (index == 7) controller.closeMenu!();
                       },
                       items: entries,
                       child: FloatingActionButton(
@@ -178,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           openDurationMs: 1000,
                           rotateItemsAnimationAngle: 360,
                         ), onItemTapped: (index, controller) {
-                      if (index == 7) controller.closeMenu();
+                      if (index == 7) controller.closeMenu!();
                     }),
 
                     SizedBox(height: 40),
@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               backgroundColor: Colors.black.withOpacity(0.4)),
                       ),
                       onItemTapped: (index, controller) {
-                        if (index == 7) controller.closeMenu();
+                        if (index == 7) controller.closeMenu!();
                       },
                       items: entries,
                       child: FloatingActionButton(

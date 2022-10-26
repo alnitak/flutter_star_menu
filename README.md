@@ -13,6 +13,9 @@ Easy and Fast Way to build Context Menus
 ![GitHub stars](https://img.shields.io/github/stars/alnitak/flutter_star_menu?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/alnitak/flutter_star_menu?style=flat-square)
 
+![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png)
+Instead, a star would be wonderful! ;)
+
 A simple way to attach a popup menu to any widget with any widget as menu entries. 
 Menu entry widgets can bind a sub-menu with different shapes. 
 Multiple ways to fine-tune animation and position.
@@ -39,7 +42,7 @@ Using the package is pretty simple:
 - install the package with `flutter pub add star_menu`
 - feed the `items` parameter with the menu entry widgets list
 - set the `params` with `StarMenuParameters`
-- set the `child` with a widget you like to press to open the menu
+- set the `child` with a widget you wish to press to open the menu
 
 ```dart
 StarMenu(
@@ -100,36 +103,108 @@ FloatingActionButton(
   onPressed: () {print('FloatingActionButton tapped');},
   child: Icon(Icons.looks_one),
 ).addStarMenu(
-	context, 
-	entries, 
+	items, 
 	StarMenuParameters(), 
+  controller,
 	onItemTapped: (index, controller) {}),
 ```
+<br/>
+<br/>
 
-### StarMenuParameters
+## ***Programmatically open menu***
+There are two ways to programmatically open a menu, for example when pressing a button:
 
+- **if you already have a StarMenu in the tree, add [StarMenuController] to it:**
+```dart
+  StarMenuController starMenuController = StarMenuController();
+
+  StarMenu(
+    params: StarMenuParameters(),
+    controller: starMenuController,
+    items: entries,
+    child: ...,
+  )
+```
+then in your button:
+```dart
+ElevatedButton(
+  onPressed: () => starMenuController.openMenu!(),
+  child: ...,
+),
+```
+
+- **if you want to dinamically create a StartMenu for another widget, assign a GlobalKey to your widget:**
+```dart
+GlobalKey containerKey = GlobalKey();
+...
+Container(
+  key: containerKey,
+  width: 40,
+  height: 40,
+),
+```
+then in your button call *StarMenuOverlay.displayStarMenu* with the widget context:
+```dart
+ElevatedButton(
+  onPressed: () {
+    StarMenuOverlay.displayStarMenu(
+      containerKey.currentContext!,
+      StarMenu(
+        params: StarMenuParameters(),
+        items: entries,
+        parentContext: containerKey.currentContext,
+      ),
+    );
+  },
+  child: ...
+),
+```
+
+<br/>
+<br/>
+
+### ***StarMenu***
+Only [items] or [lazyItems] can be passed, not both.
+|Name|Type|Defaults|Description|
+|:-------|:----------|:----------|:-----------|
+|***params***|class|StarMenuParameters|See below.|
+|***items***|List<Widget>?|-|Widget items entry list.|
+|***lazyItems***|Future<List<Widget>> Function()?|-|Function to build dynamically items list whenever the menu open occurs.|
+|***child***|Widget|-|Widget that triggers the opening of the menu. Only [child] or [parentContext] is allowed|
+|***parentContext***|BuildContext|-|Widget that triggers the opening of the menu. Only [child] or [parentContext] is allowed|
+|***controller***|StarMenuController|-|context of the Widget where the menu will be opened. Only [child] or [parentContext] is allowed|
+|***onStateChanged***|Function(MenuState state)?|-|Return current menu state.|
+
+<br/>
+<br/>
+
+### ***StarMenuParameters***
 Class to define all the parameters for the shape, animation and menu behavior.
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*shape*|enum|MenuShape.circle|Menu shape kind. Could be [MenuShape.circle], [MenuShape.linear], [MenuShape.grid].|
-|*boundaryBackground*|class|-|See below.|
-|*linearShapeParams*|class|-|See below.|
-|*circleShapeParams*|class|-|See below.|
-|*gridShapeParams*|class|-|See below.|
-|*backgroundParams*|class|-|See below.|
-|*openDurationMs*|int|400|Open animation duration ms.|
-|*closeDurationMs*|int|150|Close animation duration ms.|
-|*rotateItemsAnimationAngle*|double|0.0|Starting rotation angle of the items that will reach 0 DEG when animation ends.|
-|*startItemScaleAnimation*|double|0.3|Starting scale of the items that will reach 1 when animation ends.|
-|*centerOffset*|Offset|Offset.zero|Shift offset of menu center from the center of parent widget.|
-|*useScreenCenter*|bool|false|Use the screen center instead of parent widget center.|
-|*checkItemsScreenBoundaries*|bool|false|Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible.|
-|*checkMenuScreenBoundaries*|bool|true|Checks if items exceed screen edges, if so set them in place to be visible.|
-|*animationCurve*|Curve|Curves.fastOutSlowIn|Animation curve kind to use.|
-|*useLongPress*|bool|false|Use long press instead of a tap to open the menu.|
-|*longPressDuration*|Duration|500 ms|The timing to trigger long press.|
-|*onHoverScale*|double|1.0|Scale item when mouse is hover (desktop only)|
+|***shape***|enum|MenuShape.circle|Menu shape kind. Could be [MenuShape.circle], [MenuShape.linear], [MenuShape.grid].|
+|***boundaryBackground***|class|-|See below.|
+|***linearShapeParams***|class|-|See below.|
+|***circleShapeParams***|class|-|See below.|
+|***gridShapeParams***|class|-|See below.|
+|***backgroundParams***|class|-|See below.|
+|***openDurationMs***|int|400|Open animation duration ms.|
+|***closeDurationMs***|int|150|Close animation duration ms.|
+|***rotateItemsAnimationAngle***|double|0.0|Starting rotation angle of the items that will reach 0 DEG when animation ends.|
+|***startItemScaleAnimation***|double|0.3|Starting scale of the items that will reach 1 when animation ends.|
+|***centerOffset***|Offset|Offset.zero|Shift offset of menu center from the center of parent widget.|
+|***useScreenCenter***|bool|false|Use the screen center instead of parent widget center.|
+|***useTouchAsCenter***|bool|false|Use the touch coordinate as the menu center.|
+|***checkItemsScreenBoundaries***|bool|false|Checks if the whole menu boundaries exceed screen edges, if so set it in place to be all visible.|
+|***checkMenuScreenBoundaries***|bool|true|Checks if items exceed screen edges, if so set them in place to be visible.|
+|***animationCurve***|Curve|Curves.fastOutSlowIn|Animation curve kind to use.|
+|***useLongPress***|bool|false|Use long press instead of a tap to open the menu.|
+|***longPressDuration***|Duration|500 ms|The timing to trigger long press.|
+|***onHoverScale***|double|1.0|Scale item when mouse is hover (desktop only)|
+
+<br/>
+<br/>
 
 There are some ***StarMenuParameters*** factory presets with which you can set *StarMenu.params*
 
@@ -154,54 +229,64 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 
 
 ---
+<br/>
+<br/>
 
-### BoundaryBackground
+### ***BoundaryBackground***
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*color*|Color|0x80000000|color of the boundary background.|
-|*padding*|EdgeInsets|EdgeInsets.all(8.0)|Padding of the boundary background.|
-|*decoration*|Decoration|BorderRadius.circular(8)| background Container widget decoration.|
+|***color***|Color|0x80000000|color of the boundary background.|
+|***padding***|EdgeInsets|EdgeInsets.all(8.0)|Padding of the boundary background.|
+|***decoration***|Decoration|BorderRadius.circular(8)| background Container widget decoration.|
 
 ---
+<br/>
+<br/>
 
-### LinearShapeParams
+### ***LinearShapeParams***
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*angle*|double|90.0|Degree angle. Anticlockwise with 0° on 3 o'clock.|
-|*space*|double|0.0|Space between items.|
-|*alignment*|LinearAlignment|center| *left*, *center*, *right*, *top*, *bottom*. Useful when the linear shape is vertical or horizontal.|
+|***angle***|double|90.0|Degree angle. Anticlockwise with 0° on 3 o'clock.|
+|***space***|double|0.0|Space between items.|
+|***alignment***|LinearAlignment|center| *left*, *center*, *right*, *top*, *bottom*. Useful when the linear shape is vertical or horizontal.|
 
 ---
+<br/>
+<br/>
 
-### CircleShapeParams
+### ***CircleShapeParams***
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*radiusX*|double|100.0|Horizontal radius.|
-|*radiusY*|double|100.0|Vertical radius.|
-|*startAngle*|double|0.0|Starting angle for the 1st item. Anticlockwise with 0° on the right.|
-|*endAngle*|double|360.0|Ending angle for the 1st item. Anticlockwise with 0° on the right.|
+|***radiusX***|double|100.0|Horizontal radius.|
+|***radiusY***|double|100.0|Vertical radius.|
+|***startAngle***|double|0.0|Starting angle for the 1st item. Anticlockwise with 0° on the right.|
+|***endAngle***|double|360.0|Ending angle for the 1st item. Anticlockwise with 0° on the right.|
 
 ---
+<br/>
+<br/>
 
-### GridShapeParams
+### ***GridShapeParams***
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*columns*|int|3|Number of columns.|
-|*columnsSpaceH*|int|0|Horizontal space between items.| 
-|*columnsSpaceV*|int|0|Vertical space between items.|
+|***columns***|int|3|Number of columns.|
+|***columnsSpaceH***|int|0|Horizontal space between items.| 
+|***columnsSpaceV***|int|0|Vertical space between items.|
 
 ---
+<br/>
+<br/>
 
-### BackgroundParams
+### ***BackgroundParams***
 
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
-|*animatedBlur*|bool|false|Animate background blur from 0.0 to sigma if true.|
-|*sigmaX*|double|0.0|Horizontal blur.|
-|*sigmaY*|double|0.0|Vertical blur.|
-|*animatedBackgroundColor*|bool|false|Animate [backgroundColor] from transparent if true.|
-|*backgroundColor*|Color|#80000000|Background color.| 
+|***animatedBlur***|bool|false|Animate background blur from 0.0 to sigma if true.|
+|***sigmaX***|double|0.0|Horizontal blur.|
+|***sigmaY***|double|0.0|Vertical blur.|
+|***animatedBackgroundColor***|bool|false|If true animate from transparent to [backgroundColor].|
+|***backgroundColor***|Color|Colors.transparent|Background color.| 
