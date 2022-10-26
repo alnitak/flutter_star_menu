@@ -1,4 +1,4 @@
-## [3.1.0] - 26 Oct 2022
+## [3.1.0+1] - 26 Oct 2022
 * it's now possible to open a menu programmatically with [StarMenuController].
 * it's now possible to open a menu programmatically by passing [parentContext] to [StarMenu].
 * added [useTouchAsCenter] to [StarMenuParameters] to use the touch position as the menu center.
