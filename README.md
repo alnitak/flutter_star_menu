@@ -13,8 +13,12 @@ Easy and Fast Way to build Context Menus
 ![GitHub stars](https://img.shields.io/github/stars/alnitak/flutter_star_menu?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/alnitak/flutter_star_menu?style=flat-square)
 
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png)
+<p align="center">
+<img src="https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png/"
+         width=150" height="70">
+<br/>
 Instead, a star would be wonderful! ;)
+</p>
 
 A simple way to attach a popup menu to any widget with any widget as menu entries. 
 Menu entry widgets can bind a sub-menu with different shapes. 
