@@ -15,7 +15,7 @@ Easy and Fast Way to build Context Menus
 
 <p align="center">
 <img src="https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png/"
-         width=150" height="70">
+         width=150">
 <br/>
 Instead, a star would be wonderful! ;)
 </p>
