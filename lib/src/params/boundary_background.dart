@@ -12,11 +12,19 @@ class BoundaryBackground {
   /// background Container widget decoration
   final Decoration? decoration;
 
-  BoundaryBackground({
-    this.color: Colors.white,
-    this.padding: const EdgeInsets.all(8.0),
-    decoration,
-  }) : decoration = decoration ??
+  /// background blur sigmaX value
+  final double? blurSigmaX;
+
+  /// background blur sigmaY value
+  final double? blurSigmaY;
+
+  BoundaryBackground(
+      {this.color: Colors.white,
+      this.padding: const EdgeInsets.all(8.0),
+      decoration,
+      this.blurSigmaX,
+      this.blurSigmaY})
+      : decoration = decoration ??
             BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: color,

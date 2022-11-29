@@ -442,15 +442,30 @@ class StarMenuState extends State<StarMenu>
                           itemsBounds.top -
                               widget.params.boundaryBackground!.padding.top,
                         ),
-                        child: Container(
-                          width: itemsBounds.width +
-                              widget.params.boundaryBackground!.padding.left +
-                              widget.params.boundaryBackground!.padding.right,
-                          height: itemsBounds.height +
-                              widget.params.boundaryBackground!.padding.top +
-                              widget.params.boundaryBackground!.padding.bottom,
-                          decoration:
-                              widget.params.boundaryBackground!.decoration,
+                        child: ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                                sigmaX: widget.params.boundaryBackground
+                                        ?.blurSigmaX ??
+                                    0.0,
+                                sigmaY: widget.params.boundaryBackground
+                                        ?.blurSigmaY ??
+                                    0.0),
+                            child: Container(
+                              width: itemsBounds.width +
+                                  widget
+                                      .params.boundaryBackground!.padding.left +
+                                  widget
+                                      .params.boundaryBackground!.padding.right,
+                              height: itemsBounds.height +
+                                  widget
+                                      .params.boundaryBackground!.padding.top +
+                                  widget.params.boundaryBackground!.padding
+                                      .bottom,
+                              decoration:
+                                  widget.params.boundaryBackground!.decoration,
+                            ),
+                          ),
                         ),
                       ),
                   ]..addAll(List.generate(_items.length, (index) {
