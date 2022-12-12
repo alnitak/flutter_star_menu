@@ -43,6 +43,8 @@ enum ArcType {
 extension AddStarMenu on Widget {
   addStarMenu(
     List<Widget> items,
+    Future<List<Widget>> Function()? lazyItems,
+    Function(MenuState state)? onStateChanged,
     StarMenuParameters params, {
     StarMenuController? controller,
     Function(int index, StarMenuController controller)? onItemTapped,
@@ -50,6 +52,8 @@ extension AddStarMenu on Widget {
     return StarMenu(
       params: params,
       items: items,
+      lazyItems: lazyItems,
+      onStateChanged: onStateChanged,
       controller: controller,
       onItemTapped: onItemTapped,
       child: this,

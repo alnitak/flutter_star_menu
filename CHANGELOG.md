@@ -1,3 +1,6 @@
+## [3.1.1] - 12 Dec 2022
+* added [lazyItems] and [onStateChanged] parameters to [addStarMenu] extension
+
 ## [3.1.0+1] - 26 Oct 2022
 * it's now possible to open a menu programmatically with [StarMenuController].
 * it's now possible to open a menu programmatically by passing [parentContext] to [StarMenu].
