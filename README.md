@@ -106,9 +106,9 @@ FloatingActionButton(
   onPressed: () {print('FloatingActionButton tapped');},
   child: Icon(Icons.looks_one),
 ).addStarMenu(
-  items,
-  StarMenuParameters(),
-  controller,
+  items: items,
+  params: StarMenuParameters(),
+  controller: controller,
   onItemTapped: (index, controller) {}),
 ```
 

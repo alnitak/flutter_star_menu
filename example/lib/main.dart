@@ -44,32 +44,38 @@ class MyHomePage extends StatelessWidget {
         onPressed: null,
         backgroundColor: Colors.red,
         child: Icon(Icons.add),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
       FloatingActionButton(
         onPressed: null,
         backgroundColor: Colors.black,
         child: Icon(Icons.add_call),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
       FloatingActionButton(
         onPressed: null,
         backgroundColor: Colors.indigo,
         child: Icon(Icons.adb),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
       FloatingActionButton(
         onPressed: null,
         backgroundColor: Colors.purple,
         child: Icon(Icons.home),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
       FloatingActionButton(
         onPressed: null,
         backgroundColor: Colors.blueGrey,
         child: Icon(Icons.delete),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
       FloatingActionButton(
         onPressed: null,
         backgroundColor: Colors.deepPurple,
         child: Icon(Icons.get_app),
-      ).addStarMenu(upperMenuItems, StarMenuParameters.dropdown(context)),
+      ).addStarMenu(
+          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
     ];
 
     // bottom left menu entries
@@ -131,8 +137,8 @@ class MyHomePage extends StatelessWidget {
                 height: double.infinity,
                 color: Colors.white,
               ).addStarMenu(
-                upperMenuItems,
-                StarMenuParameters.dropdown(context).copyWith(
+                items: upperMenuItems,
+                params: StarMenuParameters.dropdown(context).copyWith(
                   useTouchAsCenter: true,
                 ),
                 controller: backgroundStarMenuController,

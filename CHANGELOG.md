@@ -1,3 +1,11 @@
+## [3.1.2] - 23 Dec 2022
+* breaking: due to the [lazyItems] added to the [addStarMenu] extension, all the parameters to that mixin are now optional ex:
+```
+.addStarMenu(
+  items: upperMenuItems,
+  ...
+ ```
+
 ## [3.1.1] - 12 Dec 2022
 * added [lazyItems] and [onStateChanged] parameters to [addStarMenu] extension
 

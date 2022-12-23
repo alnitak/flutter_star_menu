@@ -41,11 +41,11 @@ enum ArcType {
 
 /// Extension on Widget to add a StarMenu easily
 extension AddStarMenu on Widget {
-  addStarMenu(
-    List<Widget> items,
+  addStarMenu({
+    List<Widget>? items,
     Future<List<Widget>> Function()? lazyItems,
     Function(MenuState state)? onStateChanged,
-    StarMenuParameters params, {
+    StarMenuParameters params = const StarMenuParameters(),
     StarMenuController? controller,
     Function(int index, StarMenuController controller)? onItemTapped,
   }) {
