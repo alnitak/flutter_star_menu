@@ -42,12 +42,6 @@ class MyHomePage extends StatelessWidget {
     List<Widget> otherEntries = [
       FloatingActionButton(
         onPressed: null,
-        backgroundColor: Colors.red,
-        child: Icon(Icons.add),
-      ).addStarMenu(
-          items: upperMenuItems, params: StarMenuParameters.dropdown(context)),
-      FloatingActionButton(
-        onPressed: null,
         backgroundColor: Colors.black,
         child: Icon(Icons.add_call),
       ).addStarMenu(
@@ -107,6 +101,7 @@ class MyHomePage extends StatelessWidget {
     ];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('StarMenu demo'),
         actions: [
@@ -119,7 +114,10 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             items: upperMenuItems,
-            onItemTapped: (index, _) => print('Item $index tapped'),
+            onItemTapped: (index, c) {
+              print('Item $index tapped');
+              c.closeMenu!();
+            },
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Icon(Icons.menu),

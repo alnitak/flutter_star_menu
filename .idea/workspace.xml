@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="added lazyItems and onStateChanged parameters to addStarMenu extension">
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="fixed sigmaX and sigmaY for the blurred background">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/main_more.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main_more.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/lib/submenu_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/submenu_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/params/background_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/params/background_params.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/params/boundary_background.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/params/boundary_background.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/params/star_menu_params.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/params/star_menu_params.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/star_item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/star_item.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/star_menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/star_menu.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
@@ -149,7 +153,7 @@
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../libs/flutter_opengl/flutter_web_gl" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -369,7 +373,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670865323748</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="all the parameters to [addStarMenu] mixin are now optional">
+      <created>1671797430290</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1671797430290</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -452,7 +463,9 @@
     <MESSAGE value="gif resized" />
     <MESSAGE value="fixes for pub.dev" />
     <MESSAGE value="added lazyItems and onStateChanged parameters to addStarMenu extension" />
-    <option name="LAST_COMMIT_MESSAGE" value="added lazyItems and onStateChanged parameters to addStarMenu extension" />
+    <MESSAGE value="all the parameters to [addStarMenu] mixin are now optional" />
+    <MESSAGE value="fixed sigmaX and sigmaY for the blurred background" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed sigmaX and sigmaY for the blurred background" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

@@ -1,3 +1,6 @@
+## [3.1.3] - 6 Feb 2023
+* fixed sigmaX and sigmaY for the blurred background
+
 ## [3.1.2] - 23 Dec 2022
 * breaking: due to the [lazyItems] added to the [addStarMenu] extension, all the parameters to that mixin are now optional ex:
 ```

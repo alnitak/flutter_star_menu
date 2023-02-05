@@ -13,8 +13,8 @@ class BoundaryBackground {
   final Decoration? decoration;
 
   BoundaryBackground({
-    this.color: Colors.white,
-    this.padding: const EdgeInsets.all(8.0),
+    this.color = Colors.white,
+    this.padding = const EdgeInsets.all(8.0),
     decoration,
   }) : decoration = decoration ??
             BoxDecoration(

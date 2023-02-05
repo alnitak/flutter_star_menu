@@ -393,7 +393,8 @@ class StarMenuState extends State<StarMenu>
       Offset parentPosition = renderBox.localToGlobal(Offset.zero);
       parentBounds = widgetRect.translate(parentPosition.dx, parentPosition.dy);
 
-      Overlay.of(context)?.insert(overlayEntry!);
+      OverlayState? overlay = Overlay.of(context);
+      overlay?.insert(overlayEntry!);
       overlayEntry?.addListener(() {
         if (overlayEntry != null &&
             overlayEntry!.mounted &&
@@ -424,84 +425,89 @@ class StarMenuState extends State<StarMenu>
 
                 Widget child = Material(
                   color: background,
-                  child: Stack(
-                      children: [
-                    GestureDetector(
-                      onTap: () {
-                        // this optional check is to just not call
-                        // closeMenu() if an item without an onTap
-                        // event is tapped. Else the tap is on
-                        // background and the menu must be closed
-                        if (!(menuState == MenuState.closing ||
-                            menuState == MenuState.closed)) closeMenu();
-                      },
-                    ),
-
-                    // draw background container
-                    if (widget.params.boundaryBackground != null)
-                      Transform.translate(
-                        offset: Offset(
-                          itemsBounds.left -
-                              widget.params.boundaryBackground!.padding.left,
-                          itemsBounds.top -
-                              widget.params.boundaryBackground!.padding.top,
-                        ),
-                        child: Container(
-                          width: itemsBounds.width +
-                              widget.params.boundaryBackground!.padding.left +
-                              widget.params.boundaryBackground!.padding.right,
-                          height: itemsBounds.height +
-                              widget.params.boundaryBackground!.padding.top +
-                              widget.params.boundaryBackground!.padding.bottom,
-                          decoration:
-                              widget.params.boundaryBackground!.decoration,
-                        ),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Stack(
+                        children: [
+                      GestureDetector(
+                        onTap: () {
+                          // this optional check is to just not call
+                          // closeMenu() if an item without an onTap
+                          // event is tapped. Else the tap is on
+                          // background and the menu must be closed
+                          if (!(menuState == MenuState.closing ||
+                              menuState == MenuState.closed)) closeMenu();
+                        },
                       ),
-                  ]..addAll(List.generate(_items.length, (index) {
-                          if (index >= itemKeys.length) return Container();
-                          if (index >= itemsMatrix.length) return Container();
-                          if (index >= _items.length) return Container();
-                          return StarItem(
-                            key: itemKeys.elementAt(index),
-                            child: _items[index],
-                            totItems: _items.length,
-                            index: index,
-                            // center: parentBounds.center,
-                            // animation start from previous item position
-                            center: Offset(
-                                itemsMatrix
-                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                    .getTranslation()
-                                    .x,
-                                itemsMatrix
-                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                    .getTranslation()
-                                    .y),
-                            itemMatrix: itemsMatrix[index],
-                            rotateRAD: rotateItemsAnimationAngleRAD,
-                            scale: widget.params.startItemScaleAnimation,
-                            onHoverScale: widget.params.onHoverScale,
-                            shift: Offset(
-                                itemsMatrix
-                                        .elementAt(index)
-                                        .getTranslation()
-                                        .x +
-                                    offsetToFitMenuIntoScreen.dx,
-                                itemsMatrix
-                                        .elementAt(index)
-                                        .getTranslation()
-                                        .y +
-                                    offsetToFitMenuIntoScreen.dy),
-                            animValue: animValue,
-                            onItemTapped: (id) {
-                              if (widget.onItemTapped != null)
-                                widget.onItemTapped!(id, widget.controller!);
-                            },
-                          );
-                        }))),
+
+                      // draw background container
+                      if (widget.params.boundaryBackground != null)
+                        Transform.translate(
+                          offset: Offset(
+                            itemsBounds.left -
+                                widget.params.boundaryBackground!.padding.left,
+                            itemsBounds.top -
+                                widget.params.boundaryBackground!.padding.top,
+                          ),
+                          child: Container(
+                            width: itemsBounds.width +
+                                widget.params.boundaryBackground!.padding.left +
+                                widget.params.boundaryBackground!.padding.right,
+                            height: itemsBounds.height +
+                                widget.params.boundaryBackground!.padding.top +
+                                widget
+                                    .params.boundaryBackground!.padding.bottom,
+                            decoration:
+                                widget.params.boundaryBackground!.decoration,
+                          ),
+                        ),
+                    ]..addAll(List.generate(_items.length, (index) {
+                            if (index >= itemKeys.length) return Container();
+                            if (index >= itemsMatrix.length) return Container();
+                            if (index >= _items.length) return Container();
+                            return StarItem(
+                              key: itemKeys.elementAt(index),
+                              child: _items[index],
+                              totItems: _items.length,
+                              index: index,
+                              // center: parentBounds.center,
+                              // animation start from previous item position
+                              center: Offset(
+                                  itemsMatrix
+                                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                                      .getTranslation()
+                                      .x,
+                                  itemsMatrix
+                                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                                      .getTranslation()
+                                      .y),
+                              itemMatrix: itemsMatrix[index],
+                              rotateRAD: rotateItemsAnimationAngleRAD,
+                              scale: widget.params.startItemScaleAnimation,
+                              onHoverScale: widget.params.onHoverScale,
+                              shift: Offset(
+                                  itemsMatrix
+                                          .elementAt(index)
+                                          .getTranslation()
+                                          .x +
+                                      offsetToFitMenuIntoScreen.dx,
+                                  itemsMatrix
+                                          .elementAt(index)
+                                          .getTranslation()
+                                          .y +
+                                      offsetToFitMenuIntoScreen.dy),
+                              animValue: animValue,
+                              onItemTapped: (id) {
+                                if (widget.onItemTapped != null)
+                                  widget.onItemTapped!(id, widget.controller!);
+                              },
+                            );
+                          }))),
+                  ),
                 );
 
-                // background blurred?
+                // is background blurred?
                 if ((widget.params.backgroundParams.sigmaX > 0 ||
                         widget.params.backgroundParams.sigmaY > 0) &&
                     animValue > 0) {
@@ -511,8 +517,9 @@ class StarMenuState extends State<StarMenu>
                   else
                     db = 1.0;
                   child = BackdropFilter(
-                    filter:
-                        ImageFilter.blur(sigmaX: 3.0 * db, sigmaY: 3.0 * db),
+                    filter: ImageFilter.blur(
+                        sigmaX: widget.params.backgroundParams.sigmaX * db,
+                        sigmaY: widget.params.backgroundParams.sigmaY * db),
                     child: child,
                   );
                 }
