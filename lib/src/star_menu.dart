@@ -474,70 +474,68 @@ class StarMenuState extends State<StarMenu>
                         ),
                       ),
 
-                      // draw background container
-                      if (widget.params.boundaryBackground != null)
-                        Transform.translate(
-                          offset: Offset(
-                            itemsBounds.left -
-                                widget.params.boundaryBackground!.padding.left,
-                            itemsBounds.top -
-                                widget.params.boundaryBackground!.padding.top,
-                          ),
-                          child: Container(
-                            width: itemsBounds.width +
-                                widget.params.boundaryBackground!.padding.left +
-                                widget.params.boundaryBackground!.padding.right,
-                            height: itemsBounds.height +
-                                widget.params.boundaryBackground!.padding.top +
-                                widget
-                                    .params.boundaryBackground!.padding.bottom,
-                            decoration:
-                                widget.params.boundaryBackground!.decoration,
-                          ),
+                    // draw background container
+                    if (widget.params.boundaryBackground != null)
+                      Transform.translate(
+                        offset: Offset(
+                          itemsBounds.left -
+                              widget.params.boundaryBackground!.padding.left,
+                          itemsBounds.top -
+                              widget.params.boundaryBackground!.padding.top,
                         ),
-                    ]..addAll(List.generate(_items.length, (index) {
-                            if (index >= itemKeys.length) return Container();
-                            if (index >= itemsMatrix.length) return Container();
-                            if (index >= _items.length) return Container();
-                            return StarItem(
-                              key: itemKeys.elementAt(index),
-                              child: _items[index],
-                              totItems: _items.length,
-                              index: index,
-                              // center: parentBounds.center,
-                              // animation start from previous item position
-                              center: Offset(
-                                  itemsMatrix
-                                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                      .getTranslation()
-                                      .x,
-                                  itemsMatrix
-                                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                      .getTranslation()
-                                      .y),
-                              itemMatrix: itemsMatrix[index],
-                              rotateRAD: rotateItemsAnimationAngleRAD,
-                              scale: widget.params.startItemScaleAnimation,
-                              onHoverScale: widget.params.onHoverScale,
-                              shift: Offset(
-                                  itemsMatrix
-                                          .elementAt(index)
-                                          .getTranslation()
-                                          .x +
-                                      offsetToFitMenuIntoScreen.dx,
-                                  itemsMatrix
-                                          .elementAt(index)
-                                          .getTranslation()
-                                          .y +
-                                      offsetToFitMenuIntoScreen.dy),
-                              animValue: animValue,
-                              onItemTapped: (id) {
-                                if (widget.onItemTapped != null)
-                                  widget.onItemTapped!(id, widget.controller!);
-                              },
-                            );
-                          }))),
-                  ),
+                        child: Container(
+                          width: itemsBounds.width +
+                              widget.params.boundaryBackground!.padding.left +
+                              widget.params.boundaryBackground!.padding.right,
+                          height: itemsBounds.height +
+                              widget.params.boundaryBackground!.padding.top +
+                              widget.params.boundaryBackground!.padding.bottom,
+                          decoration:
+                              widget.params.boundaryBackground!.decoration,
+                        ),
+                      ),
+                  ]..addAll(List.generate(_items.length, (index) {
+                          if (index >= itemKeys.length) return Container();
+                          if (index >= itemsMatrix.length) return Container();
+                          if (index >= _items.length) return Container();
+                          return StarItem(
+                            key: itemKeys.elementAt(index),
+                            child: _items[index],
+                            totItems: _items.length,
+                            index: index,
+                            // center: parentBounds.center,
+                            // animation start from previous item position
+                            center: Offset(
+                                itemsMatrix
+                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                                    .getTranslation()
+                                    .x,
+                                itemsMatrix
+                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                                    .getTranslation()
+                                    .y),
+                            itemMatrix: itemsMatrix[index],
+                            rotateRAD: rotateItemsAnimationAngleRAD,
+                            scale: widget.params.startItemScaleAnimation,
+                            onHoverScale: widget.params.onHoverScale,
+                            shift: Offset(
+                                itemsMatrix
+                                        .elementAt(index)
+                                        .getTranslation()
+                                        .x +
+                                    offsetToFitMenuIntoScreen.dx,
+                                itemsMatrix
+                                        .elementAt(index)
+                                        .getTranslation()
+                                        .y +
+                                    offsetToFitMenuIntoScreen.dy),
+                            animValue: animValue,
+                            onItemTapped: (id) {
+                              if (widget.onItemTapped != null)
+                                widget.onItemTapped!(id, widget.controller!);
+                            },
+                          );
+                        }))),
                 );
 
                 // is background blurred?

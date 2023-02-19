@@ -1,3 +1,6 @@
+## [3.1.4] - 20 Feb 2023
+* added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang<tksuns12>
+
 ## [3.1.3] - 6 Feb 2023
 * fixed sigmaX and sigmaY for the blurred background
 
@@ -7,7 +10,7 @@
 .addStarMenu(
   items: upperMenuItems,
   ...
- ```
+```
 
 ## [3.1.1] - 12 Dec 2022
 * added [lazyItems] and [onStateChanged] parameters to [addStarMenu] extension

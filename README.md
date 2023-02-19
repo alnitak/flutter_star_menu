@@ -241,6 +241,8 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 |***color***|Color|0x80000000|color of the boundary background.|
 |***padding***|EdgeInsets|EdgeInsets.all(8.0)|Padding of the boundary background.|
 |***decoration***|Decoration|BorderRadius.circular(8)| background Container widget decoration.|
+|***blurSigmaX***|double|0.0| horizontal blur of the boundary background.|
+|***blurSigmaY***|double|0.0| vertical blur of the boundary background.|
 
 ---
 
