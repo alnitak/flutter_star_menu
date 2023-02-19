@@ -29,7 +29,7 @@ class MyHomePage extends StatelessWidget {
     // entries for the dropdown menu
     List<Widget> upperMenuItems = [
       Text('menu entry 1'),
-      Text('menu entry 3'),
+      Text('menu entry 2'),
       Text('menu entry 3'),
       Text('menu entry 4'),
       Text('menu entry 5'),
