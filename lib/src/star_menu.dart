@@ -425,20 +425,53 @@ class StarMenuState extends State<StarMenu>
 
                 Widget child = Material(
                   color: background,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: Stack(
-                        children: [
-                      GestureDetector(
-                        onTap: () {
-                          // this optional check is to just not call
-                          // closeMenu() if an item without an onTap
-                          // event is tapped. Else the tap is on
-                          // background and the menu must be closed
-                          if (!(menuState == MenuState.closing ||
-                              menuState == MenuState.closed)) closeMenu();
-                        },
+                  child: Stack(
+                      children: [
+                    GestureDetector(
+                      onTap: () {
+                        // this optional check is to just not call
+                        // closeMenu() if an item without an onTap
+                        // event is tapped. Else the tap is on
+                        // background and the menu must be closed
+                        if (!(menuState == MenuState.closing ||
+                            menuState == MenuState.closed)) closeMenu();
+                      },
+                    ),
+
+                    // draw background container
+                    if (widget.params.boundaryBackground != null)
+                      Transform.translate(
+                        offset: Offset(
+                          itemsBounds.left -
+                              widget.params.boundaryBackground!.padding.left,
+                          itemsBounds.top -
+                              widget.params.boundaryBackground!.padding.top,
+                        ),
+                        child: ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                                sigmaX: widget.params.boundaryBackground
+                                        ?.blurSigmaX ??
+                                    0.0,
+                                sigmaY: widget.params.boundaryBackground
+                                        ?.blurSigmaY ??
+                                    0.0),
+                            child: Container(
+                              width: itemsBounds.width +
+                                  widget
+                                      .params.boundaryBackground!.padding.left +
+                                  widget
+                                      .params.boundaryBackground!.padding.right,
+                              height: itemsBounds.height +
+                                  widget
+                                      .params.boundaryBackground!.padding.top +
+                                  widget.params.boundaryBackground!.padding
+                                      .bottom,
+                              decoration:
+                                  widget.params.boundaryBackground!.decoration,
+                            ),
+                          ),
+                        ),
                       ),
 
                       // draw background container
