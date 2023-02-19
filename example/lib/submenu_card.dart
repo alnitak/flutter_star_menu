@@ -7,7 +7,7 @@ class SubMenuCard extends StatelessWidget {
   const SubMenuCard({
     Key? key,
     required this.width,
-    this.text: '',
+    this.text = '',
   }) : super(key: key);
 
   @override

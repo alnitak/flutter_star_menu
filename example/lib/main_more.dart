@@ -167,8 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       backgroundColor: Colors.red,
                       child: Icon(Icons.looks_3),
                     ).addStarMenu(
-                        entries,
-                        StarMenuParameters(
+                        items: entries,
+                        params: StarMenuParameters(
                           backgroundParams: BackgroundParams(
                               animatedBlur: true,
                               sigmaX: 4.0,
@@ -227,8 +227,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 100,
         text: 'Linear, check whole menu boundaries',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
               shape: MenuShape.linear,
               linearShapeParams: LinearShapeParams(
                 angle: 120,
@@ -239,8 +239,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 70,
         text: 'Linear, centered items',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
             shape: MenuShape.linear,
             linearShapeParams: LinearShapeParams(
                 angle: 90, space: 15, alignment: LinearAlignment.center),
@@ -249,8 +249,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 70,
         text: 'Linear, check items boundaries',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
               shape: MenuShape.linear,
               linearShapeParams: LinearShapeParams(
                 angle: 60,
@@ -262,8 +262,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 70,
         text: 'Linear, left aligned',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
             shape: MenuShape.linear,
             linearShapeParams: LinearShapeParams(
                 angle: 90, space: 15, alignment: LinearAlignment.left),
@@ -272,8 +272,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 60,
         text: 'Centered circle',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
             shape: MenuShape.circle,
             useScreenCenter: true,
           )),
@@ -281,8 +281,8 @@ class _MyHomePageState extends State<MyHomePage> {
         width: 70,
         text: 'Linear, right aligned',
       ).addStarMenu(
-          subEntries,
-          StarMenuParameters(
+          items: subEntries,
+          params: StarMenuParameters(
             shape: MenuShape.linear,
             linearShapeParams: LinearShapeParams(
                 angle: 90, space: 0, alignment: LinearAlignment.right),

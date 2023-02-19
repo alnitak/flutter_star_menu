@@ -23,15 +23,15 @@ class StarItem extends StatelessWidget {
 
   const StarItem(
       {required Key key,
-      this.animValue: 0.0,
+      this.animValue = 0.0,
       required this.totItems,
       required this.index,
-      this.center: Offset.zero,
-      this.shift: Offset.zero,
+      this.center = Offset.zero,
+      this.shift = Offset.zero,
       required this.itemMatrix,
-      this.rotateRAD: 0.0,
-      this.scale: 1.0,
-      this.onHoverScale: 1.0,
+      this.rotateRAD = 0.0,
+      this.scale = 1.0,
+      this.onHoverScale = 1.0,
       required this.onItemTapped,
       required this.child})
       : assert(totItems > 0),

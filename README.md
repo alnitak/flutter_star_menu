@@ -106,11 +106,12 @@ FloatingActionButton(
   onPressed: () {print('FloatingActionButton tapped');},
   child: Icon(Icons.looks_one),
 ).addStarMenu(
-	items, 
-	StarMenuParameters(), 
-  controller,
-	onItemTapped: (index, controller) {}),
+  items: items,
+  params: StarMenuParameters(),
+  controller: controller,
+  onItemTapped: (index, controller) {}),
 ```
+
 <br/>
 <br/>
 
@@ -163,11 +164,11 @@ ElevatedButton(
 ),
 ```
 
-<br/>
-<br/>
+
 
 ### ***StarMenu***
 Only [items] or [lazyItems] can be passed, not both.
+
 |Name|Type|Defaults|Description|
 |:-------|:----------|:----------|:-----------|
 |***params***|class|StarMenuParameters|See below.|
@@ -178,8 +179,7 @@ Only [items] or [lazyItems] can be passed, not both.
 |***controller***|StarMenuController|-|context of the Widget where the menu will be opened. Only [child] or [parentContext] is allowed|
 |***onStateChanged***|Function(MenuState state)?|-|Return current menu state.|
 
-<br/>
-<br/>
+
 
 ### ***StarMenuParameters***
 Class to define all the parameters for the shape, animation and menu behavior.
@@ -206,8 +206,7 @@ Class to define all the parameters for the shape, animation and menu behavior.
 |***longPressDuration***|Duration|500 ms|The timing to trigger long press.|
 |***onHoverScale***|double|1.0|Scale item when mouse is hover (desktop only)|
 
-<br/>
-<br/>
+
 
 There are some ***StarMenuParameters*** factory presets with which you can set *StarMenu.params*
 
@@ -232,8 +231,8 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 
 
 ---
-<br/>
-<br/>
+
+
 
 ### ***BoundaryBackground***
 
@@ -244,8 +243,8 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 |***decoration***|Decoration|BorderRadius.circular(8)| background Container widget decoration.|
 
 ---
-<br/>
-<br/>
+
+
 
 ### ***LinearShapeParams***
 
@@ -256,8 +255,7 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 |***alignment***|LinearAlignment|center| *left*, *center*, *right*, *top*, *bottom*. Useful when the linear shape is vertical or horizontal.|
 
 ---
-<br/>
-<br/>
+
 
 ### ***CircleShapeParams***
 
@@ -269,8 +267,8 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 |***endAngle***|double|360.0|Ending angle for the 1st item. Anticlockwise with 0° on the right.|
 
 ---
-<br/>
-<br/>
+
+
 
 ### ***GridShapeParams***
 
@@ -281,8 +279,7 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 |***columnsSpaceV***|int|0|Vertical space between items.|
 
 ---
-<br/>
-<br/>
+
 
 ### ***BackgroundParams***
 
