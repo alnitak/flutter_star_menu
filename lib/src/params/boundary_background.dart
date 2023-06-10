@@ -19,8 +19,8 @@ class BoundaryBackground {
   final double? blurSigmaY;
 
   BoundaryBackground(
-      {this.color: Colors.white,
-      this.padding: const EdgeInsets.all(8.0),
+      {this.color = Colors.white,
+      this.padding = const EdgeInsets.all(8.0),
       decoration,
       this.blurSigmaX,
       this.blurSigmaY})
