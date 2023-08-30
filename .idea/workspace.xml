@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="fixed sigmaX and sigmaY for the blurred background">
+    <list default="true" id="2d905725-4e1a-4443-afd7-d0248c51fd02" name="Default Changelist" comment="added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang&lt;tksuns12&gt;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/star_menu.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/star_menu.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,18 +135,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
-    <property name="cidr.known.project.marker" value="true" />
-    <property name="dart.analysis.tool.window.force.activate" value="false" />
-    <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../libs/flutter_opengl/flutter_web_gl" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
-    <property name="show.migrate.to.gradle.popup" value="false" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "/home/deimos/Documents/workspace/FLUTTER/selenium4/libs/star_menu",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/example" />
@@ -381,7 +374,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675638118785</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang&lt;tksuns12&gt;">
+      <created>1676840356616</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1676840356616</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -466,7 +466,8 @@
     <MESSAGE value="added lazyItems and onStateChanged parameters to addStarMenu extension" />
     <MESSAGE value="all the parameters to [addStarMenu] mixin are now optional" />
     <MESSAGE value="fixed sigmaX and sigmaY for the blurred background" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed sigmaX and sigmaY for the blurred background" />
+    <MESSAGE value="added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang&lt;tksuns12&gt;" />
+    <option name="LAST_COMMIT_MESSAGE" value="added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang&lt;tksuns12&gt;" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

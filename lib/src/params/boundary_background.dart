@@ -18,13 +18,13 @@ class BoundaryBackground {
   /// background blur sigmaY value
   final double? blurSigmaY;
 
-  BoundaryBackground(
-      {this.color = Colors.white,
-      this.padding = const EdgeInsets.all(8.0),
-      decoration,
-      this.blurSigmaX,
-      this.blurSigmaY})
-      : decoration = decoration ??
+  BoundaryBackground({
+    this.color = Colors.white,
+    this.padding = const EdgeInsets.all(8.0),
+    decoration,
+    this.blurSigmaX,
+    this.blurSigmaY,
+  }) : decoration = decoration ??
             BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: color,
