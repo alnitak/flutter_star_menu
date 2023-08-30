@@ -394,7 +394,7 @@ class StarMenuState extends State<StarMenu>
       parentBounds = widgetRect.translate(parentPosition.dx, parentPosition.dy);
 
       OverlayState? overlay = Overlay.of(context);
-      overlay?.insert(overlayEntry!);
+      overlay.insert(overlayEntry!);
       overlayEntry?.addListener(() {
         if (overlayEntry != null &&
             overlayEntry!.mounted &&
