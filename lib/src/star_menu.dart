@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:star_menu/src/dinamyc_star_menu.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
-import 'params/linear_shape_params.dart';
-import 'params/star_menu_params.dart';
-import 'star_item.dart';
-import 'widget_params.dart';
+import 'package:star_menu/src/params/linear_shape_params.dart';
+import 'package:star_menu/src/params/star_menu_params.dart';
+import 'package:star_menu/src/star_item.dart';
+import 'package:star_menu/src/widget_params.dart';
 
 enum MenuState {
   closed,
@@ -269,6 +269,7 @@ class StarMenuState extends State<StarMenu>
 
   @override
   Widget build(BuildContext context) {
+    print('********************BUILD');
     Point startPoint = Point(0, 0);
 
     if (!widget.controller!.isInitialized()) {
@@ -435,6 +436,15 @@ class StarMenuState extends State<StarMenu>
                         if (!(menuState == MenuState.closing ||
                             menuState == MenuState.closed)) closeMenu();
                       },
+                      onPanUpdate: (event) {
+                        print('MOVE ${event.delta}');
+                        if (widget.params.shape == MenuShape.circle) {
+                          circleStartAngleRAD += 0.1;
+                          itemsMatrix = _calcPosition();
+                          _checkBoundaries();
+                          setState(() {});
+                        }
+                      },
                     ),
 
                     // draw background container
@@ -493,48 +503,7 @@ class StarMenuState extends State<StarMenu>
                               widget.params.boundaryBackground!.decoration,
                         ),
                       ),
-                  ]..addAll(List.generate(_items.length, (index) {
-                          if (index >= itemKeys.length) return Container();
-                          if (index >= itemsMatrix.length) return Container();
-                          if (index >= _items.length) return Container();
-                          return StarItem(
-                            key: itemKeys.elementAt(index),
-                            child: _items[index],
-                            totItems: _items.length,
-                            index: index,
-                            // center: parentBounds.center,
-                            // animation start from previous item position
-                            center: Offset(
-                                itemsMatrix
-                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                    .getTranslation()
-                                    .x,
-                                itemsMatrix
-                                    .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                                    .getTranslation()
-                                    .y),
-                            itemMatrix: itemsMatrix[index],
-                            rotateRAD: rotateItemsAnimationAngleRAD,
-                            scale: widget.params.startItemScaleAnimation,
-                            onHoverScale: widget.params.onHoverScale,
-                            shift: Offset(
-                                itemsMatrix
-                                        .elementAt(index)
-                                        .getTranslation()
-                                        .x +
-                                    offsetToFitMenuIntoScreen.dx,
-                                itemsMatrix
-                                        .elementAt(index)
-                                        .getTranslation()
-                                        .y +
-                                    offsetToFitMenuIntoScreen.dy),
-                            animValue: animValue,
-                            onItemTapped: (id) {
-                              if (widget.onItemTapped != null)
-                                widget.onItemTapped!(id, widget.controller!);
-                            },
-                          );
-                        }))),
+                  ]..addAll(generateItems(animValue))),
                 );
 
                 // is background blurred?
@@ -561,6 +530,46 @@ class StarMenuState extends State<StarMenu>
     );
   }
 
+  /// Generate items
+  List<Widget> generateItems(double animValue) {
+    return List.generate(_items.length, (index) {
+      if (index >= itemKeys.length) return Container();
+      if (index >= itemsMatrix.length) return Container();
+      if (index >= _items.length) return Container();
+      return StarItem(
+        key: itemKeys.elementAt(index),
+        child: _items[index],
+        totItems: _items.length,
+        index: index,
+        // center: parentBounds.center,
+        // animation start from previous item position
+        center: Offset(
+            itemsMatrix
+                .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                .getTranslation()
+                .x,
+            itemsMatrix
+                .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                .getTranslation()
+                .y),
+        itemMatrix: itemsMatrix[index],
+        rotateRAD: rotateItemsAnimationAngleRAD,
+        scale: widget.params.startItemScaleAnimation,
+        onHoverScale: widget.params.onHoverScale,
+        shift: Offset(
+            itemsMatrix.elementAt(index).getTranslation().x +
+                offsetToFitMenuIntoScreen.dx,
+            itemsMatrix.elementAt(index).getTranslation().y +
+                offsetToFitMenuIntoScreen.dy),
+        animValue: animValue,
+        onItemTapped: (id) {
+          if (widget.onItemTapped != null)
+            widget.onItemTapped!(id, widget.controller!);
+        },
+      );
+    });
+  }
+
   // Calculate final item center position
   List<Matrix4> _calcPosition() {
     List<Matrix4> ret =
@@ -582,9 +591,7 @@ class StarMenuState extends State<StarMenu>
         // if the circle isn't complete, the last item should
         // be positioned at the ending angle. Otherwise on the ending
         // angle there is already the 1st item
-        int nItems = (widget.params.circleShapeParams.endAngle -
-                    widget.params.circleShapeParams.startAngle <
-                360)
+        int nItems = (circleEndAngleRAD - circleStartAngleRAD < 2 * pi)
             ? _items.length - 1
             : _items.length;
 
