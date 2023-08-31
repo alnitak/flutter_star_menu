@@ -1,4 +1,5 @@
 {
     "cmake.configureOnOpen": false,
-    "cmake.sourceDirectory": "/home/deimos/FLUTTER/selenium4/libs/star_menu/example/linux"
+    "cmake.sourceDirectory": "/home/deimos/FLUTTER/selenium4/libs/star_menu/example/linux",
+    "dart.showMainCodeLens": true
 }
