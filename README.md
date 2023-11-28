@@ -13,6 +13,7 @@ Easy and Fast Way to build Context Menus
 ![GitHub stars](https://img.shields.io/github/stars/alnitak/flutter_star_menu?style=flat-square)
 ![GitHub license](https://img.shields.io/github/license/alnitak/flutter_star_menu?style=flat-square)
 
+[pub.dev link](https://pub.dev/packages/star_menu)
 
 ![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png/)
 
