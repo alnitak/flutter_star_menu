@@ -500,8 +500,6 @@ class StarMenuState extends State<StarMenu>
                       },
                       onPanEnd: (details) {
                         panProgress.value = 0;
-                        double angleBetweenItems = (2 * pi / _items.length);
-
                         double totDistance = 0;
                         for (int i = 0; i < 4; i++)
                           totDistance += distanceBuffer[i];
