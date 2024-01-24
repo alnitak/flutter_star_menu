@@ -1,3 +1,6 @@
+## [3.1.5] - 20 Feb 2023
+* fixed doc image links
+
 ## [3.1.4] - 20 Feb 2023
 * added blur parameters to the [BoundaryBackground] thanks to Hyungil Kang<tksuns12>
 

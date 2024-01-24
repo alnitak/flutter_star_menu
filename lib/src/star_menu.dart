@@ -4,6 +4,7 @@ All rights reserved.
  */
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -137,8 +138,10 @@ class StarMenu extends StatefulWidget {
 
 class StarMenuState extends State<StarMenu>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  AnimationController? _controller;
-  late Animation<double> _animationPercent;
+  AnimationController? controller;
+  AnimationController? panController;
+  Animation? panAnimation;
+  late Animation<double> animationPercent;
   List<Widget> _items = [];
   Rect itemsBounds = Rect.zero;
 
@@ -155,6 +158,7 @@ class StarMenuState extends State<StarMenu>
   late List<GlobalKey> itemKeys;
   late List<Matrix4> itemsMatrix; // final position matrix of animation
   late ValueNotifier<double> animationProgress;
+  late ValueNotifier<double> panProgress;
   late bool paramsAlreadyGot;
   late Offset offsetToFitMenuIntoScreen;
   Offset touchLocalPoint = Offset.zero;
@@ -181,13 +185,14 @@ class StarMenuState extends State<StarMenu>
         vector.radians(widget.params.rotateItemsAnimationAngle);
 
     animationProgress = ValueNotifier<double>(0.0);
+    panProgress = ValueNotifier<double>(0.0);
     offsetToFitMenuIntoScreen = Offset.zero;
     paramsAlreadyGot = false;
     itemsParams = List.generate(_items.length,
         (index) => WidgetParams(xPosition: 0, yPosition: 0, rect: Rect.zero));
     itemsMatrix = List.generate(_items.length, (index) => Matrix4.identity());
 
-    _setupAnimationController();
+    setupAnimationController();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -199,14 +204,15 @@ class StarMenuState extends State<StarMenu>
 
   _dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _animationPercent.removeListener(_animationListener);
+    animationPercent.removeListener(animationListener);
+    panAnimation?.removeListener(panAnimationListener);
     overlayEntry?.remove();
     overlayEntry = null;
     menuState = MenuState.closed;
-    if (!(_controller?.isDismissed ?? false)) {
-      _controller?.stop();
-      _controller?.value = 0;
-      _controller?.dispose();
+    if (!(controller?.isDismissed ?? false)) {
+      controller?.stop();
+      controller?.value = 0;
+      controller?.dispose();
     }
   }
 
@@ -226,7 +232,7 @@ class StarMenuState extends State<StarMenu>
     });
   }
 
-  resetForChanges() {
+  void resetForChanges() {
     if (_items.isEmpty || menuState == MenuState.closed) return;
 
     MenuState state = menuState;
@@ -241,18 +247,18 @@ class StarMenuState extends State<StarMenu>
     }
   }
 
-  _animationListener() {
-    animationProgress.value = _animationPercent.value;
+  void animationListener() {
+    animationProgress.value = animationPercent.value;
 
     /// Time to get items parameters?
-    if (_animationPercent.value > 0 && !paramsAlreadyGot) {
+    if (animationPercent.value > 0 && !paramsAlreadyGot) {
       itemsParams = List.generate(
           _items.length,
           (index) => WidgetParams.fromContext(
               itemKeys.elementAt(index).currentContext));
 
-      itemsMatrix = _calcPosition();
-      _checkBoundaries();
+      itemsMatrix = calcPosition();
+      checkBoundaries();
       paramsAlreadyGot = true;
 
       // maybe lazyItems are not yet in the tree. Maybe there is a better way
@@ -269,7 +275,6 @@ class StarMenuState extends State<StarMenu>
 
   @override
   Widget build(BuildContext context) {
-    print('********************BUILD');
     Point startPoint = Point(0, 0);
 
     if (!widget.controller!.isInitialized()) {
@@ -309,28 +314,29 @@ class StarMenuState extends State<StarMenu>
   }
 
   // setup animation controller
-  _setupAnimationController() {
-    _controller = AnimationController(
+  void setupAnimationController() {
+    controller = AnimationController(
       duration: Duration(milliseconds: widget.params.openDurationMs),
       vsync: this,
     );
 
-    _animationPercent = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-        parent: _controller!, curve: widget.params.animationCurve))
-      ..addListener(_animationListener)
+    animationPercent = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: controller!, curve: widget.params.animationCurve),
+    )
+      ..addListener(animationListener)
       ..addStatusListener((AnimationStatus status) {
         switch (status) {
           case AnimationStatus.completed:
-            if (_controller?.value == 1.0) {
+            if (controller?.value == 1.0) {
               menuState = MenuState.open;
             } else
               menuState = MenuState.closed;
             break;
           case AnimationStatus.dismissed:
-            if (_animationPercent.value == 0) {
+            if (animationPercent.value == 0) {
               overlayEntry?.remove();
               overlayEntry = null;
-              _controller?.value = 0;
+              controller?.value = 0;
               menuState = MenuState.closed;
             }
             break;
@@ -348,7 +354,7 @@ class StarMenuState extends State<StarMenu>
 
   /// Close the menu
   closeMenu() {
-    _controller
+    controller
         ?.animateBack(
       0,
       duration: Duration(milliseconds: widget.params.closeDurationMs),
@@ -383,7 +389,7 @@ class StarMenuState extends State<StarMenu>
 
   _showMenu() {
     overlayEntry = _overlayEntryBuilder();
-    _controller?.reset();
+    controller?.reset();
 
     if (overlayEntry != null) {
       // find parent widget bounds
@@ -399,8 +405,31 @@ class StarMenuState extends State<StarMenu>
       overlayEntry?.addListener(() {
         if (overlayEntry != null &&
             overlayEntry!.mounted &&
-            menuState == MenuState.closed) _controller?.forward();
+            menuState == MenuState.closed) controller?.forward();
       });
+    }
+  }
+
+  Offset endPanDelta = Offset.zero;
+  Offset precPanDelta = Offset.zero;
+  Float32List distanceBuffer = Float32List(4);
+  int bufferIndex = 0;
+  Duration startAverageTimeStamp = Duration.zero;
+  Duration endAverageTimeStamp = Duration.zero;
+  void panAnimationListener() {
+    panProgress.value = panAnimation?.value ?? 0;
+    circleEndAngleRAD -= circleStartAngleRAD - panProgress.value;
+    circleStartAngleRAD = panProgress.value;
+    // print('ANIM $circleStartAngleRAD $circleEndAngleRAD');
+    itemsMatrix = calcPosition();
+    checkBoundaries();
+  }
+
+  void panAnimationStatusListener(status) {
+    if (status == AnimationStatus.completed ||
+        status == AnimationStatus.dismissed) {
+      panAnimation?.removeListener(panAnimationListener);
+      panAnimation?.removeStatusListener(panAnimationStatusListener);
     }
   }
 
@@ -437,14 +466,75 @@ class StarMenuState extends State<StarMenu>
                         if (!(menuState == MenuState.closing ||
                             menuState == MenuState.closed)) closeMenu();
                       },
+                      onPanStart: (details) {
+                        precPanDelta = Offset.zero;
+                        panController?.stop();
+                      },
                       onPanUpdate: (event) {
-                        print('MOVE ${event.delta}');
                         if (widget.params.shape == MenuShape.circle) {
-                          circleStartAngleRAD += 0.1;
-                          itemsMatrix = _calcPosition();
-                          _checkBoundaries();
-                          setState(() {});
+                          if (event.delta.dx >= 0) {
+                            circleStartAngleRAD -= 0.07;
+                            circleEndAngleRAD -= 0.07;
+                          } else {
+                            circleStartAngleRAD += 0.07;
+                            circleEndAngleRAD += 0.07;
+                          }
+                          itemsMatrix = calcPosition();
+                          checkBoundaries();
+                          panProgress.value += 0.1;
+                          precPanDelta = event.delta;
+
+                          if (bufferIndex == 0) {
+                            startAverageTimeStamp =
+                                event.sourceTimeStamp ?? Duration.zero;
+                          } else if (bufferIndex >= 4) {
+                            endAverageTimeStamp =
+                                event.sourceTimeStamp ?? Duration.zero;
+                            bufferIndex = 0;
+                          }
+                          distanceBuffer[bufferIndex] = event.delta.distance;
+                          bufferIndex++;
+                          print(
+                              'MOVE ${event.delta.distance} $circleStartAngleRAD $circleEndAngleRAD');
                         }
+                      },
+                      onPanEnd: (details) {
+                        panProgress.value = 0;
+                        double angleBetweenItems = (2 * pi / _items.length);
+
+                        double totDistance = 0;
+                        for (int i = 0; i < 4; i++)
+                          totDistance += distanceBuffer[i];
+
+                        /// pixel over milliseconds
+                        double velocity = totDistance /
+                            (endAverageTimeStamp.inMilliseconds -
+                                startAverageTimeStamp.inMilliseconds);
+
+                        // double end = circleStartAngleRAD + velocity * 5000;
+                        double end = circleStartAngleRAD +
+                            atan(totDistance*10);
+                        print(
+                            'PANEND distance: $totDistance velocity: $velocity  '
+                            '${atan(totDistance)}');
+
+                        if (velocity == 0) return;
+                        panController = AnimationController(
+                          duration: Duration(milliseconds: 400),
+                          vsync: this,
+                        );
+                        panAnimation = Tween<double>(
+                          begin: circleStartAngleRAD,
+                          end: end,
+                        ).animate(
+                          CurvedAnimation(
+                            parent: panController!,
+                            curve: Curves.bounceOut,
+                          ),
+                        )
+                          ..addListener(panAnimationListener)
+                          ..addStatusListener((panAnimationStatusListener));
+                        panController?.forward();
                       },
                     ),
 
@@ -537,42 +627,46 @@ class StarMenuState extends State<StarMenu>
       if (index >= itemKeys.length) return Container();
       if (index >= itemsMatrix.length) return Container();
       if (index >= _items.length) return Container();
-      return StarItem(
-        key: itemKeys.elementAt(index),
-        child: _items[index],
-        totItems: _items.length,
-        index: index,
-        // center: parentBounds.center,
-        // animation start from previous item position
-        center: Offset(
-            itemsMatrix
-                .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                .getTranslation()
-                .x,
-            itemsMatrix
-                .elementAt(index - 1 >= 0 ? index - 1 : 0)
-                .getTranslation()
-                .y),
-        itemMatrix: itemsMatrix[index],
-        rotateRAD: rotateItemsAnimationAngleRAD,
-        scale: widget.params.startItemScaleAnimation,
-        onHoverScale: widget.params.onHoverScale,
-        shift: Offset(
-            itemsMatrix.elementAt(index).getTranslation().x +
-                offsetToFitMenuIntoScreen.dx,
-            itemsMatrix.elementAt(index).getTranslation().y +
-                offsetToFitMenuIntoScreen.dy),
-        animValue: animValue,
-        onItemTapped: (id) {
-          if (widget.onItemTapped != null)
-            widget.onItemTapped!(id, widget.controller!);
-        },
-      );
+      return ValueListenableBuilder<double>(
+          valueListenable: panProgress,
+          builder: (_, pan, __) {
+            return StarItem(
+              key: itemKeys.elementAt(index),
+              child: _items[index],
+              totItems: _items.length,
+              index: index,
+              // center: parentBounds.center,
+              // animation start from previous item position
+              center: Offset(
+                  itemsMatrix
+                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                      .getTranslation()
+                      .x,
+                  itemsMatrix
+                      .elementAt(index - 1 >= 0 ? index - 1 : 0)
+                      .getTranslation()
+                      .y),
+              itemMatrix: itemsMatrix[index],
+              rotateRAD: rotateItemsAnimationAngleRAD,
+              scale: widget.params.startItemScaleAnimation,
+              onHoverScale: widget.params.onHoverScale,
+              shift: Offset(
+                  itemsMatrix.elementAt(index).getTranslation().x +
+                      offsetToFitMenuIntoScreen.dx,
+                  itemsMatrix.elementAt(index).getTranslation().y +
+                      offsetToFitMenuIntoScreen.dy),
+              animValue: animValue,
+              onItemTapped: (id) {
+                if (widget.onItemTapped != null)
+                  widget.onItemTapped!(id, widget.controller!);
+              },
+            );
+          });
     });
   }
 
   // Calculate final item center position
-  List<Matrix4> _calcPosition() {
+  List<Matrix4> calcPosition() {
     List<Matrix4> ret =
         List.generate(_items.length, (index) => Matrix4.identity());
     Offset newCenter = widget.params.useScreenCenter
@@ -766,7 +860,7 @@ class StarMenuState extends State<StarMenu>
 
   // check if the items rect exceeds the screen. Move the item positions
   // to fit into the screen
-  _checkBoundaries() {
+  checkBoundaries() {
     if (widget.params.checkItemsScreenBoundaries && itemsParams.isNotEmpty) {
       for (int i = 0; i < itemsParams.length; i++) {
         Rect shifted = itemsParams[i].rect.translate(
