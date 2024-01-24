@@ -15,7 +15,7 @@ Easy and Fast Way to build Context Menus
 
 [pub.dev link](https://pub.dev/packages/star_menu)
 
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/dont_buy_me_coffe.png/)
+![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/dont_buy_me_coffe.png/)
 
 *Instead, a star would be wonderful! ;)*
 
@@ -24,8 +24,8 @@ A simple way to attach a popup menu to any widget with any widget as menu entrie
 Menu entry widgets can bind a sub-menu with different shapes. 
 Multiple ways to fine-tune animation and position.
 
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo2.gif)
-![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/StarMenuDemo.gif)
+![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/StarMenuDemo2.gif)
+![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/StarMenuDemo.gif)
 
 Every widgets can be tapped to display a popup menu!
 There are currently 3 shapes to choose:
@@ -34,11 +34,11 @@ There are currently 3 shapes to choose:
 - `circle`: items are lined up in a circle shape with a given radius and a star-end angle.
 - `grid`: items are aligned in a grid shape with N columns and a given horizontal and vertical space.
 
-|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/linear.png)|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/circle.png)|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/panel.png)|
+|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/linear.png)|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/circle.png)|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/panel.png)|
 |:--|:--|:--|
 |*linear*|*circle*|*panel*|
 
-**Please take a look at [main.dart](https://github.com/alnitak/flutter_star_menu/blob/master/example/lib/main.dart)  and [main_more.dart](https://github.com/alnitak/flutter_star_menu/blob/master/example/lib/main_more.dart) in the example/lib dir for the examples.**
+**Please take a look at [main.dart](https://github.com/alnitak/flutter_star_menu/raw/master/example/lib/main.dart)  and [main_more.dart](https://github.com/alnitak/flutter_star_menu/raw/master/example/lib/main_more.dart) in the example/lib dir for the examples.**
 
 
 Using the package is pretty simple:
@@ -213,21 +213,21 @@ There are some ***StarMenuParameters*** factory presets with which you can set *
 
 |||
 |:-------|:----------|
-|*StarMenuParameters.dropdown(BuildContext context)*|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/dropdown.png)|
-|*StarMenuParameters.panel(BuildContext context, {int columns = 3})*|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/panel.png)|
+|*StarMenuParameters.dropdown(BuildContext context)*|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/dropdown.png)|
+|*StarMenuParameters.panel(BuildContext context, {int columns = 3})*|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/panel.png)|
 
 *StarMenuParameters.arc(BuildContext context, ArcType type, {double radiusX = 130, double radiusY = 130})*
 
 |type|result|
 |:-------|:----------|
-|ArcType.semiUp|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/semiUp.png)|
-|ArcType.semiDown|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/semiDown.png)|
-|ArcType.semiLeft|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/semiL.png)|
-|ArcType.semiRight|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/semiR.png)|
-|ArcType.quarterTopRight|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/quarterTopR.png)|
-|ArcType.quarterTopLeft|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/quarterTopL.png)|
-|ArcType.quarterBottomRight|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/quarterBottomR.png)|
-|ArcType.quarterBottomLeft|![Image](https://github.com/alnitak/flutter_star_menu/blob/master/images/quarterBottomL.png)|
+|ArcType.semiUp|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/semiUp.png)|
+|ArcType.semiDown|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/semiDown.png)|
+|ArcType.semiLeft|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/semiL.png)|
+|ArcType.semiRight|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/semiR.png)|
+|ArcType.quarterTopRight|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/quarterTopR.png)|
+|ArcType.quarterTopLeft|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/quarterTopL.png)|
+|ArcType.quarterBottomRight|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/quarterBottomR.png)|
+|ArcType.quarterBottomLeft|![Image](https://github.com/alnitak/flutter_star_menu/raw/master/images/quarterBottomL.png)|
 
 
 
