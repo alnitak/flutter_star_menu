@@ -141,7 +141,7 @@ class StarMenuParameters {
   factory StarMenuParameters.dropdown(BuildContext context) {
     return StarMenuParameters(
       shape: MenuShape.linear,
-      centerOffset: Offset(-80, 25),
+      centerOffset: Offset(0, 40),
       openDurationMs: 200,
       closeDurationMs: 60,
       startItemScaleAnimation: 1.0,

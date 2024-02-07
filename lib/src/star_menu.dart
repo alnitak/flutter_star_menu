@@ -509,8 +509,8 @@ class StarMenuState extends State<StarMenu>
                                 startAverageTimeStamp.inMilliseconds);
 
                         // double end = circleStartAngleRAD + velocity * 5000;
-                        double end = circleStartAngleRAD +
-                            atan(totDistance*10);
+                        double end =
+                            circleStartAngleRAD + atan(totDistance * 10);
                         print(
                             'PANEND distance: $totDistance velocity: $velocity  '
                             '${atan(totDistance)}');
