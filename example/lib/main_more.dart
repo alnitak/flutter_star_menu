@@ -1,31 +1,39 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:star_menu/star_menu.dart';
 import 'package:star_menu_example/submenu_card.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'StarMenu Demo',
-      home: MyHomePage(),
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        // enable mouse dragging on desktop
+        dragDevices: PointerDeviceKind.values.toSet(),
+      ),
+      theme: ThemeData(useMaterial3: false),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   late List<Widget> entries;
   late List<Widget> subEntries;
 
@@ -40,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('StarMenu demo'),
+        title: const Text('StarMenu demo'),
       ),
       body: Stack(
         children: [
@@ -51,23 +59,22 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SizedBox(
                 height: 1000,
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 20),
-                    Text('Load items at runtime'),
+                    const SizedBox(height: 20),
+                    const Text('Load items at runtime'),
 
                     // LAZY MENU
                     StarMenu(
                       onStateChanged: (state) {
-                        print('State changed: $state');
+                        debugPrint('State changed: $state');
                       },
-                      params: StarMenuParameters(
+                      params: const StarMenuParameters(
                         shape: MenuShape.linear,
                         linearShapeParams: LinearShapeParams(
-                            angle: 270,
-                            space: 30,
-                            alignment: LinearAlignment.center),
+                          angle: 270,
+                          space: 30,
+                        ),
                       ),
 
                       onItemTapped: (index, controller) {
@@ -78,17 +85,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       lazyItems: () async {
                         return [
                           Container(
-                            color: Color.fromARGB(255, Random().nextInt(255),
-                                Random().nextInt(255), Random().nextInt(255)),
-                            width: 60,
+                            color: Color.fromARGB(
+                              255,
+                              Random().nextInt(255),
+                              Random().nextInt(255),
+                              Random().nextInt(255),
+                            ),
+                            width: 100,
                             height: 40,
                           ),
-                          Container(
+                          SizedBox(
                             width: 150,
-                            height: 200,
+                            height: 230,
                             child: Card(
                               elevation: 6,
-                              margin: EdgeInsets.all(6),
+                              margin: const EdgeInsets.all(6),
                               child: ListView(
                                 children: [
                                   'the',
@@ -103,8 +114,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   'widgets',
                                 ].map((s) {
                                   return Card(
-                                    child: Text(s),
-                                    margin: EdgeInsets.all(10),
+                                    margin: const EdgeInsets.all(10),
+                                    child: Text(
+                                      s,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   );
                                 }).toList(),
                               ),
@@ -114,25 +128,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                       child: FloatingActionButton(
                         onPressed: () {
-                          print('FloatingActionButton Menu1 tapped');
+                          debugPrint('FloatingActionButton Menu1 tapped');
                         },
-                        child: Icon(Icons.looks_one),
+                        child: const Icon(Icons.looks_one),
                       ),
                     ),
 
-                    SizedBox(height: 40),
-                    Text('Colored and blurred background'),
+                    const SizedBox(height: 40),
+                    const Text('Colored and blurred background'),
 
                     // LINEAR MENU
                     StarMenu(
                       params: StarMenuParameters(
                         shape: MenuShape.linear,
-                        openDurationMs: 400,
                         onHoverScale: 1.3,
-                        linearShapeParams: LinearShapeParams(
-                            angle: 270,
-                            space: 10,
-                            alignment: LinearAlignment.center),
+                        linearShapeParams: const LinearShapeParams(
+                          angle: 270,
+                          space: 10,
+                          alignment: LinearAlignment.center,
+                        ),
                         boundaryBackground: BoundaryBackground(),
                         backgroundParams: BackgroundParams(
                           backgroundColor: Colors.blue.withOpacity(0.2),
@@ -148,54 +162,61 @@ class _MyHomePageState extends State<MyHomePage> {
                       items: entries,
                       child: FloatingActionButton(
                         onPressed: () {
-                          print('FloatingActionButton Menu1 tapped');
+                          debugPrint('FloatingActionButton Menu1 tapped');
                         },
-                        child: Icon(Icons.looks_two),
+                        child: const Icon(Icons.looks_two),
                       ),
                     ),
 
-                    SizedBox(height: 40),
-                    Text('Animated blur background'),
+                    const SizedBox(height: 40),
+                    const Text('Animated blur background'),
 
                     // CIRCLE MENU
                     // it's possible to use the extension addStarMenu()
                     // with all Widgets
                     FloatingActionButton(
                       onPressed: () {
-                        print('FloatingActionButton Menu2 tapped');
+                        debugPrint('FloatingActionButton Menu2 tapped');
                       },
                       backgroundColor: Colors.red,
-                      child: Icon(Icons.looks_3),
+                      child: const Icon(Icons.looks_3),
                     ).addStarMenu(
-                        items: entries,
-                        params: StarMenuParameters(
-                          backgroundParams: BackgroundParams(
-                              animatedBlur: true,
-                              sigmaX: 4.0,
-                              sigmaY: 4.0,
-                              backgroundColor: Colors.transparent),
-                          circleShapeParams: CircleShapeParams(radiusY: 280),
-                          openDurationMs: 1000,
-                          rotateItemsAnimationAngle: 360,
-                        ), onItemTapped: (index, controller) {
-                      if (index == 7) controller.closeMenu!();
-                    }),
+                      items: entries,
+                      params: const StarMenuParameters(
+                        backgroundParams: BackgroundParams(
+                          animatedBlur: true,
+                          sigmaX: 4,
+                          sigmaY: 4,
+                          backgroundColor: Colors.transparent,
+                        ),
+                        circleShapeParams: CircleShapeParams(radiusY: 280),
+                        openDurationMs: 1000,
+                        rotateItemsAnimationAngle: 360,
+                      ),
+                      onItemTapped: (index, controller) {
+                        if (index == 7) controller.closeMenu!();
+                      },
+                    ),
 
-                    SizedBox(height: 40),
-                    Text('Animated color background'),
+                    const SizedBox(height: 40),
+                    const Text('Animated color background'),
 
                     // GRID MENU
                     StarMenu(
                       params: StarMenuParameters(
                         shape: MenuShape.grid,
                         openDurationMs: 1200,
-                        gridShapeParams: GridShapeParams(
-                            columns: 3, columnsSpaceH: 6, columnsSpaceV: 6),
+                        gridShapeParams: const GridShapeParams(
+                          columns: 3,
+                          columnsSpaceH: 6,
+                          columnsSpaceV: 6,
+                        ),
                         backgroundParams: BackgroundParams(
-                            sigmaX: 0,
-                            sigmaY: 0,
-                            animatedBackgroundColor: true,
-                            backgroundColor: Colors.black.withOpacity(0.4)),
+                          sigmaX: 0,
+                          sigmaY: 0,
+                          animatedBackgroundColor: true,
+                          backgroundColor: Colors.black.withOpacity(0.4),
+                        ),
                       ),
                       onItemTapped: (index, controller) {
                         if (index == 7) controller.closeMenu!();
@@ -203,10 +224,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       items: entries,
                       child: FloatingActionButton(
                         onPressed: () {
-                          print('FloatingActionButton Menu3 tapped');
+                          debugPrint('FloatingActionButton Menu3 tapped');
                         },
                         backgroundColor: Colors.black,
-                        child: Icon(Icons.looks_4),
+                        child: const Icon(Icons.looks_4),
                       ),
                     ),
                   ],
@@ -221,121 +242,140 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Build the list of menu entries
   List<Widget> menuEntries() {
-    ValueNotifier<double> sliderValue = ValueNotifier(0.5);
+    final sliderValue = ValueNotifier<double>(0.5);
     return [
-      SubMenuCard(
+      const SubMenuCard(
         width: 100,
         text: 'Linear, check whole menu boundaries',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-              shape: MenuShape.linear,
-              linearShapeParams: LinearShapeParams(
-                angle: 120,
-                space: 15,
-              ),
-              checkMenuScreenBoundaries: true)),
-      SubMenuCard(
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.linear,
+          linearShapeParams: LinearShapeParams(
+            angle: 120,
+            space: 15,
+          ),
+          checkMenuScreenBoundaries: true,
+        ),
+      ),
+      const SubMenuCard(
         width: 70,
         text: 'Linear, centered items',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-            shape: MenuShape.linear,
-            linearShapeParams: LinearShapeParams(
-                angle: 90, space: 15, alignment: LinearAlignment.center),
-          )),
-      SubMenuCard(
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.linear,
+          linearShapeParams: LinearShapeParams(
+            angle: 90,
+            space: 15,
+            alignment: LinearAlignment.center,
+          ),
+        ),
+      ),
+      const SubMenuCard(
         width: 70,
         text: 'Linear, check items boundaries',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-              shape: MenuShape.linear,
-              linearShapeParams: LinearShapeParams(
-                angle: 60,
-                space: 15,
-              ),
-              checkItemsScreenBoundaries: true,
-              checkMenuScreenBoundaries: false)),
-      SubMenuCard(
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.linear,
+          linearShapeParams: LinearShapeParams(
+            angle: 60,
+            space: 15,
+          ),
+          checkItemsScreenBoundaries: true,
+          checkMenuScreenBoundaries: false,
+        ),
+      ),
+      const SubMenuCard(
         width: 70,
         text: 'Linear, left aligned',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-            shape: MenuShape.linear,
-            linearShapeParams: LinearShapeParams(
-                angle: 90, space: 15, alignment: LinearAlignment.left),
-          )),
-      SubMenuCard(
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.linear,
+          linearShapeParams: LinearShapeParams(
+            angle: 90,
+            space: 15,
+            alignment: LinearAlignment.left,
+          ),
+        ),
+      ),
+      const SubMenuCard(
         width: 60,
         text: 'Centered circle',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-            shape: MenuShape.circle,
-            useScreenCenter: true,
-          )),
-      SubMenuCard(
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.circle,
+          useScreenCenter: true,
+        ),
+      ),
+      const SubMenuCard(
         width: 70,
         text: 'Linear, right aligned',
       ).addStarMenu(
-          items: subEntries,
-          params: StarMenuParameters(
-            shape: MenuShape.linear,
-            linearShapeParams: LinearShapeParams(
-                angle: 90, space: 0, alignment: LinearAlignment.right),
-          )),
+        items: subEntries,
+        params: const StarMenuParameters(
+          shape: MenuShape.linear,
+          linearShapeParams: LinearShapeParams(
+            angle: 90,
+            space: 0,
+            alignment: LinearAlignment.right,
+          ),
+        ),
+      ),
       SizedBox(
         width: 180,
         height: 20,
         child: ValueListenableBuilder<double>(
-            valueListenable: sliderValue,
-            builder: (_, v, __) {
-              return Slider(
-                  value: v,
-                  onChanged: (value) {
-                    sliderValue.value = value;
-                  });
-            }),
+          valueListenable: sliderValue,
+          builder: (_, v, __) {
+            return Slider(
+              value: v,
+              onChanged: (value) {
+                sliderValue.value = value;
+              },
+            );
+          },
+        ),
       ),
-      FloatingActionButton(child: Text('close'), onPressed: () {})
+      FloatingActionButton(child: const Text('close'), onPressed: () {}),
     ];
   }
 
   // Build the list of sub-menu entries
   List<Widget> subMenuEntries() {
     return [
-      Chip(
+      const Chip(
         avatar: CircleAvatar(
-          child: const Text('SM'),
+          child: Text('SM'),
         ),
-        label: const Text('of widgets'),
+        label: Text('of widgets'),
       ),
-      Chip(
+      const Chip(
         avatar: CircleAvatar(
-          child: const Text('SM'),
+          child: Text('SM'),
         ),
-        label: const Text('any kind'),
+        label: Text('any kind'),
       ),
-      Chip(
+      const Chip(
         avatar: CircleAvatar(
-          child: const Text('SM'),
+          child: Text('SM'),
         ),
-        label: const Text('almost'),
+        label: Text('almost'),
       ),
-      Chip(
+      const Chip(
         avatar: CircleAvatar(
-          child: const Text('SM'),
+          child: Text('SM'),
         ),
-        label: const Text('can be'),
+        label: Text('can be'),
       ),
-      Chip(
+      const Chip(
         avatar: CircleAvatar(
-          child: const Text('SM'),
+          child: Text('SM'),
         ),
-        label: const Text('The menu entries'),
+        label: Text('The menu entries'),
       ),
     ];
   }

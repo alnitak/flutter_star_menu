@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 /// class to define circle shape params
 @immutable
 class CircleShapeParams {
+  const CircleShapeParams({
+    this.radiusX = 100,
+    this.radiusY = 100,
+    this.startAngle = 0,
+    this.endAngle = 360,
+  });
+
   /// Horizontal radius
   final double radiusX;
 
@@ -14,12 +21,6 @@ class CircleShapeParams {
 
   /// Ending angle for the 1st item. Anticlockwise with 0° on the right
   final double endAngle;
-
-  const CircleShapeParams(
-      {this.radiusX = 100,
-      this.radiusY = 100,
-      this.startAngle = 0,
-      this.endAngle = 360});
 
   CircleShapeParams copyWith({
     double? radiusX,

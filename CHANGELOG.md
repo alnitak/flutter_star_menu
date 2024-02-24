@@ -1,3 +1,8 @@
+##### [3.1.7] - 24 Feb 2024
+* fixed a bug when dragging outside the menu items
+* code optimized and finally linted
+* breaking change: removed unused `context` parameter from `StarMenuParameters.arc` factory
+
 ##### [3.1.6] - 7 Feb 2024
 * Breaking change bug fix: StarMenuParameters.dropdown factory has an unwanted shift on the X axis
 

@@ -1,13 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-/// Center child widget using [center] position
 class CenteredWidget extends StatelessWidget {
-  final Widget child;
-
-  CenteredWidget({
-    key,
+  const CenteredWidget({
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'star_menu.dart';
+import 'package:star_menu/src/star_menu.dart';
 
 // Creates an overlay to display the StarMenu and open it
 class StarMenuOverlay {
@@ -9,7 +9,7 @@ class StarMenuOverlay {
   static OverlayEntry? _overlayEntry;
 
   // Build the StarMenu on an overlay
-  static displayStarMenu(BuildContext context, StarMenu starMenu) {
+  static void displayStarMenu(BuildContext context, StarMenu starMenu) {
     _sm = starMenu;
     // Retrieve the parent Overlay
     _overlayState = Overlay.of(context);
@@ -32,7 +32,7 @@ class StarMenuOverlay {
     }
   }
 
-  static dispose() {
+  static void dispose() {
     _overlayEntry?.remove();
     _overlayEntry = null;
     _sm = null;

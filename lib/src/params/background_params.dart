@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 /// class to define background
 @immutable
 class BackgroundParams {
+  const BackgroundParams({
+    this.animatedBlur = false,
+    this.sigmaX = 0.0,
+    this.sigmaY = 0.0,
+    this.animatedBackgroundColor = false,
+    this.backgroundColor = Colors.transparent,
+  });
+
   /// Animate background blur from 0.0 to sigma if true
   final bool animatedBlur;
 
@@ -17,13 +25,6 @@ class BackgroundParams {
 
   /// Background color
   final Color backgroundColor;
-
-  const BackgroundParams(
-      {this.animatedBlur = false,
-      this.sigmaX = 0.0,
-      this.sigmaY = 0.0,
-      this.animatedBackgroundColor = false,
-      this.backgroundColor = Colors.transparent});
 
   BackgroundParams copyWith({
     bool? animatedBlur,
