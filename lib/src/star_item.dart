@@ -79,15 +79,17 @@ class StarItem extends StatelessWidget {
               onEnter: (event) => onHover.value = true,
               onExit: (event) => onHover.value = false,
               child: ValueListenableBuilder<bool>(
-                  valueListenable: onHover,
-                  builder: (_, isHover, __) {
-                    return AnimatedScale(
-                        scale: a < 1.0
-                            ? newScale
-                            : (isHover ? newScale * onHoverScale : newScale),
-                        duration: const Duration(milliseconds: 200),
-                        child: child,);
-                  },),
+                valueListenable: onHover,
+                builder: (_, isHover, __) {
+                  return AnimatedScale(
+                    scale: a < 1.0
+                        ? newScale
+                        : (isHover ? newScale * onHoverScale : newScale),
+                    duration: const Duration(milliseconds: 200),
+                    child: child,
+                  );
+                },
+              ),
             ),
           ),
         ),

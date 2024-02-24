@@ -1,4 +1,4 @@
-##### [3.1.7] - 24 Feb 2024
+##### [3.1.8] - 24 Feb 2024
 * fixed a bug when dragging outside the menu items
 * code optimized and finally linted
 * breaking change: removed unused `context` parameter from `StarMenuParameters.arc` factory

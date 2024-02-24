@@ -166,7 +166,7 @@ class StarMenuParameters {
   /// Close animation duration
   final int closeDurationMs;
 
-  /// Starting rotation angle of the items that will 
+  /// Starting rotation angle of the items that will
   /// reach 0 DEG when animation ends
   final double rotateItemsAnimationAngle;
 
