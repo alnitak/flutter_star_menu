@@ -1,6 +1,6 @@
 name: star_menu
 description: Contextual popup menu with different shapes and multiple ways to fine-tune animation and position. The menu entries can be almost any kind of widgets.
-version: 3.1.8
+version: 4.0.0
 homepage: https://github.com/alnitak/flutter_star_menu
 issue_tracker: https://github.com/alnitak/flutter_star_menu/issues
 repository: https://github.com/alnitak/flutter_star_menu
