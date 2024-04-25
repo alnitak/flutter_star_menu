@@ -1,3 +1,6 @@
+##### [4.0.1] - 25 Apr 2024
+* fix overlay was not rooted, ie when a shell route is displayed the menu coordinates wasn't correct
+
 ##### [4.0.0] - 1 Mar 2024
 * breaking change: removed unused `context` parameter from `StarMenuParameters.arc` factory
 
@@ -6,9 +9,9 @@
 * code optimized and finally linted
 * updated v3 for the upcoming v4
 
-##### ~~[3.1.8] - 24 Feb 2024~~
-* ~~fixed a bug when dragging outside the menu items~~
-* ~~code optimized and finally linted~~
+##### [3.1.8] - 24 Feb 2024
+* fixed a bug when dragging outside the menu items
+* code optimized and finally linted
 
 ##### [3.1.6] - 7 Feb 2024
 * Breaking change bug fix: StarMenuParameters.dropdown factory has an unwanted shift on the X axis

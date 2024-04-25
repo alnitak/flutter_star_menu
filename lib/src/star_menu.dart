@@ -400,7 +400,7 @@ class StarMenuState extends State<StarMenu>
       final parentPosition = renderBox.localToGlobal(Offset.zero);
       parentBounds = widgetRect.translate(parentPosition.dx, parentPosition.dy);
 
-      Overlay.of(context).insert(overlayEntry!);
+      Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
       overlayEntry?.addListener(() {
         if (overlayEntry != null &&
             overlayEntry!.mounted &&

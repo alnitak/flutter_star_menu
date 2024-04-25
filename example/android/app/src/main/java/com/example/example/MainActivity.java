@@ -1,4 +1,4 @@
-package com.bavagnoli.star_menu_example;
+package com.example.example;
 
 import io.flutter.embedding.android.FlutterActivity;
 
