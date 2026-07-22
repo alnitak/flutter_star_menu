@@ -204,7 +204,10 @@ class StarMenuState extends State<StarMenu>
   void _dispose() {
     WidgetsBinding.instance.removeObserver(this);
     animationPercent.removeListener(animationListener);
-    overlayEntry?.remove();
+    // remove() crashes if the entry is not inserted in an Overlay
+    if (overlayEntry != null && overlayEntry!.mounted) {
+      overlayEntry!.remove();
+    }
     overlayEntry = null;
     menuState = MenuState.closed;
     if (!(controller?.isDismissed ?? false)) {
@@ -333,7 +336,10 @@ class StarMenuState extends State<StarMenu>
             }
           case AnimationStatus.dismissed:
             if (animationPercent.value == 0) {
-              overlayEntry?.remove();
+              // remove() crashes if the entry is not inserted in an Overlay
+              if (overlayEntry != null && overlayEntry!.mounted) {
+                overlayEntry!.remove();
+              }
               overlayEntry = null;
               controller?.value = 0;
               menuState = MenuState.closed;
@@ -388,8 +394,12 @@ class StarMenuState extends State<StarMenu>
   }
 
   void _showMenu() {
-    overlayEntry = _overlayEntryBuilder();
+    // Reset the controller BEFORE creating the new overlay entry: reset()
+    // fires the `dismissed` status listener synchronously, which removes
+    // the current entry. Doing it first avoids calling remove() on the
+    // freshly built entry that has not been inserted yet.
     controller?.reset();
+    overlayEntry = _overlayEntryBuilder();
 
     if (overlayEntry != null) {
       // find parent widget bounds

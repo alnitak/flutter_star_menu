@@ -1,3 +1,6 @@
+##### [4.0.2] - 22 Jul 2026
+* fixed crash `Null check operator used on a null value` in `OverlayEntry.remove()` when reopening the menu
+
 ##### [4.0.1] - 25 Apr 2024
 * fix overlay was not rooted, ie when a shell route is displayed the menu coordinates wasn't correct
 
