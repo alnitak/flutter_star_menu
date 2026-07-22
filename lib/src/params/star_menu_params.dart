@@ -1,3 +1,4 @@
+// The parameters are listed with all their default values for clarity.
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:flutter/material.dart';

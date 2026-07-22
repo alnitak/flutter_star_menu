@@ -217,7 +217,6 @@ class MyHomePage extends StatelessWidget {
               child: StarMenu(
                 params: StarMenuParameters.panel(
                   context,
-                  columns: 3,
                 ).copyWith(centerOffset: const Offset(-150, -150)),
                 items: [
                   const IconMenu(icon: Icons.skip_previous, text: 'previous'),
@@ -231,7 +230,7 @@ class MyHomePage extends StatelessWidget {
                     height: 20,
                     child: ValueListenableBuilder<double>(
                       valueListenable: sliderValue,
-                      builder: (_, v, __) {
+                      builder: (_, v, _) {
                         return Slider(
                           value: v,
                           onChanged: (value) {
@@ -256,7 +255,6 @@ class MyHomePage extends StatelessWidget {
                 params: const StarMenuParameters(
                   shape: MenuShape.linear,
                   linearShapeParams: LinearShapeParams(
-                    angle: 90,
                     alignment: LinearAlignment.left,
                     space: 15,
                   ),
@@ -289,8 +287,6 @@ class MyHomePage extends StatelessWidget {
                   ),
                   border: Border.all(
                     width: 2,
-                    color: Colors.black,
-                    style: BorderStyle.solid,
                   ),
                 ),
               ),

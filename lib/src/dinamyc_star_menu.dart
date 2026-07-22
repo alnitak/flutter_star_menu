@@ -5,7 +5,7 @@ import 'package:star_menu/src/star_menu.dart';
 // Creates an overlay to display the StarMenu and open it
 class StarMenuOverlay {
   static StarMenu? _sm;
-  static OverlayState? _overlayState;
+  static late OverlayState _overlayState;
   static OverlayEntry? _overlayEntry;
 
   // Build the StarMenu on an overlay
@@ -17,7 +17,7 @@ class StarMenuOverlay {
     // Generate the Stack containing all StarItems that will
     // be displayed onto the Overlay
     _overlayEntry = OverlayEntry(
-      builder: (BuildContext context) {
+      builder: (context) {
         return Stack(
           children: <Widget>[
             starMenu,
@@ -28,7 +28,7 @@ class StarMenuOverlay {
 
     // Add it to the Overlay
     if (_overlayEntry != null) {
-      _overlayState!.insert(_overlayEntry!);
+      _overlayState.insert(_overlayEntry!);
     }
   }
 

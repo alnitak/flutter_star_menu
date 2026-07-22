@@ -277,7 +277,7 @@ class StarMenuState extends State<StarMenu>
 
   @override
   Widget build(BuildContext context) {
-    var startPoint = const Point(0.0, 0.0);
+    var startPoint = const Point<double>(0, 0);
 
     if (!widget.controller!.isInitialized()) {
       widget.controller!.openMenu = showMenu;
@@ -299,7 +299,9 @@ class StarMenuState extends State<StarMenu>
           longPressTimer = Timer(widget.params.longPressDuration, () {
             if (startPoint
                     .distanceTo(Point(event.position.dx, event.position.dy)) <
-                10) showMenu();
+                10) {
+              showMenu();
+            }
           });
         }
       },
@@ -309,7 +311,9 @@ class StarMenuState extends State<StarMenu>
           return;
         }
         if (startPoint.distanceTo(Point(event.position.dx, event.position.dy)) <
-            10) showMenu();
+            10) {
+          showMenu();
+        }
       },
       child: widget.child ?? const SizedBox.shrink(),
     );
@@ -322,11 +326,11 @@ class StarMenuState extends State<StarMenu>
       vsync: this,
     );
 
-    animationPercent = Tween(begin: 0.0, end: 1.0).animate(
+    animationPercent = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: controller!, curve: widget.params.animationCurve),
     )
       ..addListener(animationListener)
-      ..addStatusListener((AnimationStatus status) {
+      ..addStatusListener((status) {
         switch (status) {
           case AnimationStatus.completed:
             if (controller?.value == 1.0) {
@@ -358,17 +362,19 @@ class StarMenuState extends State<StarMenu>
 
   /// Close the menu
   void closeMenu() {
-    controller
-        ?.animateBack(
-      0,
-      duration: Duration(milliseconds: widget.params.closeDurationMs),
-    )
-        .then((value) {
-      if (widget.parentContext != null) {
-        _dispose();
-        StarMenuOverlay.dispose();
-      }
-    });
+    unawaited(
+      controller
+          ?.animateBack(
+        0,
+        duration: Duration(milliseconds: widget.params.closeDurationMs),
+      )
+          .then((value) {
+        if (widget.parentContext != null) {
+          _dispose();
+          StarMenuOverlay.dispose();
+        }
+      }),
+    );
   }
 
   /// Open the menu
@@ -382,11 +388,13 @@ class StarMenuState extends State<StarMenu>
     );
 
     if (widget.lazyItems != null) {
-      widget.lazyItems!().then((value) {
-        _items = value;
-        paramsAlreadyGot = false;
-        _showMenu();
-      });
+      unawaited(
+        widget.lazyItems!().then((value) {
+          _items = value;
+          paramsAlreadyGot = false;
+          _showMenu();
+        }),
+      );
     } else {
       paramsAlreadyGot = false;
       _showMenu();
@@ -414,7 +422,9 @@ class StarMenuState extends State<StarMenu>
       overlayEntry?.addListener(() {
         if (overlayEntry != null &&
             overlayEntry!.mounted &&
-            menuState == MenuState.closed) controller?.forward();
+            menuState == MenuState.closed) {
+          unawaited(controller?.forward());
+        }
       });
     }
   }
@@ -431,7 +441,7 @@ class StarMenuState extends State<StarMenu>
           textDirection: TextDirection.ltr,
           child: ValueListenableBuilder(
             valueListenable: animationProgress,
-            builder: (_, double animValue, __) {
+            builder: (_, animValue, _) {
               var background = widget.params.backgroundParams.backgroundColor;
               if (widget.params.backgroundParams.animatedBackgroundColor) {
                 background =
@@ -450,7 +460,9 @@ class StarMenuState extends State<StarMenu>
                         // event is tapped. Else the tap is on
                         // background and the menu must be closed
                         if (!(menuState == MenuState.closing ||
-                            menuState == MenuState.closed)) closeMenu();
+                            menuState == MenuState.closed)) {
+                          closeMenu();
+                        }
                       },
                     ),
 
@@ -614,7 +626,7 @@ class StarMenuState extends State<StarMenu>
             : _items.length;
 
         ret.asMap().forEach((index, mat) {
-          mat.translate(
+          mat.translateByDouble(
             newCenter.dx +
                 cos(
                       (circleEndAngleRAD - circleStartAngleRAD) /
@@ -631,6 +643,8 @@ class StarMenuState extends State<StarMenu>
                           circleStartAngleRAD,
                     ) *
                     widget.params.circleShapeParams.radiusY,
+            0,
+            1,
           );
         });
 
@@ -671,7 +685,7 @@ class StarMenuState extends State<StarMenu>
           if (index == 0) {
             firstItemHalfWidth = halfWidth;
             firstItemHalfHeight = halfHeight;
-            mat.translate(newCenter.dx, newCenter.dy);
+            mat.translateByDouble(newCenter.dx, newCenter.dy, 0, 1);
           } else {
             var alignmentShiftX = 0.0;
             var alignmentShiftY = 0.0;
@@ -691,13 +705,15 @@ class StarMenuState extends State<StarMenu>
                 LinearAlignment.bottom) {
               alignmentShiftY = -halfHeight + firstItemHalfHeight;
             }
-            mat.translate(
+            mat.translateByDouble(
               cos(lineAngleRAD) * (radius + halfWidth - firstItemHalfWidth) +
                   newCenter.dx +
                   alignmentShiftX,
               -sin(lineAngleRAD) * (radius + halfHeight - firstItemHalfHeight) +
                   newCenter.dy +
                   alignmentShiftY,
+              0,
+              1,
             );
           }
 
@@ -775,9 +791,11 @@ class StarMenuState extends State<StarMenu>
                   2)
               .floor();
           ret[n] = Matrix4.identity()
-            ..translate(
+            ..translateByDouble(
               (itemPos[n].x + dx - wMax / 2) + newCenter.dx,
               (itemPos[n].y - y / 2) + newCenter.dy,
+              0,
+              1,
             );
           n++;
         }
@@ -798,17 +816,32 @@ class StarMenuState extends State<StarMenu>
                   itemsParams[i].rect.height / 2,
             );
 
-        if (shifted.left < 0) itemsMatrix.elementAt(i).translate(-shifted.left);
+        if (shifted.left < 0) {
+          itemsMatrix.elementAt(i).translateByDouble(-shifted.left, 0, 0, 1);
+        }
         if (shifted.right > screenSize!.width) {
-          itemsMatrix.elementAt(i).translate(screenSize!.width - shifted.right);
+          itemsMatrix.elementAt(i).translateByDouble(
+            screenSize!.width - shifted.right,
+            0,
+            0,
+            1,
+          );
         }
         if (shifted.top < topPadding) {
-          itemsMatrix.elementAt(i).translate(0.0, topPadding - shifted.top);
+          itemsMatrix.elementAt(i).translateByDouble(
+            0,
+            topPadding - shifted.top,
+            0,
+            1,
+          );
         }
         if (shifted.bottom > screenSize!.height) {
-          itemsMatrix
-              .elementAt(i)
-              .translate(0.0, screenSize!.height - shifted.bottom);
+          itemsMatrix.elementAt(i).translateByDouble(
+            0,
+            screenSize!.height - shifted.bottom,
+            0,
+            1,
+          );
         }
       }
     }

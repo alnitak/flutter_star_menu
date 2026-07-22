@@ -145,13 +145,10 @@ class MyHomePageState extends State<MyHomePage> {
                         linearShapeParams: const LinearShapeParams(
                           angle: 270,
                           space: 10,
-                          alignment: LinearAlignment.center,
                         ),
                         boundaryBackground: BoundaryBackground(),
                         backgroundParams: BackgroundParams(
-                          backgroundColor: Colors.blue.withOpacity(0.2),
-                          animatedBackgroundColor: false,
-                          animatedBlur: false,
+                          backgroundColor: Colors.blue.withValues(alpha: 0.2),
                           sigmaX: 10,
                           sigmaY: 10,
                         ),
@@ -187,7 +184,6 @@ class MyHomePageState extends State<MyHomePage> {
                           animatedBlur: true,
                           sigmaX: 4,
                           sigmaY: 4,
-                          backgroundColor: Colors.transparent,
                         ),
                         circleShapeParams: CircleShapeParams(radiusY: 280),
                         openDurationMs: 1000,
@@ -207,15 +203,12 @@ class MyHomePageState extends State<MyHomePage> {
                         shape: MenuShape.grid,
                         openDurationMs: 1200,
                         gridShapeParams: const GridShapeParams(
-                          columns: 3,
                           columnsSpaceH: 6,
                           columnsSpaceV: 6,
                         ),
                         backgroundParams: BackgroundParams(
-                          sigmaX: 0,
-                          sigmaY: 0,
                           animatedBackgroundColor: true,
-                          backgroundColor: Colors.black.withOpacity(0.4),
+                          backgroundColor: Colors.black.withValues(alpha: 0.4),
                         ),
                       ),
                       onItemTapped: (index, controller) {
@@ -255,7 +248,6 @@ class MyHomePageState extends State<MyHomePage> {
             angle: 120,
             space: 15,
           ),
-          checkMenuScreenBoundaries: true,
         ),
       ),
       const SubMenuCard(
@@ -266,9 +258,7 @@ class MyHomePageState extends State<MyHomePage> {
         params: const StarMenuParameters(
           shape: MenuShape.linear,
           linearShapeParams: LinearShapeParams(
-            angle: 90,
             space: 15,
-            alignment: LinearAlignment.center,
           ),
         ),
       ),
@@ -295,7 +285,6 @@ class MyHomePageState extends State<MyHomePage> {
         params: const StarMenuParameters(
           shape: MenuShape.linear,
           linearShapeParams: LinearShapeParams(
-            angle: 90,
             space: 15,
             alignment: LinearAlignment.left,
           ),
@@ -307,7 +296,6 @@ class MyHomePageState extends State<MyHomePage> {
       ).addStarMenu(
         items: subEntries,
         params: const StarMenuParameters(
-          shape: MenuShape.circle,
           useScreenCenter: true,
         ),
       ),
@@ -319,8 +307,6 @@ class MyHomePageState extends State<MyHomePage> {
         params: const StarMenuParameters(
           shape: MenuShape.linear,
           linearShapeParams: LinearShapeParams(
-            angle: 90,
-            space: 0,
             alignment: LinearAlignment.right,
           ),
         ),
@@ -330,7 +316,7 @@ class MyHomePageState extends State<MyHomePage> {
         height: 20,
         child: ValueListenableBuilder<double>(
           valueListenable: sliderValue,
-          builder: (_, v, __) {
+          builder: (_, v, _) {
             return Slider(
               value: v,
               onChanged: (value) {

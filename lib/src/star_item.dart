@@ -57,9 +57,11 @@ class StarItem extends StatelessWidget {
 
     // lerp from parentBounds position to items end position
     final mat = Matrix4.identity()
-      ..translate(
+      ..translateByDouble(
         lerpDouble(center.dx, shift.dx, a) ?? 0,
         lerpDouble(center.dy, shift.dy, a) ?? 0,
+        0,
+        1,
       );
     if (rotateRAD > 0) mat.setRotationZ((1.0 - a) * rotateRAD);
     // if (scale < 1)
@@ -73,14 +75,13 @@ class StarItem extends StatelessWidget {
         child: Opacity(
           opacity: a,
           child: Listener(
-            behavior: HitTestBehavior.deferToChild,
             onPointerUp: (_) => onItemTapped(index),
             child: MouseRegion(
               onEnter: (event) => onHover.value = true,
               onExit: (event) => onHover.value = false,
               child: ValueListenableBuilder<bool>(
                 valueListenable: onHover,
-                builder: (_, isHover, __) {
+                builder: (_, isHover, _) {
                   return AnimatedScale(
                     scale: a < 1.0
                         ? newScale

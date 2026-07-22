@@ -1,4 +1,3 @@
-library star_menu;
 
 export 'src/dinamyc_star_menu.dart';
 export 'src/params/background_params.dart';
